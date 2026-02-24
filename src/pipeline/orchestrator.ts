@@ -1,7 +1,6 @@
 import type { AppConfig } from "../types/config.js";
 import type { Broker } from "../types/broker.js";
 import { REQUEST_STATUS } from "../types/pipeline.js";
-import type { RequestStatus } from "../types/pipeline.js";
 import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { BrokerStore } from "../data/broker-store.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
@@ -15,7 +14,6 @@ import { PipelineRunRepo } from "../db/repositories/pipeline-run.repo.js";
 import { EmailSender } from "../email/sender.js";
 import { buildTemplateVariables, renderTemplate } from "../email/template-engine.js";
 import { CircuitBreaker } from "./circuit-breaker.js";
-import { transition } from "./state-machine.js";
 import { withRetry, configToRetryOptions } from "./retry.js";
 import { scheduleBrokers } from "./scheduler.js";
 import { randomDelay } from "../util/delay.js";
@@ -58,6 +56,7 @@ export class Orchestrator {
     const circuitBreakerRepo = new CircuitBreakerRepo(this.db);
     const pipelineRunRepo = new PipelineRunRepo(this.db);
     const pendingTaskRepo = new PendingTaskRepo(this.db);
+    const brokerResponseRepo = new BrokerResponseRepo(this.db);
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,
@@ -115,6 +114,56 @@ export class Orchestrator {
     // Initialize email sender
     this.emailSender = new EmailSender(this.config.email, dryRun);
 
+    // Try to initialize browser if api_key is configured
+    let browser: import("../browser/session.js").StagehandInstance | null = null;
+    if (this.config.browser.api_key) {
+      try {
+        const { initBrowser } = await import("../browser/session.js");
+        browser = await initBrowser(this.config.browser);
+        logger.info("Browser automation enabled");
+      } catch (err) {
+        logger.warn({ err }, "Browser initialization failed, web form removals will be queued as manual tasks");
+      }
+    }
+
+    // Start inbox monitor in background if configured
+    let inboxMonitor: import("../inbox/monitor.js").InboxMonitor | null = null;
+    if (this.config.inbox) {
+      try {
+        const { InboxMonitor } = await import("../inbox/monitor.js");
+        inboxMonitor = new InboxMonitor(
+          this.config.inbox,
+          toProcess,
+          {
+            onConfirmation: (brokerId, url, success) => {
+              if (!success) return;
+              const req = requestRepo.getLatestForBroker(brokerId);
+              if (!req) return;
+              requestRepo.updateStatus(req.id, REQUEST_STATUS.confirmed);
+              brokerResponseRepo.create({
+                requestId: req.id,
+                responseType: "confirmation",
+                rawBodyHash: simpleHash(url),
+                confirmationUrl: url,
+                urlDomain: extractDomain(url),
+              });
+              logger.info({ brokerId }, "Confirmation auto-processed from inbox");
+            },
+            onNewEmail: (from, subject) => {
+              logger.debug({ from, subject }, "New email received in monitor");
+            },
+          }
+        );
+        // Non-blocking: monitor runs in background during pipeline
+        inboxMonitor.start().catch((err) => {
+          logger.warn({ err }, "Inbox monitor error");
+        });
+        logger.info("Inbox monitor started");
+      } catch (err) {
+        logger.warn({ err }, "Failed to start inbox monitor");
+      }
+    }
+
     const summary: PipelineSummary = {
       totalBrokers: toProcess.length,
       sent: 0,
@@ -153,7 +202,7 @@ export class Orchestrator {
           emailSentTo: broker.email,
         });
 
-        // Process based on removal method
+        // Process email removal
         if (
           broker.removal_method === "email" ||
           broker.removal_method === "hybrid"
@@ -167,29 +216,38 @@ export class Orchestrator {
           );
         }
 
+        // Process web form removal
         if (
           broker.removal_method === "web_form" ||
           broker.removal_method === "hybrid"
         ) {
-          // Web form removal requires browser - queue as pending task if browser not available
-          pendingTaskRepo.create({
-            requestId: request.id,
-            taskType: "manual_form",
-            description: `Submit opt-out form at ${broker.opt_out_url ?? broker.domain}`,
-            url: broker.opt_out_url,
-          });
-          summary.manualRequired++;
+          if (browser && !dryRun) {
+            await this.processWebRemoval(
+              broker,
+              request.id,
+              requestRepo,
+              pendingTaskRepo,
+              browser
+            );
+          } else {
+            pendingTaskRepo.create({
+              requestId: request.id,
+              taskType: "manual_form",
+              description: `Submit opt-out form at ${broker.opt_out_url ?? broker.domain}`,
+              url: broker.opt_out_url,
+            });
+            summary.manualRequired++;
+          }
         }
 
-        // Update final status based on what was accomplished
+        // Update final status
         if (broker.removal_method === "email" || broker.removal_method === "hybrid") {
-          // Email was sent (or dry-run'd)
           requestRepo.updateStatus(request.id, REQUEST_STATUS.sent);
           circuitBreaker.recordSuccess(broker.id);
           summary.sent++;
           pipelineRunRepo.incrementSent(pipelineRun.id);
         } else {
-          // Web-form only — queued for manual action
+          // web_form only
           requestRepo.updateStatus(request.id, REQUEST_STATUS.manual_required);
           pipelineRunRepo.incrementSent(pipelineRun.id);
         }
@@ -215,7 +273,22 @@ export class Orchestrator {
       { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
     );
 
-    // Cleanup
+    // Stop inbox monitor
+    if (inboxMonitor) {
+      await inboxMonitor.stop();
+    }
+
+    // Close browser
+    if (browser) {
+      try {
+        const { closeBrowser } = await import("../browser/session.js");
+        await closeBrowser();
+      } catch (err) {
+        logger.warn({ err }, "Error closing browser");
+      }
+    }
+
+    // Cleanup email sender
     await this.emailSender?.close();
     this.emailSender = null;
 
@@ -267,6 +340,40 @@ export class Orchestrator {
     );
   }
 
+  private async processWebRemoval(
+    broker: Broker,
+    requestId: number,
+    requestRepo: RemovalRequestRepo,
+    pendingTaskRepo: PendingTaskRepo,
+    browser: import("../browser/session.js").StagehandInstance
+  ): Promise<void> {
+    const { executeWebRemoval } = await import("../browser/removal-engine.js");
+
+    requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
+    requestRepo.incrementAttempt(requestId);
+
+    const result = await executeWebRemoval(browser, broker, this.config.profile, {
+      timeoutMs: this.config.browser.timeout_ms,
+    });
+
+    if (result.success) {
+      if (result.screenshotPath) {
+        requestRepo.setScreenshot(requestId, result.screenshotPath);
+      }
+      logger.info({ brokerId: broker.id }, "Web form removal completed via browser");
+    } else {
+      // Fall back to manual task queue
+      pendingTaskRepo.create({
+        requestId,
+        taskType: "manual_form",
+        description: result.requiresCaptcha
+          ? `Submit opt-out form at ${broker.opt_out_url ?? broker.domain} (CAPTCHA required)`
+          : `Submit opt-out form at ${broker.opt_out_url ?? broker.domain}`,
+        url: broker.opt_out_url,
+      });
+    }
+  }
+
   abort(): void {
     this.aborted = true;
   }
@@ -277,5 +384,22 @@ export class Orchestrator {
       closeDatabase(this.db);
       this.db = null;
     }
+  }
+}
+
+// Lightweight helpers used only in the inbox monitor callback
+function simpleHash(s: string): string {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  }
+  return (h >>> 0).toString(16);
+}
+
+function extractDomain(url: string): string | undefined {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return undefined;
   }
 }

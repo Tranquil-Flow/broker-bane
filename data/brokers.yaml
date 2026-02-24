@@ -1,5 +1,5 @@
-version: "1.0.0"
-updated: "2026-02-24"
+version: "1.1.0"
+updated: "2026-02-25"
 brokers:
   # ─── People Search Sites ───────────────────────────────────────────────
 
@@ -464,5 +464,587 @@ brokers:
     requires_id_upload: false
     difficulty: "easy"
     tier: 2
+    public_directory: false
+    verify_before_send: false
+
+  # ─── People Search (Tier 2) ────────────────────────────────────────────
+
+  - id: "radaris"
+    name: "Radaris"
+    domain: "radaris.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://radaris.com/control/privacy"
+    search_url: "https://radaris.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "noreply@radaris.com"
+    tier: 2
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to radaris.com/control/privacy. Enter your name and click 'Search'. Select your profile. Click 'Remove' and enter your email. Confirm via the email link."
+    opt_out_url: "https://radaris.com/control/privacy"
+
+  - id: "peekyou"
+    name: "PeekYou"
+    domain: "peekyou.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.peekyou.com/about/contact/optout/"
+    search_url: "https://www.peekyou.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and submit."
+    opt_out_url: "https://www.peekyou.com/about/contact/optout/"
+
+  - id: "instantcheckmate"
+    name: "Instant Checkmate"
+    domain: "instantcheckmate.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.instantcheckmate.com/privacy-policy/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@instantcheckmate.com"
+    tier: 2
+    parent_company: "PeopleConnect Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to instantcheckmate.com/opt-out. Search your name and state. Select your record. Enter email and submit. Confirm via the email link."
+    opt_out_url: "https://www.instantcheckmate.com/opt-out/"
+
+  - id: "mylife"
+    name: "MyLife"
+    domain: "mylife.com"
+    email: "support@mylife.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.mylife.com/privacy-policy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: true
+    verify_before_send: false
+
+  - id: "truthfinder"
+    name: "TruthFinder"
+    domain: "truthfinder.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.truthfinder.com/privacy/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@truthfinder.com"
+    tier: 2
+    parent_company: "PeopleConnect Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to truthfinder.com/opt-out. Search your full name and state. Find your listing and click it. Enter your email and submit the opt-out request. Confirm via the email link."
+    opt_out_url: "https://www.truthfinder.com/opt-out/"
+
+  - id: "usatrace"
+    name: "USA Trace"
+    domain: "usatrace.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.usatrace.com/privacy-policy"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to usatrace.com/optout. Search for your name. Find your listing and click Remove."
+    opt_out_url: "https://www.usatrace.com/optout"
+
+  - id: "fastpeoplesearch"
+    name: "FastPeopleSearch"
+    domain: "fastpeoplesearch.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.fastpeoplesearch.com/removal"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to fastpeoplesearch.com/removal. Enter your name and click Search. Find your record and click 'Remove My Information'. Solve the CAPTCHA to complete."
+    opt_out_url: "https://www.fastpeoplesearch.com/removal"
+
+  - id: "411"
+    name: "411.com"
+    domain: "411.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.411.com/privacy"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your email and confirm via the link."
+    opt_out_url: "https://www.411.com/privacy"
+
+  - id: "addresses"
+    name: "Addresses.com"
+    domain: "addresses.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.addresses.com/optout.php"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to addresses.com/optout.php. Search your name. Select your listing and click the Remove link. Fill in the form and submit."
+    opt_out_url: "https://www.addresses.com/optout.php"
+
+  - id: "usphonebook"
+    name: "US Phone Book"
+    domain: "usphonebook.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.usphonebook.com/opt-out"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to usphonebook.com/opt-out. Enter your name and state. Find and select your record. Fill out the removal form and submit."
+    opt_out_url: "https://www.usphonebook.com/opt-out"
+
+  - id: "socialcatfish"
+    name: "Social Catfish"
+    domain: "socialcatfish.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://socialcatfish.com/opt-out/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@socialcatfish.com"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email link."
+    opt_out_url: "https://socialcatfish.com/opt-out/"
+
+  - id: "thatsthem"
+    name: "ThatsThem"
+    domain: "thatsthem.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://thatsthem.com/optout"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to thatsthem.com/optout. Enter your name, email, phone, or IP. Submit the removal form."
+    opt_out_url: "https://thatsthem.com/optout"
+
+  - id: "clustrmaps"
+    name: "ClustrMaps"
+    domain: "clustrmaps.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://clustrmaps.com/bl/opt-out"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "noreply@clustrmaps.com"
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    form_hints: "Go to clustrmaps.com/bl/opt-out. Search your name. Select the profile. Enter your email and submit. Confirm via the email link."
+    opt_out_url: "https://clustrmaps.com/bl/opt-out"
+
+  # ─── Marketing Data Brokers ────────────────────────────────────────────
+
+  - id: "acxiom"
+    name: "Acxiom"
+    domain: "acxiom.com"
+    email: "optout@acxiom.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://isapps.acxiom.com/optout/optout.aspx"
+    removal_method: "hybrid"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://isapps.acxiom.com/optout/optout.aspx"
+
+  - id: "epsilon"
+    name: "Epsilon"
+    domain: "epsilon.com"
+    email: "optout@epsilon.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.epsilon.com/us/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "liveramp"
+    name: "LiveRamp"
+    domain: "liveramp.com"
+    email: "privacy@liveramp.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://liveramp.com/opt_out/"
+    removal_method: "hybrid"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://liveramp.com/opt_out/"
+
+  - id: "oracle_datacloud"
+    name: "Oracle Data Cloud (BlueKai)"
+    domain: "bluekai.com"
+    email: "oracle_privacy@oracle.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.oracle.com/legal/privacy/marketing-cloud-data-cloud-privacy-policy.html"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://datacloudoptout.oracle.com/"
+
+  - id: "lotame"
+    name: "Lotame"
+    domain: "lotame.com"
+    email: "privacy@lotame.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.lotame.com/about-lotame/privacy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 2
+    public_directory: false
+    verify_before_send: false
+
+  - id: "datalogix"
+    name: "Datalogix (Oracle)"
+    domain: "datalogix.com"
+    email: "optout@datalogix.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.oracle.com/legal/privacy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 2
+    parent_company: "Oracle"
+    public_directory: false
+    verify_before_send: false
+
+  - id: "neustar"
+    name: "Neustar"
+    domain: "neustar.biz"
+    email: "privacy@neustar.biz"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.home.neustar/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "hard"
+    tier: 1
+    parent_company: "TransUnion"
+    public_directory: false
+    verify_before_send: false
+
+  - id: "comscore"
+    name: "Comscore"
+    domain: "comscore.com"
+    email: "privacy@comscore.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.comscore.com/About-comScore/Privacy-Policy"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 2
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://www.comscore.com/About-comScore/Privacy-Policy"
+
+  - id: "iqvia"
+    name: "IQVIA"
+    domain: "iqvia.com"
+    email: "privacy@iqvia.com"
+    region: "us"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.iqvia.com/about-us/privacy/privacy-statement"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  # ─── Background Check Services ────────────────────────────────────────
+
+  - id: "checkr"
+    name: "Checkr"
+    domain: "checkr.com"
+    email: "privacy@checkr.com"
+    region: "us"
+    category: "background_check"
+    privacy_policy_url: "https://checkr.com/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "hireright"
+    name: "HireRight"
+    domain: "hireright.com"
+    email: "privacy@hireright.com"
+    region: "us"
+    category: "background_check"
+    privacy_policy_url: "https://www.hireright.com/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "sterling"
+    name: "Sterling"
+    domain: "sterlingcheck.com"
+    email: "privacy@sterlingcheck.com"
+    region: "us"
+    category: "background_check"
+    privacy_policy_url: "https://www.sterlingcheck.com/privacy-policy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "first_advantage"
+    name: "First Advantage"
+    domain: "fadv.com"
+    email: "privacy@fadv.com"
+    region: "us"
+    category: "background_check"
+    privacy_policy_url: "https://www.fadv.com/privacy-policy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  # ─── EU / GDPR Data Brokers ───────────────────────────────────────────
+
+  - id: "acxiom_eu"
+    name: "Acxiom (EU)"
+    domain: "acxiom.co.uk"
+    email: "gdpr@acxiom.com"
+    region: "eu"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.acxiom.co.uk/gdpr/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "experian_uk"
+    name: "Experian (UK)"
+    domain: "experian.co.uk"
+    email: "dataprivacy@experian.com"
+    region: "eu"
+    category: "credit_bureau"
+    privacy_policy_url: "https://www.experian.co.uk/privacy/consumer-privacy-notice.html"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "equifax_uk"
+    name: "Equifax (UK)"
+    domain: "equifax.co.uk"
+    email: "gdpr@equifax.co.uk"
+    region: "eu"
+    category: "credit_bureau"
+    privacy_policy_url: "https://www.equifax.co.uk/privacy-information.html"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "epsilon_eu"
+    name: "Epsilon (EU)"
+    domain: "epsilon.com"
+    email: "gdpr@epsilon.com"
+    region: "eu"
+    category: "marketing_data"
+    privacy_policy_url: "https://www.epsilon.com/eu/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  # ─── Data Aggregators ─────────────────────────────────────────────────
+
+  - id: "lexisnexis"
+    name: "LexisNexis"
+    domain: "lexisnexis.com"
+    email: "privacy@lexisnexis.com"
+    region: "us"
+    category: "data_aggregator"
+    privacy_policy_url: "https://risk.lexisnexis.com/consumer-center"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://risk.lexisnexis.com/consumer-center"
+
+  - id: "corelogic"
+    name: "CoreLogic"
+    domain: "corelogic.com"
+    email: "privacy@corelogic.com"
+    region: "us"
+    category: "data_aggregator"
+    privacy_policy_url: "https://www.corelogic.com/privacy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "verisk"
+    name: "Verisk"
+    domain: "verisk.com"
+    email: "privacyofficer@verisk.com"
+    region: "us"
+    category: "data_aggregator"
+    privacy_policy_url: "https://www.verisk.com/privacy-commitment/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "thomson_reuters"
+    name: "Thomson Reuters (CLEAR)"
+    domain: "thomsonreuters.com"
+    email: "privacy.practices@thomsonreuters.com"
+    region: "us"
+    category: "data_aggregator"
+    privacy_policy_url: "https://www.thomsonreuters.com/en/privacy-statement.html"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
     public_directory: false
     verify_before_send: false
