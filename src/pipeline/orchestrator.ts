@@ -181,14 +181,18 @@ export class Orchestrator {
           summary.manualRequired++;
         }
 
-        // Mark success for email-only brokers
-        if (broker.removal_method === "email") {
+        // Update final status based on what was accomplished
+        if (broker.removal_method === "email" || broker.removal_method === "hybrid") {
+          // Email was sent (or dry-run'd)
           requestRepo.updateStatus(request.id, REQUEST_STATUS.sent);
           circuitBreaker.recordSuccess(broker.id);
+          summary.sent++;
+          pipelineRunRepo.incrementSent(pipelineRun.id);
+        } else {
+          // Web-form only — queued for manual action
+          requestRepo.updateStatus(request.id, REQUEST_STATUS.manual_required);
+          pipelineRunRepo.incrementSent(pipelineRun.id);
         }
-
-        summary.sent++;
-        pipelineRunRepo.incrementSent(pipelineRun.id);
 
         // Random delay between brokers
         await randomDelay(

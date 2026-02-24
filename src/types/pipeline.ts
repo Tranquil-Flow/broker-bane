@@ -60,7 +60,7 @@ export type ResponseType = (typeof RESPONSE_TYPE)[keyof typeof RESPONSE_TYPE];
 
 // Valid state transitions for removal requests
 export const VALID_TRANSITIONS: Record<RequestStatus, readonly RequestStatus[]> = {
-  pending: ["scanning", "sending", "skipped"],
+  pending: ["scanning", "sending", "skipped", "manual_required"],
   scanning: ["matched", "skipped", "failed"],
   matched: ["sending", "manual_required", "skipped"],
   sending: ["sent", "failed"],
