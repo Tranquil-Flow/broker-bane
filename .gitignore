@@ -1,1 +1,12 @@
+node_modules/
+dist/
+*.db
+*.db-wal
+*.db-shm
+.env
+config.yaml
+screenshots/
 .worktrees/
+*.tgz
+coverage/
+.DS_Store

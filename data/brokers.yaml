@@ -1,0 +1,468 @@
+version: "1.0.0"
+updated: "2026-02-24"
+brokers:
+  # ─── People Search Sites ───────────────────────────────────────────────
+
+  - id: "spokeo"
+    name: "Spokeo"
+    domain: "spokeo.com"
+    email: "customercare@spokeo.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.spokeo.com/privacy-policy"
+    search_url: "https://www.spokeo.com/search"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "noreply@spokeo.com"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to spokeo.com/optout. Enter the profile URL, then email address. Click 'Remove this listing'. Confirm via email link."
+    opt_out_url: "https://www.spokeo.com/optout"
+
+  - id: "beenverified"
+    name: "BeenVerified"
+    domain: "beenverified.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.beenverified.com/privacy"
+    search_url: "https://www.beenverified.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@beenverified.com"
+    tier: 1
+    parent_company: "BeenVerified Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the opt-out. Confirm via the email link sent to your inbox."
+    opt_out_url: "https://www.beenverified.com/app/optout/search"
+
+  - id: "whitepages"
+    name: "Whitepages"
+    domain: "whitepages.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.whitepages.com/privacy-policy"
+    search_url: "https://www.whitepages.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "support@whitepages.com"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click 'Remove me' and provide your email or phone for verification. Confirm via the link or code sent."
+    opt_out_url: "https://www.whitepages.com/suppression-requests"
+
+  - id: "intelius"
+    name: "Intelius"
+    domain: "intelius.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.intelius.com/privacy-policy"
+    search_url: "https://www.intelius.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@intelius.com"
+    tier: 1
+    parent_company: "PeopleConnect Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address and submit. Confirm via the email link. May take several days to process."
+    opt_out_url: "https://www.intelius.com/optout"
+
+  - id: "peoplefinder"
+    name: "PeopleFinder"
+    domain: "peoplefinder.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.peoplefinder.com/privacy-policy"
+    search_url: "https://www.peoplefinder.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "noreply@peoplefinder.com"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation. Submit the form and confirm via the email link."
+    opt_out_url: "https://www.peoplefinder.com/optout"
+
+  - id: "truepeoplesearch"
+    name: "TruePeopleSearch"
+    domain: "truepeoplesearch.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.truepeoplesearch.com/privacy"
+    search_url: "https://www.truepeoplesearch.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record' button. Confirm the removal on the next page. The record is removed immediately."
+    opt_out_url: "https://www.truepeoplesearch.com/removal"
+
+  - id: "fastpeoplesearch"
+    name: "FastPeopleSearch"
+    domain: "fastpeoplesearch.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.fastpeoplesearch.com/privacy"
+    search_url: "https://www.fastpeoplesearch.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This Record'. Confirm the removal. Removal takes effect within 72 hours."
+    opt_out_url: "https://www.fastpeoplesearch.com/removal"
+
+  - id: "thatsthem"
+    name: "ThatsThem"
+    domain: "thatsthem.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://thatsthem.com/privacy"
+    search_url: "https://thatsthem.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing page. Confirm the removal request."
+    opt_out_url: "https://thatsthem.com/optout"
+
+  - id: "radaris"
+    name: "Radaris"
+    domain: "radaris.com"
+    email: "support@radaris.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://radaris.com/page/privacy"
+    search_url: "https://radaris.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "hard"
+    confirm_sender_pattern: "noreply@radaris.com"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear."
+    opt_out_url: "https://radaris.com/control/privacy"
+
+  - id: "mylife"
+    name: "MyLife"
+    domain: "mylife.com"
+    email: "privacy@mylife.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.mylife.com/privacy-policy"
+    search_url: "https://www.mylife.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: true
+    difficulty: "hard"
+    confirm_sender_pattern: "noreply@mylife.com"
+    tier: 1
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal can take 7-10 business days."
+    opt_out_url: "https://www.mylife.com/privacy-policy#remove"
+
+  - id: "truthfinder"
+    name: "Truthfinder"
+    domain: "truthfinder.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.truthfinder.com/privacy-policy"
+    search_url: "https://www.truthfinder.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@truthfinder.com"
+    tier: 1
+    parent_company: "PeopleConnect Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and submit the opt-out. Confirm by clicking the link in the email you receive."
+    opt_out_url: "https://www.truthfinder.com/optout"
+
+  - id: "instantcheckmate"
+    name: "InstantCheckmate"
+    domain: "instantcheckmate.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.instantcheckmate.com/privacy-policy"
+    search_url: "https://www.instantcheckmate.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@instantcheckmate.com"
+    tier: 1
+    parent_company: "PeopleConnect Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your email address and submit the removal request. Confirm via the email link. Processing may take a few days."
+    opt_out_url: "https://www.instantcheckmate.com/optout"
+
+  - id: "ussearch"
+    name: "USSearch"
+    domain: "ussearch.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.ussearch.com/privacy-policy"
+    search_url: "https://www.ussearch.com/"
+    removal_method: "web_form"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "easy"
+    confirm_sender_pattern: "noreply@ussearch.com"
+    tier: 2
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your email and confirm via the verification link."
+    opt_out_url: "https://www.ussearch.com/opt-out/submit"
+
+  - id: "peoplelooker"
+    name: "PeopleLooker"
+    domain: "peoplelooker.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://www.peoplelooker.com/privacy"
+    search_url: "https://www.peoplelooker.com/"
+    removal_method: "web_form"
+    requires_captcha: true
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "noreply@peoplelooker.com"
+    tier: 2
+    parent_company: "BeenVerified Inc."
+    public_directory: true
+    verify_before_send: true
+    form_hints: "Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address and submit. Confirm the opt-out via the email link."
+    opt_out_url: "https://www.peoplelooker.com/app/optout/search"
+
+  - id: "pipl"
+    name: "Pipl"
+    domain: "pipl.com"
+    email: "privacy@pipl.com"
+    region: "us"
+    category: "people_search"
+    privacy_policy_url: "https://pipl.com/privacy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  # ─── Data Brokers & Aggregators ────────────────────────────────────────
+
+  - id: "acxiom"
+    name: "Acxiom"
+    domain: "acxiom.com"
+    email: "consumeradvo@acxiom.com"
+    region: "us"
+    category: "data_broker"
+    privacy_policy_url: "https://www.acxiom.com/privacy/us-products-privacy-policy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://isapps.acxiom.com/optout/optout.aspx"
+
+  - id: "oracle_data_cloud"
+    name: "Oracle Data Cloud"
+    domain: "oracle.com"
+    email: "privacy-ww_grp@oracle.com"
+    region: "us"
+    category: "data_broker"
+    privacy_policy_url: "https://www.oracle.com/legal/privacy/marketing-cloud-data-cloud-privacy-policy.html"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    parent_company: "Oracle Corporation"
+    public_directory: false
+    verify_before_send: false
+
+  - id: "epsilon"
+    name: "Epsilon"
+    domain: "epsilon.com"
+    email: "privacy@epsilon.com"
+    region: "us"
+    category: "data_broker"
+    privacy_policy_url: "https://www.epsilon.com/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "medium"
+    tier: 1
+    parent_company: "Publicis Groupe"
+    public_directory: false
+    verify_before_send: false
+
+  - id: "lexisnexis"
+    name: "LexisNexis"
+    domain: "lexisnexis.com"
+    email: "privacy.information.mgr@lexisnexis.com"
+    region: "us"
+    category: "data_broker"
+    privacy_policy_url: "https://www.lexisnexis.com/en-us/terms/privacy-policy.page"
+    removal_method: "hybrid"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    parent_company: "RELX Group"
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://optout.lexisnexis.com/"
+
+  # ─── Credit Bureaus ────────────────────────────────────────────────────
+
+  - id: "equifax"
+    name: "Equifax"
+    domain: "equifax.com"
+    email: "privacy@equifax.com"
+    region: "us"
+    category: "credit_bureau"
+    privacy_policy_url: "https://www.equifax.com/privacy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  - id: "experian"
+    name: "Experian"
+    domain: "experian.com"
+    email: "privacy@experian.com"
+    region: "us"
+    category: "credit_bureau"
+    privacy_policy_url: "https://www.experian.com/privacy/opting-out"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://www.experian.com/privacy/opting-out"
+
+  - id: "transunion"
+    name: "TransUnion"
+    domain: "transunion.com"
+    email: "privacy@transunion.com"
+    region: "us"
+    category: "credit_bureau"
+    privacy_policy_url: "https://www.transunion.com/privacy-policy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: "hard"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+
+  # ─── Business Data Providers ───────────────────────────────────────────
+
+  - id: "zoominfo"
+    name: "ZoomInfo"
+    domain: "zoominfo.com"
+    email: "privacy@zoominfo.com"
+    region: "us"
+    category: "business_data"
+    privacy_policy_url: "https://www.zoominfo.com/about/privacy-policy"
+    search_url: "https://www.zoominfo.com/people-search"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: "medium"
+    confirm_sender_pattern: "privacy@zoominfo.com"
+    tier: 1
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://www.zoominfo.com/about/privacy-center"
+
+  - id: "clearbit"
+    name: "Clearbit"
+    domain: "clearbit.com"
+    email: "privacy@clearbit.com"
+    region: "us"
+    category: "business_data"
+    privacy_policy_url: "https://clearbit.com/privacy"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    parent_company: "HubSpot"
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: "https://claim.clearbit.com/"
+
+  - id: "fullcontact"
+    name: "FullContact"
+    domain: "fullcontact.com"
+    email: "privacy@fullcontact.com"
+    region: "us"
+    category: "business_data"
+    privacy_policy_url: "https://www.fullcontact.com/privacy-policy/"
+    removal_method: "email"
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: "easy"
+    tier: 2
+    public_directory: false
+    verify_before_send: false

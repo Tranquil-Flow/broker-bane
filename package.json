@@ -1,0 +1,49 @@
+{
+  "name": "broker-bane",
+  "version": "0.1.0",
+  "description": "Free, open-source CLI tool for automated GDPR/CCPA data broker removal requests",
+  "license": "AGPL-3.0",
+  "type": "module",
+  "bin": {
+    "brokerbane": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "convert-brokers": "tsx scripts/convert-eraser-brokers.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.8.1",
+    "chalk": "5.4.1",
+    "cli-table3": "0.6.5",
+    "commander": "13.1.0",
+    "handlebars": "4.7.8",
+    "imapflow": "1.0.175",
+    "inquirer": "12.4.2",
+    "js-yaml": "4.1.0",
+    "mailparser": "3.7.2",
+    "nodemailer": "6.10.0",
+    "nopecha": "1.0.11",
+    "ora": "8.2.0",
+    "pino": "9.6.0",
+    "pino-pretty": "13.0.0",
+    "tldts": "6.1.77",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.6.13",
+    "@types/js-yaml": "4.0.9",
+    "@types/mailparser": "3.4.5",
+    "@types/node": "22.13.5",
+    "@types/nodemailer": "6.4.17",
+    "tsx": "4.19.3",
+    "typescript": "5.7.3",
+    "vitest": "3.0.7"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
