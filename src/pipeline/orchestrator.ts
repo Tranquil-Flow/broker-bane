@@ -202,6 +202,31 @@ export class Orchestrator {
           emailSentTo: broker.email,
         });
 
+        // Profile verification: check listing exists before sending
+        if (broker.verify_before_send && broker.search_url && browser && !dryRun) {
+          requestRepo.updateStatus(request.id, REQUEST_STATUS.scanning);
+
+          const { verifyProfileListing } = await import("../browser/removal-engine.js");
+          const verification = await verifyProfileListing(browser, broker, this.config.profile, {
+            timeoutMs: this.config.browser.timeout_ms,
+          });
+
+          if (!verification.found) {
+            requestRepo.updateStatus(request.id, REQUEST_STATUS.skipped);
+            summary.skipped++;
+            pipelineRunRepo.incrementSkipped(pipelineRun.id);
+            logger.info({ brokerId: broker.id }, "Profile not listed — skipping removal request");
+            continue;
+          }
+
+          requestRepo.updateStatus(request.id, REQUEST_STATUS.matched);
+        } else if (broker.verify_before_send && !browser && !dryRun) {
+          logger.debug(
+            { brokerId: broker.id },
+            "verify_before_send set but no browser available — sending without verification"
+          );
+        }
+
         // Process email removal
         if (
           broker.removal_method === "email" ||

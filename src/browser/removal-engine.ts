@@ -14,6 +14,50 @@ export interface RemovalResult {
   requiresCaptcha?: boolean;
 }
 
+export interface VerifyResult {
+  found: boolean;
+}
+
+export async function verifyProfileListing(
+  browser: StagehandInstance,
+  broker: Broker,
+  profile: Profile,
+  options: { timeoutMs?: number } = {}
+): Promise<VerifyResult> {
+  const { timeoutMs = 20_000 } = options;
+  const searchUrl = broker.search_url ?? `https://${broker.domain}`;
+
+  try {
+    logger.info({ brokerId: broker.id, url: searchUrl }, "Verifying profile listing");
+    await withTimeout(browser.page.goto(searchUrl), timeoutMs);
+    await randomDelay(1000, 2000);
+
+    const fullName = `${profile.first_name} ${profile.last_name}`;
+    const searchInstruction = profile.state
+      ? `Search for "${fullName}" from ${profile.state}`
+      : `Search for "${fullName}"`;
+    await withTimeout(browser.page.act(searchInstruction), timeoutMs);
+    await randomDelay(1500, 3000);
+
+    const result = await withTimeout(
+      browser.page.extract(
+        `Is there a person record or listing for "${fullName}" in the search results? ` +
+          `Return JSON with field "found" as true if a matching result is visible, false if no results found.`
+      ) as Promise<{ found: boolean }>,
+      timeoutMs
+    );
+
+    const found = Boolean((result as { found?: boolean })?.found);
+    logger.info({ brokerId: broker.id, found }, "Profile verification complete");
+    return { found };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    logger.warn({ brokerId: broker.id, err: message }, "Profile verification error — proceeding with removal");
+    // Fail open: if verification errors, proceed rather than silently skip
+    return { found: true };
+  }
+}
+
 export async function executeWebRemoval(
   browser: StagehandInstance,
   broker: Broker,
