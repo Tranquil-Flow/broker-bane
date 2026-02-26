@@ -109,6 +109,30 @@ export class Orchestrator {
       }
     }
 
+    // Skip brokers whose opt-out is still within their validity window.
+    // This check is bypassed in resume mode, where the intent is to continue
+    // a previously interrupted pipeline run rather than start a new one.
+    let validitySkippedCount = 0;
+    if (!options.resume) {
+      const validityFiltered: Broker[] = [];
+      for (const broker of toProcess) {
+        const lastSentAt = requestRepo.getLastSentAt(broker.id);
+        if (lastSentAt) {
+          const validityMs = broker.opt_out_validity_days * 24 * 60 * 60 * 1000;
+          const expiresAt = new Date(lastSentAt).getTime() + validityMs;
+          if (Date.now() < expiresAt) {
+            validitySkippedCount++;
+            continue; // skip: opt-out still valid
+          }
+        }
+        validityFiltered.push(broker);
+      }
+      if (validitySkippedCount > 0) {
+        logger.info({ count: validitySkippedCount }, "Skipping brokers with valid recent opt-out");
+      }
+      toProcess = validityFiltered;
+    }
+
     // Create pipeline run
     const pipelineRun = pipelineRunRepo.create(toProcess.length);
 
@@ -306,7 +330,7 @@ export class Orchestrator {
     pipelineRunRepo.finish(
       pipelineRun.id,
       this.aborted ? "interrupted" : "completed",
-      { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
+      { sent: summary.sent, failed: summary.failed, skipped: summary.skipped + validitySkippedCount }
     );
 
     // Stop inbox monitor
@@ -328,6 +352,7 @@ export class Orchestrator {
     await this.emailSender?.close();
     this.emailSender = null;
 
+    summary.skipped += validitySkippedCount;
     logger.info(summary, "Pipeline completed");
     return summary;
   }

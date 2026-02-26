@@ -288,4 +288,35 @@ describe("Pipeline Integration", () => {
 
     await orchestrator.cleanup();
   });
+
+  it("skips brokers whose opt-out was sent within the validity window", async () => {
+    // Use dry_run: false to trigger validity skip logic (skip only applies on real runs)
+    const cfg = loadConfig(writeTestConfig(tmpDir, makeTestConfig({
+      database: { path: join(tmpDir, "validity-test.db") },
+      options: {
+        template: "gdpr",
+        dry_run: false,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+      },
+    })));
+
+    // First run: sends to acxiom (email broker, won't need SMTP since we mock it)
+    const orch1 = new Orchestrator(cfg);
+    const summary1 = await orch1.run({ dryRun: true, brokerIds: ["acxiom"] });
+    // dry_run: true sends without real SMTP but still marks as sent in DB
+    expect(summary1.sent).toBe(1);
+    await orch1.cleanup();
+
+    // Second run immediately: acxiom opt-out still valid (sent < 180 days ago)
+    // IMPORTANT: validity skip must apply even in dry-run mode to be testable
+    const orch2 = new Orchestrator(cfg);
+    const summary2 = await orch2.run({ dryRun: true, brokerIds: ["acxiom"] });
+    expect(summary2.skipped).toBe(1);
+    expect(summary2.sent).toBe(0);
+    await orch2.cleanup();
+  });
 });
