@@ -16,7 +16,15 @@ export async function loadTokens(provider: "google" | "microsoft"): Promise<OAut
   const raw = await keytar.getPassword(SERVICE, provider);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as OAuthTokens;
+    const parsed = JSON.parse(raw);
+    if (
+      typeof parsed?.accessToken === "string" &&
+      typeof parsed?.refreshToken === "string" &&
+      typeof parsed?.expiresAt === "number"
+    ) {
+      return parsed as OAuthTokens;
+    }
+    return null;
   } catch {
     return null;
   }

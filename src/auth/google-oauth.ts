@@ -56,13 +56,19 @@ function waitForCallbackCode(): Promise<string> {
       res.writeHead(200, { "Content-Type": "text/html" });
 
       if (code) {
-        res.end("<h2>✅ Authorised! You can close this tab and return to the terminal.</h2>");
-        server.close();
-        resolve(code);
+        res.end("<h2>✅ Authorised! You can close this tab and return to the terminal.</h2>", () => {
+          server.close();
+          resolve(code);
+        });
       } else {
-        res.end(`<h2>❌ Authorisation failed: ${error ?? "unknown error"}</h2>`);
-        server.close();
-        reject(new Error(`OAuth error: ${error ?? "unknown"}`));
+        const safeError = (error ?? "unknown error")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        res.end(`<h2>Authorisation failed: ${safeError}</h2>`, () => {
+          server.close();
+          reject(new Error(`OAuth error: ${error ?? "unknown"}`));
+        });
       }
     });
 
