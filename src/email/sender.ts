@@ -4,6 +4,9 @@ import type SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 import type { SmtpConfig } from "../types/config.js";
 import { EmailError } from "../util/errors.js";
 import { logger } from "../util/logger.js";
+import { loadTokens, isExpired } from "../auth/token-store.js";
+import { refreshGoogleToken } from "../auth/google-oauth.js";
+import { refreshMicrosoftToken } from "../auth/microsoft-oauth.js";
 
 export interface SendEmailParams {
   to: string;
@@ -28,23 +31,42 @@ export class EmailSender {
     this.dryRun = dryRun;
   }
 
-  private getTransporter(): Transporter {
-    if (!this.transporter) {
-      this.transporter = nodemailer.createTransport({
-        host: this.config.host,
-        port: this.config.port,
-        secure: this.config.secure,
-        auth: {
-          user: this.config.auth.user,
-          pass: this.config.auth.pass,
-        },
-        pool: this.config.pool,
-        maxConnections: 1,
-        rateDelta: this.config.rate_delta_ms,
-        rateLimit: this.config.rate_limit,
-      } as SMTPTransport.Options);
+  private async resolveAuth(): Promise<object> {
+    if (this.config.auth.type === "oauth2") {
+      let tokens = await loadTokens(this.config.auth.provider);
+      if (!tokens) {
+        throw new Error("No OAuth tokens found. Run 'brokerbane init' to reconnect your email account.");
+      }
+      if (isExpired(tokens)) {
+        tokens = this.config.auth.provider === "google"
+          ? await refreshGoogleToken(tokens.refreshToken)
+          : await refreshMicrosoftToken(this.config.auth.user);
+      }
+      return {
+        type: "OAuth2",
+        user: this.config.auth.user,
+        accessToken: tokens.accessToken,
+      };
     }
-    return this.transporter;
+    // password auth
+    return {
+      user: this.config.auth.user,
+      pass: (this.config.auth as { type: "password"; user: string; pass: string }).pass,
+    };
+  }
+
+  private async createTransport(): Promise<Transporter> {
+    const auth = await this.resolveAuth();
+    return nodemailer.createTransport({
+      host: this.config.host,
+      port: this.config.port,
+      secure: this.config.secure,
+      auth,
+      pool: this.config.pool,
+      maxConnections: 1,
+      rateDelta: this.config.rate_delta_ms,
+      rateLimit: this.config.rate_limit,
+    } as SMTPTransport.Options);
   }
 
   async send(params: SendEmailParams): Promise<SendResult> {
@@ -58,7 +80,8 @@ export class EmailSender {
     }
 
     try {
-      const info = await this.getTransporter().sendMail({
+      const transport = await this.createTransport();
+      const info = await transport.sendMail({
         from: params.from,
         to: params.to,
         subject: params.subject,
@@ -82,7 +105,8 @@ export class EmailSender {
 
   async verify(): Promise<boolean> {
     if (this.dryRun) return true;
-    await this.getTransporter().verify();
+    const transport = await this.createTransport();
+    await transport.verify();
     return true;
   }
 

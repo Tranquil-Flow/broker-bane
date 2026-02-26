@@ -14,14 +14,37 @@ export const ProfileSchema = z.object({
   aliases: z.array(z.string()).default([]),
 });
 
+const EmailAuthUnion = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("password"),
+    user: z.string(),
+    pass: z.string(),
+  }),
+  z.object({
+    type: z.literal("oauth2"),
+    user: z.string(),
+    provider: z.enum(["google", "microsoft"]),
+  }),
+]);
+
+// Backwards compat: if `type` is absent, assume "password"
+export const EmailAuthSchema = z.preprocess(
+  (val) => {
+    if (val !== null && typeof val === "object" && !("type" in (val as object))) {
+      return { type: "password", ...(val as object) };
+    }
+    return val;
+  },
+  EmailAuthUnion,
+);
+
+export type EmailAuth = z.infer<typeof EmailAuthUnion>;
+
 export const SmtpConfigSchema = z.object({
   host: z.string(),
   port: z.number().default(587),
   secure: z.boolean().default(false),
-  auth: z.object({
-    user: z.string(),
-    pass: z.string(),
-  }),
+  auth: EmailAuthSchema,
   pool: z.boolean().default(true),
   rate_limit: z.number().default(5),
   rate_delta_ms: z.number().default(60_000),

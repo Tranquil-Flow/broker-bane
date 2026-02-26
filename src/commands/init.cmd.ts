@@ -59,8 +59,7 @@ export async function initCommand(): Promise<void> {
 
   // ── Section 2: Email / SMTP ────────────────────────────────────────────────
   console.log("\n── Email account ───────────────────────────────────");
-  console.log("BrokerBane sends opt-out emails on your behalf using your email account.");
-  console.log("It needs an App Password — a special one-time code, NOT your regular password.\n");
+  console.log("BrokerBane sends opt-out emails on your behalf using your email account.\n");
 
   const { smtpProvider } = await prompt([
     {
@@ -75,17 +74,72 @@ export async function initCommand(): Promise<void> {
     },
   ]);
 
-  // Show provider-specific App Password instructions
-  console.log();
-  for (const line of APP_PASSWORD_INSTRUCTIONS[smtpProvider] ?? []) {
-    console.log(line);
+  // Only offer OAuth for Gmail and Outlook (not custom SMTP)
+  let authMethod: "oauth" | "password" = "password";
+  if (smtpProvider !== "custom") {
+    const { authMethodAnswer } = await prompt([
+      {
+        type: "list",
+        name: "authMethodAnswer",
+        message: "How would you like to connect your email?",
+        choices: [
+          {
+            name: `Sign in with ${smtpProvider === "gmail" ? "Google" : "Microsoft"}  (recommended — opens browser, no password needed)`,
+            value: "oauth",
+          },
+          {
+            name: "App password  (manual — you generate a special 16-character code)",
+            value: "password",
+          },
+        ],
+      },
+    ]);
+    authMethod = authMethodAnswer;
   }
-  console.log();
 
-  const smtpCreds = await prompt([
-    { type: "input",    name: "user", message: "Email address (login username):" },
-    { type: "password", name: "pass", message: "App Password:", mask: "*" },
-  ]);
+  let smtpAuthConfig: Record<string, unknown> | undefined;
+
+  if (authMethod === "oauth") {
+    const { oauthUser } = await prompt([
+      { type: "input", name: "oauthUser", message: "Your email address:" },
+    ]);
+
+    try {
+      if (smtpProvider === "gmail") {
+        const { runGoogleOAuthFlow } = await import("../auth/google-oauth.js");
+        await runGoogleOAuthFlow();
+      } else {
+        const { runMicrosoftOAuthFlow } = await import("../auth/microsoft-oauth.js");
+        await runMicrosoftOAuthFlow();
+      }
+      console.log(`\n  Connected ${oauthUser} via OAuth.\n`);
+      // Store oauth config — no password needed
+      smtpAuthConfig = { type: "oauth2", user: oauthUser, provider: smtpProvider as "google" | "microsoft" };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.log(`\n  OAuth failed: ${msg}`);
+      console.log("    Falling back to app password setup.\n");
+      authMethod = "password";
+      // fall through to password prompts below
+    }
+  }
+
+  let smtpCreds: { user: string; pass: string } = { user: "", pass: "" };
+
+  if (authMethod === "password") {
+    // Show provider-specific App Password instructions
+    console.log();
+    for (const line of APP_PASSWORD_INSTRUCTIONS[smtpProvider] ?? []) {
+      console.log(line);
+    }
+    console.log();
+
+    smtpCreds = await prompt([
+      { type: "input",    name: "user", message: "Email address (login username):" },
+      { type: "password", name: "pass", message: "App Password:", mask: "*" },
+    ]);
+    smtpAuthConfig = { type: "password", user: smtpCreds.user, pass: smtpCreds.pass };
+  }
 
   const smtpDefaults: Record<string, { host: string; port: number }> = {
     gmail:   { host: "smtp.gmail.com",          port: 587 },
@@ -177,7 +231,8 @@ export async function initCommand(): Promise<void> {
 
     // Suggest same credentials as SMTP when provider matches
     const sameProvider = imapProvider === smtpProvider;
-    const defaultUser  = sameProvider ? smtpCreds.user : "";
+    const smtpUser = typeof smtpAuthConfig?.user === "string" ? smtpAuthConfig.user : smtpCreds.user;
+    const defaultUser  = sameProvider ? smtpUser : "";
 
     const imapCreds = await prompt([
       {
@@ -247,10 +302,7 @@ export async function initCommand(): Promise<void> {
       host:   smtpHost,
       port:   smtpPort,
       secure: false,
-      auth: {
-        user: smtpCreds.user,
-        pass: smtpCreds.pass,
-      },
+      auth:   smtpAuthConfig,
       pool:          true,
       rate_limit:    5,
       rate_delta_ms: 60000,
