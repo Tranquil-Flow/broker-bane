@@ -193,7 +193,7 @@ export class Orchestrator {
       totalBrokers: toProcess.length,
       sent: 0,
       failed: 0,
-      skipped: 0,
+      skipped: validitySkippedCount,
       manualRequired: 0,
       dryRun,
     };
@@ -330,7 +330,7 @@ export class Orchestrator {
     pipelineRunRepo.finish(
       pipelineRun.id,
       this.aborted ? "interrupted" : "completed",
-      { sent: summary.sent, failed: summary.failed, skipped: summary.skipped + validitySkippedCount }
+      { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
     );
 
     // Stop inbox monitor
@@ -352,7 +352,6 @@ export class Orchestrator {
     await this.emailSender?.close();
     this.emailSender = null;
 
-    summary.skipped += validitySkippedCount;
     logger.info(summary, "Pipeline completed");
     return summary;
   }
