@@ -137,17 +137,18 @@ describe("EmailValidator", () => {
 });
 
 describe("EmailSender", () => {
+  const dryRunConfig: SmtpConfig = {
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: { user: "test@gmail.com", pass: "app-password" },
+    pool: true,
+    rate_limit: 5,
+    rate_delta_ms: 60000,
+  };
+
   it("returns dry run result without sending", async () => {
-    const config: SmtpConfig = {
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: { user: "test@gmail.com", pass: "app-password" },
-      pool: true,
-      rate_limit: 5,
-      rate_delta_ms: 60000,
-    };
-    const sender = new EmailSender(config, true);
+    const sender = new EmailSender(dryRunConfig, true);
     const result = await sender.send({
       to: "privacy@spokeo.com",
       subject: "Test",
@@ -156,22 +157,26 @@ describe("EmailSender", () => {
     });
     expect(result.messageId).toContain("dry-run");
     expect(result.accepted).toContain("privacy@spokeo.com");
+    expect(result.rejected).toHaveLength(0);
     await sender.close();
   });
 
   it("reports dry run verification as true", async () => {
-    const config: SmtpConfig = {
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: { user: "test@gmail.com", pass: "app-password" },
-      pool: true,
-      rate_limit: 5,
-      rate_delta_ms: 60000,
-    };
-    const sender = new EmailSender(config, true);
+    const sender = new EmailSender(dryRunConfig, true);
     const verified = await sender.verify();
     expect(verified).toBe(true);
+    await sender.close();
+  });
+
+  it("dry run never has rejected recipients", async () => {
+    const sender = new EmailSender(dryRunConfig, true);
+    const result = await sender.send({
+      to: "anyone@example.com",
+      subject: "Test",
+      text: "Body",
+      from: "test@gmail.com",
+    });
+    expect(result.rejected).toHaveLength(0);
     await sender.close();
   });
 });

@@ -85,6 +85,62 @@ export async function initCommand(): Promise<void> {
     },
   ]);
 
+  // Optional IMAP inbox monitoring
+  const imapSetup = await prompt([
+    {
+      type: "confirm",
+      name: "enabled",
+      message: "Set up inbox monitoring? (Auto-clicks confirmation links — optional)",
+      default: false,
+    },
+  ]);
+
+  let imapConfig: Record<string, unknown> | undefined;
+  if (imapSetup.enabled) {
+    const imapProvider = await prompt([
+      {
+        type: "list",
+        name: "provider",
+        message: "IMAP provider:",
+        choices: [
+          { name: "Gmail", value: "gmail" },
+          { name: "Outlook/Hotmail", value: "outlook" },
+          { name: "Custom IMAP", value: "custom" },
+        ],
+      },
+      { type: "input", name: "user", message: "IMAP username (usually your email address):" },
+      { type: "password", name: "pass", message: "App Password:", mask: "*" },
+    ]);
+
+    const imapDefaults: Record<string, { host: string; port: number; secure: boolean }> = {
+      gmail:   { host: "imap.gmail.com",           port: 993, secure: true },
+      outlook: { host: "outlook.office365.com",    port: 993, secure: true },
+      custom:  { host: "",                          port: 993, secure: true },
+    };
+
+    let imapHost = imapDefaults[imapProvider.provider]?.host ?? "";
+    let imapPort = imapDefaults[imapProvider.provider]?.port ?? 993;
+    let imapSecure = imapDefaults[imapProvider.provider]?.secure ?? true;
+
+    if (imapProvider.provider === "custom") {
+      const custom = await prompt([
+        { type: "input",   name: "host",   message: "IMAP host:" },
+        { type: "number",  name: "port",   message: "IMAP port:", default: 993 },
+        { type: "confirm", name: "secure", message: "Use TLS (recommended)?", default: true },
+      ]);
+      imapHost   = custom.host;
+      imapPort   = custom.port;
+      imapSecure = custom.secure;
+    }
+
+    imapConfig = {
+      host:   imapHost,
+      port:   imapPort,
+      secure: imapSecure,
+      auth:   { user: imapProvider.user, pass: imapProvider.pass },
+    };
+  }
+
   // Build config object
   const config = {
     profile: {
@@ -120,6 +176,7 @@ export async function initCommand(): Promise<void> {
       tiers: [1, 2, 3],
       verify_before_send: options.verify_before_send,
     },
+    ...(imapConfig && { inbox: imapConfig }),
     logging: {
       level: "info",
       redact_pii: true,
@@ -135,8 +192,11 @@ export async function initCommand(): Promise<void> {
 
   console.log(`\n✅ Config saved to ${configPath}`);
   console.log("   File permissions set to 0600 (owner-only read/write)");
+  if (imapConfig) {
+    console.log("   Inbox monitoring enabled — confirmation links will be auto-clicked");
+  }
   console.log("\nNext steps:");
-  console.log("  brokerbane test-config    # Verify your setup");
+  console.log("  brokerbane test-config       # Verify your setup");
   console.log("  brokerbane remove --dry-run  # Preview what would be sent");
-  console.log("  brokerbane remove         # Send removal requests\n");
+  console.log("  brokerbane remove            # Send removal requests\n");
 }

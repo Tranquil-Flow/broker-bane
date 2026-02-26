@@ -1,4 +1,5 @@
 import { loadConfig } from "../config/loader.js";
+import { reconfigureLogger } from "../util/logger.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
 import { runMigrations } from "../db/migrations.js";
 import { RemovalRequestRepo } from "../db/repositories/removal-request.repo.js";
@@ -10,6 +11,7 @@ export async function statusCommand(options: {
   config?: string;
 }): Promise<void> {
   const config = loadConfig(options.config);
+  reconfigureLogger({ level: config.logging.level, file: config.logging.file, redactPii: config.logging.redact_pii });
   const db = createDatabase(config.database.path);
   runMigrations(db);
 

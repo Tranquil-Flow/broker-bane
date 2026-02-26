@@ -7,12 +7,22 @@
   "bin": {
     "brokerbane": "./dist/cli.js"
   },
+  "files": [
+    "dist/",
+    "data/",
+    "templates/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/broker-bane"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
     "convert-brokers": "tsx scripts/convert-eraser-brokers.ts"
   },
   "dependencies": {

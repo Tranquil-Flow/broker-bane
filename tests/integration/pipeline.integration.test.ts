@@ -230,4 +230,62 @@ describe("Pipeline Integration", () => {
     expect(summary.sent).toBe(0);
     await orchestrator.cleanup();
   });
+
+  it("web_form brokers without browser are counted as manualRequired not sent", async () => {
+    const config = loadConfig(configPath);
+    const orchestrator = new Orchestrator(config);
+
+    // spokeo is web_form only
+    const summary = await orchestrator.run({
+      dryRun: true,
+      brokerIds: ["spokeo"],
+    });
+
+    expect(summary.totalBrokers).toBe(1);
+    expect(summary.sent).toBe(0);
+    expect(summary.manualRequired).toBe(1);
+    expect(summary.failed).toBe(0);
+
+    await orchestrator.cleanup();
+  });
+
+  it("records manual_required status for web_form brokers without browser", async () => {
+    const config = loadConfig(configPath);
+    const orchestrator = new Orchestrator(config);
+
+    await orchestrator.run({ dryRun: true, brokerIds: ["spokeo"] });
+
+    const db = createDatabase(config.database.path);
+    runMigrations(db);
+    const requestRepo = new RemovalRequestRepo(db);
+    const requests = requestRepo.getAll();
+
+    expect(requests.length).toBe(1);
+    expect(requests[0].broker_id).toBe("spokeo");
+    expect(requests[0].status).toBe("manual_required");
+    closeDatabase(db);
+
+    await orchestrator.cleanup();
+  });
+
+  it("hybrid brokers are marked sent when email is sent (no browser)", async () => {
+    const config = loadConfig(configPath);
+    const orchestrator = new Orchestrator(config);
+
+    // Find a hybrid broker — run the full pipeline in dry-run and look for one
+    const summary = await orchestrator.run({ dryRun: true });
+
+    const db = createDatabase(config.database.path);
+    runMigrations(db);
+    const requestRepo = new RemovalRequestRepo(db);
+    const hybridRequests = requestRepo.getAll().filter((r) => r.method === "hybrid");
+
+    // Hybrid brokers should be "sent" (email sent) and also have a manual task for the web form
+    for (const req of hybridRequests) {
+      expect(req.status).toBe("sent");
+    }
+    closeDatabase(db);
+
+    await orchestrator.cleanup();
+  });
 });

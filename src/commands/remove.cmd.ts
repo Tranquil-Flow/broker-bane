@@ -1,6 +1,6 @@
 import { loadConfig } from "../config/loader.js";
 import { Orchestrator } from "../pipeline/orchestrator.js";
-import { logger } from "../util/logger.js";
+import { logger, reconfigureLogger } from "../util/logger.js";
 
 export async function removeCommand(options: {
   dryRun?: boolean;
@@ -10,6 +10,7 @@ export async function removeCommand(options: {
   config?: string;
 }): Promise<void> {
   const config = loadConfig(options.config);
+  reconfigureLogger({ level: config.logging.level, file: config.logging.file, redactPii: config.logging.redact_pii });
   const orchestrator = new Orchestrator(config);
 
   // Handle SIGINT

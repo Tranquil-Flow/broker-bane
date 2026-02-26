@@ -18,6 +18,7 @@ import { withRetry, configToRetryOptions } from "./retry.js";
 import { scheduleBrokers } from "./scheduler.js";
 import { randomDelay } from "../util/delay.js";
 import { logger } from "../util/logger.js";
+import { EmailError } from "../util/errors.js";
 
 import type Database from "better-sqlite3";
 
@@ -242,18 +243,22 @@ export class Orchestrator {
         }
 
         // Process web form removal
+        let webFormSucceeded = false;
         if (
           broker.removal_method === "web_form" ||
           broker.removal_method === "hybrid"
         ) {
           if (browser && !dryRun) {
-            await this.processWebRemoval(
+            webFormSucceeded = await this.processWebRemoval(
               broker,
               request.id,
               requestRepo,
               pendingTaskRepo,
               browser
             );
+            if (!webFormSucceeded) {
+              summary.manualRequired++;
+            }
           } else {
             pendingTaskRepo.create({
               requestId: request.id,
@@ -273,7 +278,13 @@ export class Orchestrator {
           pipelineRunRepo.incrementSent(pipelineRun.id);
         } else {
           // web_form only
-          requestRepo.updateStatus(request.id, REQUEST_STATUS.manual_required);
+          if (webFormSucceeded) {
+            requestRepo.updateStatus(request.id, REQUEST_STATUS.sent);
+            circuitBreaker.recordSuccess(broker.id);
+            summary.sent++;
+          } else {
+            requestRepo.updateStatus(request.id, REQUEST_STATUS.manual_required);
+          }
           pipelineRunRepo.incrementSent(pipelineRun.id);
         }
 
@@ -359,6 +370,10 @@ export class Orchestrator {
           subject: rendered.subject,
           status: result.rejected.length > 0 ? "rejected" : "sent",
         });
+
+        if (result.rejected.length > 0 && result.accepted.length === 0) {
+          throw new EmailError(`Email rejected by server for all recipients: ${broker.email}`);
+        }
       },
       retryOptions,
       `email to ${broker.name}`
@@ -371,7 +386,7 @@ export class Orchestrator {
     requestRepo: RemovalRequestRepo,
     pendingTaskRepo: PendingTaskRepo,
     browser: import("../browser/session.js").StagehandInstance
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { executeWebRemoval } = await import("../browser/removal-engine.js");
 
     requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
@@ -386,6 +401,7 @@ export class Orchestrator {
         requestRepo.setScreenshot(requestId, result.screenshotPath);
       }
       logger.info({ brokerId: broker.id }, "Web form removal completed via browser");
+      return true;
     } else {
       // Fall back to manual task queue
       pendingTaskRepo.create({
@@ -396,6 +412,7 @@ export class Orchestrator {
           : `Submit opt-out form at ${broker.opt_out_url ?? broker.domain}`,
         url: broker.opt_out_url,
       });
+      return false;
     }
   }
 

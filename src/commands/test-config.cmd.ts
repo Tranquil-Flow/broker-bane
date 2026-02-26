@@ -1,4 +1,5 @@
 import { loadConfig } from "../config/loader.js";
+import { reconfigureLogger } from "../util/logger.js";
 import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { EmailSender } from "../email/sender.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
@@ -13,6 +14,7 @@ export async function testConfigCommand(options: {
   let config;
   try {
     config = loadConfig(options.config);
+    reconfigureLogger({ level: config.logging.level, file: config.logging.file, redactPii: config.logging.redact_pii });
     console.log("✅ Config loaded successfully");
     console.log(`   Profile: ${config.profile.first_name} ${config.profile.last_name}`);
     console.log(`   Template: ${config.options.template}`);
