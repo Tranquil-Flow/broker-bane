@@ -30,6 +30,7 @@ export const BrokerSchema = z.object({
   verify_before_send: z.boolean().default(false),
   form_hints: z.string().optional(),
   opt_out_url: z.string().url().optional(),
+  opt_out_validity_days: z.number().int().positive().default(180),
 });
 
 export const BrokerDatabaseSchema = z.object({
