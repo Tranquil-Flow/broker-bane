@@ -290,12 +290,14 @@ describe("Pipeline Integration", () => {
   });
 
   it("skips brokers whose opt-out was sent within the validity window", async () => {
-    // Use dry_run: false to trigger validity skip logic (skip only applies on real runs)
+    // Both runs use dryRun: true (no real SMTP). Validity skipping is triggered
+    // by !options.resume (not by dryRun), so the second run skips acxiom because
+    // it was already contacted in the first run within the 180-day validity window.
     const cfg = loadConfig(writeTestConfig(tmpDir, makeTestConfig({
       database: { path: join(tmpDir, "validity-test.db") },
       options: {
         template: "gdpr",
-        dry_run: false,
+        dry_run: true,
         regions: ["us"],
         tiers: [1, 2, 3],
         excluded_brokers: [],
