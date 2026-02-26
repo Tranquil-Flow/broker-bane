@@ -8,6 +8,7 @@ import { listBrokersCommand } from "./commands/list-brokers.cmd.js";
 import { confirmCommand } from "./commands/confirm.cmd.js";
 import { exportCommand } from "./commands/export.cmd.js";
 import { testConfigCommand } from "./commands/test-config.cmd.js";
+import { menuCommand } from "./commands/menu.cmd.js";
 
 const program = new Command();
 
@@ -100,4 +101,12 @@ program.hook("preAction", () => {
   });
 });
 
-program.parse();
+// If no subcommand given, launch interactive menu
+if (process.argv.length <= 2) {
+  menuCommand().catch((err) => {
+    console.error(err instanceof Error ? err.message : err);
+    process.exit(1);
+  });
+} else {
+  program.parse();
+}
