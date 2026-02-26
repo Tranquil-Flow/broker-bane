@@ -32,14 +32,25 @@ export async function removeCommand(options: {
       resume: options.resume,
     });
 
-    console.log("\n--- Pipeline Summary ---");
-    console.log(`Total brokers: ${summary.totalBrokers}`);
-    console.log(`Sent:          ${summary.sent}`);
-    console.log(`Failed:        ${summary.failed}`);
-    console.log(`Skipped:       ${summary.skipped}`);
-    console.log(`Manual:        ${summary.manualRequired}`);
+    console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log(summary.dryRun ? "  Dry Run Complete" : "  Removal Pipeline Complete");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+    console.log(`  Brokers processed:  ${summary.totalBrokers}`);
+    console.log(`  ✅ Requests sent:   ${summary.sent}`);
+    if (summary.failed > 0)   console.log(`  ❌ Failed:          ${summary.failed}`);
+    if (summary.skipped > 0)  console.log(`  ⏩ Skipped:         ${summary.skipped}  (not listed on these brokers)`);
+    if (summary.manualRequired > 0) {
+      console.log(`  ⚠️  Manual action:   ${summary.manualRequired}  (web form submission required)`);
+    }
+
     if (summary.dryRun) {
-      console.log("\n(DRY RUN - no emails were actually sent)");
+      console.log("\n  No emails were actually sent (dry run mode).");
+      console.log("  Remove --dry-run to send real opt-out requests.\n");
+    } else if (summary.manualRequired > 0) {
+      console.log(`\n  ${summary.manualRequired} broker(s) require you to submit an opt-out form manually.`);
+      console.log("  Run 'brokerbane confirm' to see the list with links.\n");
+    } else {
+      console.log("\n  All done! Run 'brokerbane status' to check progress over time.\n");
     }
   } finally {
     await orchestrator.cleanup();

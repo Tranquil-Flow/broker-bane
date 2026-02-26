@@ -24,11 +24,18 @@ export async function confirmCommand(options: {
       return;
     }
 
-    console.log(`\n${tasks.length} pending task(s):\n`);
+    console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`  ${tasks.length} broker(s) need a manual opt-out form`);
+    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+    console.log("  These brokers don't accept opt-out by email — you need to");
+    console.log("  visit their website and submit a removal form yourself.\n");
 
+    let i = 1;
     for (const task of tasks) {
-      console.log(`  [${task.id}] ${task.task_type}: ${task.description}`);
-      if (task.url) console.log(`      URL: ${task.url}`);
+      console.log(`  ${i}. ${task.description}`);
+      if (task.url) console.log(`     → ${task.url}`);
+      console.log();
+      i++;
     }
 
     if (options.all) {
@@ -36,14 +43,12 @@ export async function confirmCommand(options: {
         pendingTaskRepo.markCompleted(task.id);
         requestRepo.updateStatus(task.request_id, REQUEST_STATUS.completed);
       }
-      console.log(`\nMarked ${tasks.length} task(s) as completed.`);
+      console.log(`✅ Marked ${tasks.length} task(s) as completed.\n`);
     } else {
-      console.log(
-        "\nUse --all to mark all as completed, or handle individually."
-      );
+      console.log("  After submitting each form, run:");
+      console.log("    brokerbane confirm --all   (marks all as done)");
+      console.log();
     }
-
-    console.log();
   } finally {
     closeDatabase(db);
   }

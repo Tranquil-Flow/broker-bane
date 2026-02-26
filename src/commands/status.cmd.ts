@@ -31,24 +31,48 @@ export async function statusCommand(options: {
       return;
     }
 
-    console.log("\n--- BrokerBane Status ---\n");
+    console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("  BrokerBane Status");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
     if (latestRun) {
-      console.log(`Last run: ${latestRun.started_at} (${latestRun.status})`);
+      const runDate = new Date(latestRun.started_at).toLocaleString();
+      const runStatus = latestRun.status === "completed" ? "✅ completed" : latestRun.status;
+      console.log(`Last run: ${runDate} (${runStatus})`);
       console.log(
         `  Sent: ${latestRun.sent_count}, Failed: ${latestRun.failed_count}, Skipped: ${latestRun.skipped_count}`
       );
       console.log();
     }
 
-    console.log("Request Status:");
-    for (const [status, count] of Object.entries(counts)) {
-      console.log(`  ${status}: ${count}`);
+    const statusLabels: Record<string, string> = {
+      pending:              "Pending",
+      scanning:             "Scanning (checking listing)",
+      matched:              "Matched (listed on broker)",
+      sending:              "Sending",
+      sent:                 "✅ Sent",
+      awaiting_confirmation:"Awaiting confirmation email",
+      confirmed:            "✅ Confirmed",
+      completed:            "✅ Completed",
+      failed:               "❌ Failed",
+      skipped:              "⏩ Skipped (not listed)",
+      manual_required:      "⚠️  Manual action required",
+    };
+
+    const nonZero = Object.entries(counts).filter(([, n]) => n > 0);
+    if (nonZero.length === 0) {
+      console.log("  No removal requests yet. Run 'brokerbane remove' to start.");
+    } else {
+      console.log("Request Status:");
+      for (const [status, count] of nonZero) {
+        const label = statusLabels[status] ?? status;
+        console.log(`  ${label}: ${count}`);
+      }
     }
 
     if (pendingTasks > 0) {
-      console.log(`\nPending manual tasks: ${pendingTasks}`);
-      console.log("  Run 'brokerbane confirm' to handle them");
+      console.log(`\n⚠️  ${pendingTasks} broker(s) need a manual opt-out form submitted.`);
+      console.log("   Run 'brokerbane confirm' to see them with links.");
     }
 
     console.log();
