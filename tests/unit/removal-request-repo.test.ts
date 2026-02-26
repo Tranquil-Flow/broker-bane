@@ -27,6 +27,7 @@ describe("RemovalRequestRepo.getLastSentAt", () => {
     const result = repo.getLastSentAt("acxiom");
     expect(result).not.toBeNull();
     expect(typeof result).toBe("string");
+    expect(Number.isFinite(new Date(result!).getTime())).toBe(true);
   });
 
   it("returns null for only-failed requests", () => {
@@ -38,5 +39,11 @@ describe("RemovalRequestRepo.getLastSentAt", () => {
   it("returns null for pending requests", () => {
     repo.create({ brokerId: "whitepages", method: "web_form" });
     expect(repo.getLastSentAt("whitepages")).toBeNull();
+  });
+
+  it("does not return results from a different broker", () => {
+    const req = repo.create({ brokerId: "acxiom", method: "email" });
+    repo.updateStatus(req.id, REQUEST_STATUS.sent);
+    expect(repo.getLastSentAt("spokeo")).toBeNull();
   });
 });

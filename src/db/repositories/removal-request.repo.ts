@@ -105,7 +105,7 @@ export class RemovalRequestRepo {
         `SELECT updated_at FROM removal_requests
          WHERE broker_id = ?
            AND status IN ('sent', 'awaiting_confirmation', 'confirmed', 'completed')
-         ORDER BY updated_at DESC
+         ORDER BY id DESC
          LIMIT 1`
       )
       .get(brokerId) as { updated_at: string } | undefined;
