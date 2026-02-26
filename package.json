@@ -23,7 +23,8 @@
     "test:watch": "vitest",
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build",
-    "convert-brokers": "tsx scripts/convert-eraser-brokers.ts"
+    "convert-brokers": "tsx scripts/convert-eraser-brokers.ts",
+    "ingest-cppa": "tsx scripts/ingest-cppa.ts"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.5",
