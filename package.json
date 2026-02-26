@@ -26,6 +26,7 @@
     "convert-brokers": "tsx scripts/convert-eraser-brokers.ts"
   },
   "dependencies": {
+    "@azure/msal-node": "^5.0.5",
     "better-sqlite3": "11.8.1",
     "chalk": "5.4.1",
     "cli-table3": "0.6.5",
