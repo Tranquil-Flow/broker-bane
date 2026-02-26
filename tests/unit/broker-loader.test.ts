@@ -5,7 +5,7 @@ describe("loadBrokerDatabase", () => {
     const db = loadBrokerDatabase();
     for (const broker of db.brokers) {
       expect(typeof broker.opt_out_validity_days).toBe("number");
-      expect(broker.opt_out_validity_days).toBeGreaterThan(0);
+      expect(broker.opt_out_validity_days).toBe(180); // all YAML entries use the default
     }
   });
 });
