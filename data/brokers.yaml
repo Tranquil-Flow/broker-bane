@@ -469,25 +469,6 @@ brokers:
 
   # ─── People Search (Tier 2) ────────────────────────────────────────────
 
-  - id: "radaris"
-    name: "Radaris"
-    domain: "radaris.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://radaris.com/control/privacy"
-    search_url: "https://radaris.com/"
-    removal_method: "web_form"
-    requires_captcha: false
-    requires_email_confirm: true
-    requires_id_upload: false
-    difficulty: "easy"
-    confirm_sender_pattern: "noreply@radaris.com"
-    tier: 2
-    public_directory: true
-    verify_before_send: true
-    form_hints: "Go to radaris.com/control/privacy. Enter your name and click 'Search'. Select your profile. Click 'Remove' and enter your email. Confirm via the email link."
-    opt_out_url: "https://radaris.com/control/privacy"
-
   - id: "peekyou"
     name: "PeekYou"
     domain: "peekyou.com"
@@ -506,60 +487,6 @@ brokers:
     form_hints: "Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and submit."
     opt_out_url: "https://www.peekyou.com/about/contact/optout/"
 
-  - id: "instantcheckmate"
-    name: "Instant Checkmate"
-    domain: "instantcheckmate.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://www.instantcheckmate.com/privacy-policy/"
-    removal_method: "web_form"
-    requires_captcha: false
-    requires_email_confirm: true
-    requires_id_upload: false
-    difficulty: "medium"
-    confirm_sender_pattern: "noreply@instantcheckmate.com"
-    tier: 2
-    parent_company: "PeopleConnect Inc."
-    public_directory: true
-    verify_before_send: true
-    form_hints: "Go to instantcheckmate.com/opt-out. Search your name and state. Select your record. Enter email and submit. Confirm via the email link."
-    opt_out_url: "https://www.instantcheckmate.com/opt-out/"
-
-  - id: "mylife"
-    name: "MyLife"
-    domain: "mylife.com"
-    email: "support@mylife.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://www.mylife.com/privacy-policy/"
-    removal_method: "email"
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: "medium"
-    tier: 1
-    public_directory: true
-    verify_before_send: false
-
-  - id: "truthfinder"
-    name: "TruthFinder"
-    domain: "truthfinder.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://www.truthfinder.com/privacy/"
-    removal_method: "web_form"
-    requires_captcha: false
-    requires_email_confirm: true
-    requires_id_upload: false
-    difficulty: "medium"
-    confirm_sender_pattern: "noreply@truthfinder.com"
-    tier: 2
-    parent_company: "PeopleConnect Inc."
-    public_directory: true
-    verify_before_send: true
-    form_hints: "Go to truthfinder.com/opt-out. Search your full name and state. Find your listing and click it. Enter your email and submit the opt-out request. Confirm via the email link."
-    opt_out_url: "https://www.truthfinder.com/opt-out/"
-
   - id: "usatrace"
     name: "USA Trace"
     domain: "usatrace.com"
@@ -576,23 +503,6 @@ brokers:
     verify_before_send: false
     form_hints: "Go to usatrace.com/optout. Search for your name. Find your listing and click Remove."
     opt_out_url: "https://www.usatrace.com/optout"
-
-  - id: "fastpeoplesearch"
-    name: "FastPeopleSearch"
-    domain: "fastpeoplesearch.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://www.fastpeoplesearch.com/removal"
-    removal_method: "web_form"
-    requires_captcha: true
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: "easy"
-    tier: 2
-    public_directory: true
-    verify_before_send: false
-    form_hints: "Go to fastpeoplesearch.com/removal. Enter your name and click Search. Find your record and click 'Remove My Information'. Solve the CAPTCHA to complete."
-    opt_out_url: "https://www.fastpeoplesearch.com/removal"
 
   - id: "411"
     name: "411.com"
@@ -663,23 +573,6 @@ brokers:
     form_hints: "Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email link."
     opt_out_url: "https://socialcatfish.com/opt-out/"
 
-  - id: "thatsthem"
-    name: "ThatsThem"
-    domain: "thatsthem.com"
-    region: "us"
-    category: "people_search"
-    privacy_policy_url: "https://thatsthem.com/optout"
-    removal_method: "web_form"
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: "easy"
-    tier: 2
-    public_directory: true
-    verify_before_send: false
-    form_hints: "Go to thatsthem.com/optout. Enter your name, email, phone, or IP. Submit the removal form."
-    opt_out_url: "https://thatsthem.com/optout"
-
   - id: "clustrmaps"
     name: "ClustrMaps"
     domain: "clustrmaps.com"
@@ -699,39 +592,6 @@ brokers:
     opt_out_url: "https://clustrmaps.com/bl/opt-out"
 
   # ─── Marketing Data Brokers ────────────────────────────────────────────
-
-  - id: "acxiom"
-    name: "Acxiom"
-    domain: "acxiom.com"
-    email: "optout@acxiom.com"
-    region: "us"
-    category: "marketing_data"
-    privacy_policy_url: "https://isapps.acxiom.com/optout/optout.aspx"
-    removal_method: "hybrid"
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: "medium"
-    tier: 1
-    public_directory: false
-    verify_before_send: false
-    opt_out_url: "https://isapps.acxiom.com/optout/optout.aspx"
-
-  - id: "epsilon"
-    name: "Epsilon"
-    domain: "epsilon.com"
-    email: "optout@epsilon.com"
-    region: "us"
-    category: "marketing_data"
-    privacy_policy_url: "https://www.epsilon.com/us/privacy-policy"
-    removal_method: "email"
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: "medium"
-    tier: 1
-    public_directory: false
-    verify_before_send: false
 
   - id: "liveramp"
     name: "LiveRamp"
@@ -983,23 +843,6 @@ brokers:
     verify_before_send: false
 
   # ─── Data Aggregators ─────────────────────────────────────────────────
-
-  - id: "lexisnexis"
-    name: "LexisNexis"
-    domain: "lexisnexis.com"
-    email: "privacy@lexisnexis.com"
-    region: "us"
-    category: "data_aggregator"
-    privacy_policy_url: "https://risk.lexisnexis.com/consumer-center"
-    removal_method: "web_form"
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: true
-    difficulty: "hard"
-    tier: 1
-    public_directory: false
-    verify_before_send: false
-    opt_out_url: "https://risk.lexisnexis.com/consumer-center"
 
   - id: "corelogic"
     name: "CoreLogic"
