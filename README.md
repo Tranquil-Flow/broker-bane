@@ -55,7 +55,7 @@ brokerbane remove
 
 ### `brokerbane init`
 
-Interactive wizard that creates `~/.brokerbane/config.yaml` with your profile, email credentials, and preferences.
+Interactive wizard that creates `~/.brokerbane/config.yaml` with your profile, email credentials, and preferences. Optionally configures IMAP inbox monitoring (Gmail, Outlook, or custom).
 
 ### `brokerbane remove`
 
@@ -225,6 +225,21 @@ Without browser automation, web-form brokers are queued as manual tasks visible 
 ## Inbox Monitoring (Optional)
 
 When `inbox` is configured, BrokerBane monitors your inbox during pipeline runs and automatically clicks confirmation links from brokers. This handles the common "click to confirm your opt-out" flow.
+
+Configure it during `brokerbane init`, or add it manually to your config:
+
+```yaml
+inbox:
+  host: imap.gmail.com      # or outlook.office365.com for Outlook
+  port: 993
+  secure: true
+  auth:
+    user: jane@gmail.com
+    pass: your-app-password  # same App Password used for SMTP
+  mailbox: INBOX
+```
+
+Run `brokerbane test-config` to verify the IMAP connection after configuring.
 
 ## Privacy & Security
 

@@ -82,13 +82,8 @@ export class EmailSender {
 
   async verify(): Promise<boolean> {
     if (this.dryRun) return true;
-    try {
-      await this.getTransporter().verify();
-      return true;
-    } catch (err) {
-      logger.error({ err }, "SMTP connection verification failed");
-      return false;
-    }
+    await this.getTransporter().verify();
+    return true;
   }
 
   async close(): Promise<void> {

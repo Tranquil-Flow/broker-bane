@@ -48,16 +48,43 @@ export async function testConfigCommand(options: {
   // Test SMTP
   try {
     const sender = new EmailSender(config.email);
-    const ok = await sender.verify();
-    if (ok) {
-      console.log("✅ SMTP connection verified");
-    } else {
-      console.log("❌ SMTP connection failed");
-    }
+    await sender.verify();
+    console.log(`✅ SMTP connection verified (${config.email.host}:${config.email.port})`);
     await sender.close();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.log(`❌ SMTP error: ${msg}`);
+    if (msg.includes("EAUTH") || msg.includes("auth") || msg.includes("credentials")) {
+      console.log("   → Check your app password. For Gmail: Google Account → Security → App Passwords");
+      console.log("   → Do NOT use your regular email password.");
+    } else if (msg.includes("ECONNREFUSED") || msg.includes("ETIMEDOUT") || msg.includes("ENOTFOUND")) {
+      console.log(`   → Cannot reach ${config.email.host}:${config.email.port}. Check host/port in config.`);
+    }
+  }
+
+  // Test IMAP (if configured)
+  if (config.inbox) {
+    try {
+      const { ImapFlow } = await import("imapflow");
+      const client = new ImapFlow({
+        host: config.inbox.host,
+        port: config.inbox.port,
+        secure: config.inbox.secure,
+        auth: { user: config.inbox.auth.user, pass: config.inbox.auth.pass },
+        logger: false,
+      });
+      await client.connect();
+      await client.logout();
+      console.log(`✅ IMAP connection verified (${config.inbox.host}:${config.inbox.port})`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.log(`❌ IMAP error: ${msg}`);
+      if (msg.includes("AUTHENTICATIONFAILED") || msg.includes("auth") || msg.includes("credentials")) {
+        console.log("   → Check your IMAP app password and username.");
+      } else if (msg.includes("ECONNREFUSED") || msg.includes("ETIMEDOUT") || msg.includes("ENOTFOUND")) {
+        console.log(`   → Cannot reach ${config.inbox.host}:${config.inbox.port}. Check IMAP host/port.`);
+      }
+    }
   }
 
   console.log();
