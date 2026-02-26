@@ -53,11 +53,14 @@ export async function testConfigCommand(options: {
     await sender.close();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
+    const msgLower = msg.toLowerCase();
     console.log(`❌ SMTP error: ${msg}`);
-    if (msg.includes("EAUTH") || msg.includes("auth") || msg.includes("credentials")) {
-      console.log("   → Check your app password. For Gmail: Google Account → Security → App Passwords");
-      console.log("   → Do NOT use your regular email password.");
-    } else if (msg.includes("ECONNREFUSED") || msg.includes("ETIMEDOUT") || msg.includes("ENOTFOUND")) {
+    if (msgLower.includes("password") || msgLower.includes("auth") || msgLower.includes("credential") || msgLower.includes("535") || msgLower.includes("login")) {
+      console.log("   → Wrong app password. Run 'brokerbane init' and re-enter it.");
+      console.log("   → Gmail: myaccount.google.com → Security → 2-Step Verification → App passwords");
+      console.log("   → Use the generated 16-character code, NOT your regular Gmail password.");
+      console.log("   → Tip: 'brokerbane remove --dry-run' works without a real SMTP connection.");
+    } else if (msgLower.includes("econnrefused") || msgLower.includes("etimedout") || msgLower.includes("enotfound")) {
       console.log(`   → Cannot reach ${config.email.host}:${config.email.port}. Check host/port in config.`);
     }
   }
@@ -78,10 +81,12 @@ export async function testConfigCommand(options: {
       console.log(`✅ IMAP connection verified (${config.inbox.host}:${config.inbox.port})`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
+      const msgLower = msg.toLowerCase();
       console.log(`❌ IMAP error: ${msg}`);
-      if (msg.includes("AUTHENTICATIONFAILED") || msg.includes("auth") || msg.includes("credentials")) {
-        console.log("   → Check your IMAP app password and username.");
-      } else if (msg.includes("ECONNREFUSED") || msg.includes("ETIMEDOUT") || msg.includes("ENOTFOUND")) {
+      if (msgLower.includes("auth") || msgLower.includes("password") || msgLower.includes("credential") || msgLower.includes("login") || msgLower.includes("command failed")) {
+        console.log("   → Wrong IMAP app password or username. Run 'brokerbane init' to reconfigure.");
+        console.log("   → Use the same App Password as SMTP if using the same email account.");
+      } else if (msgLower.includes("econnrefused") || msgLower.includes("etimedout") || msgLower.includes("enotfound")) {
         console.log(`   → Cannot reach ${config.inbox.host}:${config.inbox.port}. Check IMAP host/port.`);
       }
     }
