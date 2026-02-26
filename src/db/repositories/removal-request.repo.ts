@@ -93,4 +93,22 @@ export class RemovalRequestRepo {
       )
       .get(brokerId) as RemovalRequestRow | undefined;
   }
+
+  /**
+   * Returns the updated_at of the most recent successfully sent request for
+   * this broker (status is sent, awaiting_confirmation, confirmed, or completed).
+   * Returns null if no such request exists.
+   */
+  getLastSentAt(brokerId: string): string | null {
+    const row = this.db
+      .prepare(
+        `SELECT updated_at FROM removal_requests
+         WHERE broker_id = ?
+           AND status IN ('sent', 'awaiting_confirmation', 'confirmed', 'completed')
+         ORDER BY updated_at DESC
+         LIMIT 1`
+      )
+      .get(brokerId) as { updated_at: string } | undefined;
+    return row?.updated_at ?? null;
+  }
 }
