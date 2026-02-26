@@ -57,7 +57,7 @@ export class EmailSender {
 
   private async createTransport(): Promise<Transporter> {
     const auth = await this.resolveAuth();
-    return nodemailer.createTransport({
+    this.transporter = nodemailer.createTransport({
       host: this.config.host,
       port: this.config.port,
       secure: this.config.secure,
@@ -67,6 +67,21 @@ export class EmailSender {
       rateDelta: this.config.rate_delta_ms,
       rateLimit: this.config.rate_limit,
     } as SMTPTransport.Options);
+    return this.transporter;
+  }
+
+  private async getTransport(): Promise<Transporter> {
+    // For OAuth2, check if token expired and invalidate cached transport
+    if (this.transporter && this.config.auth.type === "oauth2") {
+      const tokens = await loadTokens(this.config.auth.provider);
+      if (tokens && isExpired(tokens)) {
+        this.transporter = null; // force recreation with fresh token
+      }
+    }
+    if (!this.transporter) {
+      await this.createTransport();
+    }
+    return this.transporter!;
   }
 
   async send(params: SendEmailParams): Promise<SendResult> {
@@ -80,7 +95,7 @@ export class EmailSender {
     }
 
     try {
-      const transport = await this.createTransport();
+      const transport = await this.getTransport();
       const info = await transport.sendMail({
         from: params.from,
         to: params.to,
@@ -105,7 +120,7 @@ export class EmailSender {
 
   async verify(): Promise<boolean> {
     if (this.dryRun) return true;
-    const transport = await this.createTransport();
+    const transport = await this.getTransport();
     await transport.verify();
     return true;
   }

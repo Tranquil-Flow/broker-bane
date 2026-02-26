@@ -114,7 +114,8 @@ export async function initCommand(): Promise<void> {
       }
       console.log(`\n  Connected ${oauthUser} via OAuth.\n`);
       // Store oauth config — no password needed
-      smtpAuthConfig = { type: "oauth2", user: oauthUser, provider: smtpProvider as "google" | "microsoft" };
+      const providerValue = smtpProvider === "gmail" ? "google" : "microsoft";
+      smtpAuthConfig = { type: "oauth2", user: oauthUser, provider: providerValue };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.log(`\n  OAuth failed: ${msg}`);
