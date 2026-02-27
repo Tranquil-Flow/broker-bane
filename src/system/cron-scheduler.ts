@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, writeFileSync, readFileSync, mkdirSync } from "node:fs";
+import { existsSync, writeFileSync, readFileSync, mkdirSync, mkdtempSync, unlinkSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 
@@ -53,8 +53,12 @@ export function buildLaunchdPlist(binaryPath: string, configPath: string): strin
 
 const CRON_MARKER = "# BrokerBane quarterly";
 
+function shellQuote(s: string): string {
+  return `'${s.replace(/'/g, "'\\''")}'`;
+}
+
 export function buildCrontabLine(binaryPath: string, configPath: string): string {
-  return `0 9 1 */3 * ${binaryPath} remove --config ${configPath} >> ${LOG_PATH} 2>&1 ${CRON_MARKER}`;
+  return `0 9 1 */3 * ${shellQuote(binaryPath)} remove --config ${shellQuote(configPath)} >> ${shellQuote(LOG_PATH)} 2>&1 ${CRON_MARKER}`;
 }
 
 export function isScheduleInstalled(crontab: string): boolean {
@@ -109,7 +113,8 @@ export function installSchedule(binaryPath: string, configPath: string): void {
       (existing.trim() ? existing.trim() + "\n" : "") +
       buildCrontabLine(binaryPath, configPath) + "\n";
     // Write to temp file then pass to crontab (avoids shell pipe)
-    const tmpFile = join(tmpdir(), "brokerbane-crontab.tmp");
+    const tmpDir = mkdtempSync(join(tmpdir(), "brokerbane-"));
+    const tmpFile = join(tmpDir, "crontab.tmp");
     writeFileSync(tmpFile, updated, "utf-8");
     run("crontab", [tmpFile]);
     return;
@@ -118,7 +123,7 @@ export function installSchedule(binaryPath: string, configPath: string): void {
   if (platform === "windows") {
     run("schtasks", [
       "/create", "/tn", "BrokerBaneQuarterly",
-      "/tr", `"${binaryPath}" remove --config "${configPath}"`,
+      "/tr", `${binaryPath} remove --config ${configPath}`,
       "/sc", "MONTHLY", "/mo", "3", "/d", "1", "/st", "09:00", "/f",
     ]);
   }
@@ -130,7 +135,7 @@ export function uninstallSchedule(): void {
   if (platform === "macos") {
     if (existsSync(PLIST_PATH)) {
       spawnSync("launchctl", ["unload", PLIST_PATH], { stdio: "pipe" }); // ignore errors
-      run("rm", [PLIST_PATH]);
+      unlinkSync(PLIST_PATH);
     }
     return;
   }
@@ -140,7 +145,8 @@ export function uninstallSchedule(): void {
     if (result.status !== 0) return; // no crontab
     const updated = removeCrontabLine(result.stdout);
     if (updated) {
-      const tmpFile = join(tmpdir(), "brokerbane-crontab.tmp");
+      const tmpDir = mkdtempSync(join(tmpdir(), "brokerbane-"));
+      const tmpFile = join(tmpDir, "crontab.tmp");
       writeFileSync(tmpFile, updated + "\n", "utf-8");
       run("crontab", [tmpFile]);
     } else {
@@ -156,8 +162,6 @@ export function uninstallSchedule(): void {
 
 export function getScheduleStatus(): ScheduleStatus {
   const platform = detectPlatform();
-  const quarterly = "1 Jan, 1 Apr, 1 Jul, 1 Oct at 9:00 AM";
-
   if (platform === "macos") {
     const installed = existsSync(PLIST_PATH);
     let configPath: string | null = null;
@@ -168,7 +172,7 @@ export function getScheduleStatus(): ScheduleStatus {
         configPath = match?.[1] ?? null;
       } catch { /* ignore */ }
     }
-    return { installed, platform, nextRunDescription: quarterly, configPath };
+    return { installed, platform, nextRunDescription: "1st of every 3rd month at 9:00 AM", configPath };
   }
 
   if (platform === "linux") {
