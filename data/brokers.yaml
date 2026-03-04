@@ -37,7 +37,9 @@ brokers:
     parent_company: BeenVerified Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the opt-out. Confirm via the email link sent to your inbox.
+    form_hints: >-
+      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the
+      opt-out. Confirm via the email link sent to your inbox.
     opt_out_url: https://www.beenverified.com/app/optout/search
   - id: whitepages
     name: Whitepages
@@ -55,7 +57,9 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click 'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
+    form_hints: >-
+      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click
+      'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
     opt_out_url: https://www.whitepages.com/suppression-requests
   - id: intelius
     name: Intelius
@@ -74,7 +78,9 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address and submit. Confirm via the email link. May take several days to process.
+    form_hints: >-
+      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address
+      and submit. Confirm via the email link. May take several days to process.
     opt_out_url: https://www.intelius.com/optout
   - id: peoplefinder
     name: PeopleFinder
@@ -92,7 +98,9 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation. Submit the form and confirm via the email link.
+    form_hints: >-
+      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation.
+      Submit the form and confirm via the email link.
     opt_out_url: https://www.peoplefinder.com/optout
   - id: truepeoplesearch
     name: TruePeopleSearch
@@ -109,7 +117,9 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record' button. Confirm the removal on the next page. The record is removed immediately.
+    form_hints: >-
+      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record'
+      button. Confirm the removal on the next page. The record is removed immediately.
     opt_out_url: https://www.truepeoplesearch.com/removal
   - id: fastpeoplesearch
     name: FastPeopleSearch
@@ -126,7 +136,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This Record'. Confirm the removal. Removal takes effect within 72 hours.
+    form_hints: >-
+      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This
+      Record'. Confirm the removal. Removal takes effect within 72 hours.
     opt_out_url: https://www.fastpeoplesearch.com/removal
   - id: thatsthem
     name: ThatsThem
@@ -143,7 +155,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing page. Confirm the removal request.
+    form_hints: >-
+      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing
+      page. Confirm the removal request.
     opt_out_url: https://thatsthem.com/optout
   - id: radaris
     name: Radaris
@@ -162,7 +176,9 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
+    form_hints: >-
+      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control
+      Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
     opt_out_url: https://radaris.com/control/privacy
   - id: mylife
     name: MyLife
@@ -181,7 +197,10 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal can take 7-10 business days.
+    form_hints: >-
+      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile
+      removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal
+      can take 7-10 business days.
     opt_out_url: https://www.mylife.com/privacy-policy#remove
   - id: truthfinder
     name: Truthfinder
@@ -200,7 +219,9 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and submit the opt-out. Confirm by clicking the link in the email you receive.
+    form_hints: >-
+      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and
+      submit the opt-out. Confirm by clicking the link in the email you receive.
     opt_out_url: https://www.truthfinder.com/optout
   - id: instantcheckmate
     name: InstantCheckmate
@@ -219,7 +240,9 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your email address and submit the removal request. Confirm via the email link. Processing may take a few days.
+    form_hints: >-
+      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your
+      email address and submit the removal request. Confirm via the email link. Processing may take a few days.
     opt_out_url: https://www.instantcheckmate.com/optout
   - id: ussearch
     name: USSearch
@@ -237,7 +260,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your email and confirm via the verification link.
+    form_hints: >-
+      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your
+      email and confirm via the verification link.
     opt_out_url: https://www.ussearch.com/opt-out/submit
   - id: peoplelooker
     name: PeopleLooker
@@ -256,7 +281,9 @@ brokers:
     parent_company: BeenVerified Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address and submit. Confirm the opt-out via the email link.
+    form_hints: >-
+      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address
+      and submit. Confirm the opt-out via the email link.
     opt_out_url: https://www.peoplelooker.com/app/optout/search
   - id: pipl
     name: Pipl
@@ -481,7 +508,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your email and confirm via the link.
+    form_hints: >-
+      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your
+      email and confirm via the link.
     opt_out_url: https://www.411.com/privacy
   - id: addresses
     name: Addresses.com
@@ -13051,3 +13080,3932 @@ brokers:
     public_directory: false
     verify_before_send: false
     opt_out_url: https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
+  - id: abalta_technologies_inc
+    name: Abalta Technologies Inc.
+    domain: abaltatech.com
+    email: privacy@abaltatech.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: infopay_inc_2
+    name: Infopay, Inc.
+    domain: accucomcorp.com
+    email: jenna@infopay.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: accudata_integrated_marketing_inc
+    name: AccuData Integrated Marketing, Inc.
+    domain: accudata.com
+    email: privacy.compliance@accudata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: accuity_inc
+    name: Accuity Inc.
+    domain: accuity.com
+    email: michelle.murphy@accuity.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: active_intel_investigations_llc
+    name: Active Intel Investigations LLC
+    domain: activeintel.com
+    email: daveafx@gmail.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: address_search
+    name: Address Search
+    domain: addresssearch.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: advantage_sales_marketing_llc
+    name: Advantage Sales & Marketing Llc
+    domain: advantagesolutions.net
+    email: alex@take5mg.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: adstra_llc_2
+    name: Adstra LLC
+    domain: alc.com
+    email: privacy.officer@alc.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: allant_group_llc
+    name: Allant Group, LLC
+    domain: allantgroup.com
+    email: privacy@allantgroup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: allareacodes_com
+    name: Allareacodes.Com
+    domain: allareacodes.com
+    email: press@allareacodes.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: alliant_cooperative_data_solutions_llc_2
+    name: Alliant Cooperative Data Solutions, LLC
+    domain: alliantdata.com
+    email: compliance@alliantdata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: alphonso_inc_2
+    name: Alphonso Inc.
+    domain: alphonso.tv
+    email: general.counsel@alphonso.tv
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: amobee_inc
+    name: Amobee, Inc.
+    domain: amobee.com
+    email: amobeeprivacy@amobee.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: amrent_inc
+    name: Amrent, Inc.
+    domain: amrent.com
+    email: legal@cbc-companies.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: archives
+    name: Archives
+    domain: ancestry.com
+    email: dpo@ancestry.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: apollo_program_llc
+    name: Apollo Program LLC
+    domain: apolloprogram.com
+    email: privacy@apolloprogram.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: appscience_2
+    name: AppScience
+    domain: appsci.io
+    email: privacy@appsci.io
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: aslmarketing_inc
+    name: ASLMarketing Inc.
+    domain: aslmarketing.com
+    email: jkaye@aslmarketing.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: audient_company_llc
+    name: Audient Company LLC
+    domain: audientco.com
+    email: info@audientco.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: avrick_direct_inc
+    name: Avrick Direct, Inc.
+    domain: avrickdirect.com
+    email: privacy.compliance@avrickdirect.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: background_check_only_com
+    name: Background-Check-Only.Com
+    domain: background-check-only.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: bcs_background_screening_llc
+    name: Bcs Background Screening, Llc
+    domain: background-checks-systems.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: background_check_international_bci
+    name: Background Check International (Bci)
+    domain: bcint.com
+    email: kit@bcint.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: beenverified_inc_and_its_subsidiaries_and_affiliates_2
+    name: BeenVerified, Inc. and its subsidiaries and affiliates
+    domain: beenverified.com-www.peoplelooker.com-www.neighborwho.com-www.numberg...
+    email: ccpa@beenverified.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: bidswitch_gmbh
+    name: BIDSWITCH GmbH
+    domain: bidswitch.com
+    email: privacy@bidswitch.net
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: bigtoken_inc
+    name: BIGtoken, Inc.
+    domain: bigtoken.com
+    email: support@bigtoken.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: black_knight_data_analytics_llc
+    name: Black Knight Data & Analytics, Llc
+    domain: blackknightinc.com
+    email: corporatecompliance@bkfs.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: blockshopper
+    name: Blockshopper
+    domain: blockshopper.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: boardroom_insiders_inc
+    name: Boardroom Insiders, Inc.
+    domain: boardroominsiders.com
+    email: piprivacy@euromoneyplc.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: wunderkind_corporation_2
+    name: Wunderkind Corporation
+    domain: bouncex.com
+    email: privacy@bouncex.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: business_profiles
+    name: Business Profiles
+    domain: businessprofiles.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: adrea_rubin_media_inc_dba_calibrant_digital
+    name: Adrea Rubin Media, Inc. dba Calibrant Digital
+    domain: calibrant.com
+    email: jennifer@calibrant.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: cappex_com_llc
+    name: Cappex.com, LLC
+    domain: cappex.com
+    email: privacy@eab.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: carevoyance_inc
+    name: Carevoyance, Inc.
+    domain: carevoyance.com
+    email: data-privacy@carevoyance.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: catylist_real_estate_software_inc
+    name: Catylist Real Estate Software, Inc.
+    domain: catylist.com
+    email: hello@catylist.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: cbcinnovis_inc
+    name: Cbcinnovis, Inc.
+    domain: cbcinnovis.com
+    email: cbcservices@cbcinnovis.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: cell_phone_registry
+    name: Cell Phone Registry
+    domain: cellphoneregistry.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: census_info_us
+    name: Census Info Us
+    domain: census-info.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: chex_systems_inc
+    name: Chex Systems, Inc.
+    domain: chexsystems.com
+    email: kelly.hodge@fisglobal.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: compact_information_systems
+    name: COMPACT INFORMATION SYSTEMS
+    domain: cisdirect.com
+    email: pat@cisdirect.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: iso_services_inc
+    name: ISO Services, Inc.
+    domain: claimsearch.iso.com
+    email: info.claimsearch@iso.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: clarity_services_inc
+    name: Clarity Services, Inc.
+    domain: clarityservices.com
+    email: clarityconsumers@experian.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: client_connect_llc
+    name: Client Connect LLC
+    domain: clientconnect.ai
+    email: team@clientconnect.ai
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: compact_information_systems_2
+    name: Compact Information Systems
+    domain: compactlists.com
+    email: privacy.compliance@compactlists.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: datax_ltd
+    name: DataX, Ltd.
+    domain: consumers.dataxltd.com
+    email: usprivacy@equifax.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: contint_inc
+    name: Contint Inc.
+    domain: contintinc.com
+    email: paul@contintinc.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: conversant_llc
+    name: Conversant LLC
+    domain: conversantmedia.com
+    email: privacy@conversantmedia.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: corporation_wiki
+    name: Corporation Wiki
+    domain: corporationwiki.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: cortera_inc
+    name: Cortera, Inc.
+    domain: cortera.com
+    email: privacy@cortera.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: court_records
+    name: Court Records
+    domain: courtrecords.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: court_registry
+    name: Court Registry
+    domain: courtregistry.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: criminal_background_records
+    name: Criminal Background Records
+    domain: criminalbackgroundrecords.com
+    email: privacy@criminalbackgroundchecks.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: criminal_pages
+    name: Criminal Pages
+    domain: criminalpages.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: criminal_screen
+    name: Criminal Screen
+    domain: criminalscreen.com
+    email: webmaster@criminalscreen.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: criminal_watch_dog
+    name: Criminal Watch Dog
+    domain: criminalwatchdog.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: cupidscreen
+    name: Cupidscreen
+    domain: cupidscreen.com
+    email: info@onlineinvestigations.com.au
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: customer_communications_group_inc
+    name: Customer Communications Group, Inc.
+    domain: customer.com
+    email: ccgprivacy@customer.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: data_mail_inc
+    name: Data-Mail, Inc.
+    domain: data-management.com
+    email: ldecastro@data-management.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: dataamerican_com
+    name: Dataamerican.Com
+    domain: dataamerica.com
+    email: info@dataamerica.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: databaseusa
+    name: DatabaseUSA
+    domain: databaseusa.com
+    email: privacy@databaseusa.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: datadirect_marketing_solutions_inc
+    name: DataDirect Marketing Solutions, Inc.
+    domain: datadirectmarketing.com
+    email: allan@datadirectmarketing.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: datastream_group_inc
+    name: Datastream Group, Inc.
+    domain: datastreamgroup.com
+    email: er@datastreamgroup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: automation_research_inc_d_b_a_dataverify
+    name: Automation Research, Inc. D/B/A Dataverify
+    domain: dataverify.com
+    email: sue.temple@cbc-companies.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: datax_ltd_2
+    name: Datax Ltd
+    domain: dataxltd.com
+    email: vtinquiries@equifax.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: death_records
+    name: Death Records
+    domain: deathrecords.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: decadata_corporation
+    name: DecaData Corporation
+    domain: decadata.io
+    email: support@decadata.io
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: deeppod
+    name: DeepPod
+    domain: deeppod.ai
+    email: discover@deeppod.ai
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: ultimatewhitepages
+    name: Ultimatewhitepages
+    domain: detectiveunlimited.com
+    email: webmaster@ultimatewhitepages.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: divorce_records
+    name: Divorce Records
+    domain: divorcerecords.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: dmdatabases
+    name: DMDatabases
+    domain: dmdatabases.com
+    email: optout@dmdatabases.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: dotin_inc
+    name: dotin Inc.
+    domain: dotin.us
+    email: secure-data@dotin.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: easybackgrounds_com
+    name: Easybackgrounds.Com
+    domain: easybackgrounds.com
+    email: wsep@ghrr.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: economic_modeling_llc
+    name: Economic Modeling, LLC
+    domain: economicmodeling.com
+    email: legal@economicmodeling.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: xome_leads_llc
+    name: Xome Leads LLC
+    domain: eleadz.com
+    email: licensing@xome.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: email_tracer
+    name: Email Tracer
+    domain: emailtracer.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: engagement_media_company_llc
+    name: Engagement Media Company, LLC
+    domain: engagementmediaco.com
+    email: rwright@engagementmediaco.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: job_market_maker_llc_dba_engage_talent
+    name: Job Market Maker, LLC dba Engage Talent
+    domain: engagetalent.com
+    email: dataprivacy@workforcelogiq.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: emx_digital_inc
+    name: EMX Digital, Inc.
+    domain: enginemediaexchange.com
+    email: legal@emxdigital.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: fd_holdings_llc_dba_factual_data
+    name: Fd Holdings, Llc Dba Factual Data
+    domain: factualdata.com
+    email: sue.temple@cbc-companies.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: datamyx_llc_dba_deluxe_marketing_solutions
+    name: Datamyx Llc Dba Deluxe Marketing Solutions
+    domain: fi.deluxe.com
+    email: privacyprogramoffice@deluxe.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: firefly_systems_inc
+    name: Firefly Systems Inc.
+    domain: fireflyon.com
+    email: privacy@fireflyon.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: free_background_check
+    name: Free Background Check
+    domain: freebackgroundcheck.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: freecellsearch_com
+    name: Freecellsearch.Com
+    domain: freecellsearch.com
+    email: support@freecellsearch.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: gale
+    name: Gale
+    domain: gale.com
+    email: privacy@cengage.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: general_information_solutions_llc
+    name: General Information Solutions LLC
+    domain: geninfo.com
+    email: jpelchat@geninfo.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: geranium_data
+    name: Geranium Data
+    domain: geraniumdata.com
+    email: privacy@geraniumdata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: govarrestrecords_org
+    name: Govarrestrecords.Org
+    domain: govarrestrecords.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: governmentregistry_org
+    name: Governmentregistry.Org
+    domain: governmentregistry.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: govregistry_us
+    name: Govregistry.Us
+    domain: govregistry.us
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: halfspace
+    name: Halfspace
+    domain: halfspace.co.uk
+    email: privacy@halfspace.co.uk
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: helm_labs_llc
+    name: Helm Labs, LLC
+    domain: helmteam.us
+    email: legal@helmteam.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: hireteammate_inc_dba_hiretual
+    name: HireTeamMate, Inc. dba Hiretual
+    domain: hiretual.com
+    email: legal@hiretual.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: careerbuilder_llc_2
+    name: CareerBuilder, LLC
+    domain: hiring.careerbuilder.com
+    email: riskandcompliance@careerbuilder.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: neustar_inc
+    name: Neustar, Inc.
+    domain: home.neustar
+    email: privacy@team.neustar
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: id_analytics_llc
+    name: ID Analytics LLC
+    domain: idanalytics.com
+    email: consumer.documents@lexisnexisrisk.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: r_l_polk_co
+    name: R.L. Polk & Co.
+    domain: ihsmarkit.com
+    email: privacy@ihsmarkit.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: incheck_inc
+    name: Incheck Inc
+    domain: incheck.net
+    email: abby@incheck.net
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: persopo
+    name: Persopo
+    domain: info.persopo.com
+    email: support@persopo.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: infutor_data_solutions_llc
+    name: Infutor Data Solutions LLC
+    domain: infutor.com
+    email: infutorvendorinfo@infutor.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: instantbackgroundreport_com
+    name: Instantbackgroundreport.Com
+    domain: instantbackgroundreport.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: instant_people_finder
+    name: Instant People Finder
+    domain: instantpeoplefinder.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: insurance_marketing_hub_llc
+    name: INSURANCE MARKETING HUB LLC
+    domain: insurancemarketinghub.com
+    email: customerservice@distpc.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: inteligator
+    name: Inteligator
+    domain: inteligator.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: intel_registry
+    name: Intel Registry
+    domain: intelregistry.com
+    email: support@intelregistry.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: leidos_digital_solutions_inc_2
+    name: Leidos Digital Solutions, Inc.
+    domain: intranetquorum.com
+    email: privacy@leidos.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: iwave_information_systems_inc
+    name: iWave Information Systems Inc.
+    domain: iwave.com
+    email: privacy@iwave.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: keono
+    name: Keono
+    domain: keono.com
+    email: michael.medema@keono.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: kgbpeople
+    name: Kgbpeople
+    domain: kgbpeople.com
+    email: accounts@kgb.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: knowwho_inc
+    name: Knowwho, Inc.
+    domain: kw1.knowwho.com
+    email: bbrownson@knowwho.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: l2_inc_2
+    name: L2, Inc.
+    domain: l2political.com
+    email: info@l2political.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: leadcrunch
+    name: LeadCrunch
+    domain: leadcrunch.com
+    email: privacy@leadcrunch.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: dustin_blackman
+    name: Dustin Blackman
+    domain: leadquotesmedia.com
+    email: dblackman@drobu.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: left_click
+    name: Left Click
+    domain: left-click.com
+    email: info@left-click.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: west_publishing_corporation
+    name: West Publishing Corporation
+    domain: legal.thomsonreuters.com
+    email: clear.pm-compliance@thomsonreuters.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: libertydata_net
+    name: Libertydata.Net
+    domain: libertydata.net
+    email: support@libertydata.net
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: blue_hill_marketing_solutions_inc
+    name: Blue Hill Marketing Solutions, inc
+    domain: liftengine.com
+    email: emailprivacy@liftbasedata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: big_brook_media_llc
+    name: Big Brook Media, LLC
+    domain: littlebrookmedia.com
+    email: info@littlebrookmedia.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: locatefamily_com
+    name: Locatefamily.Com
+    domain: locatefamily.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: lsc_marketing_group
+    name: LSC MARKETING GROUP
+    domain: lscmarketinggroup.com
+    email: info@lscmarketinggroup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: lusha_systems_inc_2
+    name: Lusha Systems Inc
+    domain: lusha.co
+    email: privacy@lusha.co
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: mapsmoji
+    name: Mapsmoji
+    domain: mapsmoji.com
+    email: email@mapsmoji.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: marriage_records
+    name: Marriage Records
+    domain: marriagerecords.org
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: martin_data_llc
+    name: Martin Data LLC
+    domain: martin-data.com
+    email: ccpa@usinfosearch.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: medpro_systems_llc
+    name: MedPro Systems LLC
+    domain: medproid.com
+    email: ccpa@medprosystems.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: infotracer
+    name: Infotracer
+    domain: members.infotracer.com
+    email: support@infotracer.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: meritb2b
+    name: MeritB2B
+    domain: meritb2b.com
+    email: privacy@meritb2b.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: midnight_oil_marketing_group_inc
+    name: Midnight Oil Marketing Group Inc
+    domain: midnightoil.marketing
+    email: support@midnightoil.marketing
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: marketing_information_specialists_inc
+    name: Marketing Information Specialists, Inc
+    domain: misdp.com
+    email: info@misdp.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: mocavo_inc
+    name: Mocavo Inc.
+    domain: mocavo.com
+    email: privacy@findmypast.co.uk
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: monevo_inc_2
+    name: Monevo Inc
+    domain: monevo.us
+    email: supportusa@monevo.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: valley_yellow_pages_myyp_com
+    name: Valley Yellow Pages (Myyp.Com)
+    domain: myyp.com
+    email: vyp@myyp.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: national_background_check
+    name: National Background Check
+    domain: nationalbackgroundcheck.com
+    email: contactus@nationalbackgroundcheck.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: nms_data_inc
+    name: NMS Data, Inc.
+    domain: neilsonmarketing.com
+    email: operations@neilsonmarketing.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: acquire_media_u_s_llc
+    name: Acquire Media U.S., LLC
+    domain: newsedge.com
+    email: newsedgesupport@moodys.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: equation_consulting_llc
+    name: Equation Consulting LLC
+    domain: nthrive.com
+    email: equation@nthrive.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: co2_ventures_llc_dba_oncore_leads
+    name: CO2 Ventures, LLC dba Oncore Leads
+    domain: oncoreleads.com
+    email: leads@oncoreleads.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: openonline
+    name: Openonline
+    domain: openonline.com
+    email: compliance@openonline.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: otonomo_inc
+    name: Otonomo Inc.
+    domain: otonomo.io
+    email: privacy@otonomo.io
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: inmar_oiq_llc
+    name: Inmar-OIQ, LLC
+    domain: owneriq.com
+    email: privacy@owneriq.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: peopleaz_org
+    name: Peopleaz.Org
+    domain: peopleaz.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: people_by_name
+    name: People By Name
+    domain: peoplebyname.com
+    email: support@peoplebyname.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: people_finder_instant_online_records_retrieval
+    name: "People Finder: Instant Online Records Retrieval"
+    domain: peoplefinderonline.net
+    email: support@infotracer.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: peopleg2
+    name: Peopleg2
+    domain: peopleg2.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: people_lookup_data_source_intelius
+    name: People Lookup (Data Source Intelius)
+    domain: peoplelookup.com
+    email: privacy@peoplelookup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: phonebooks_com_affiliated_with_intelius
+    name: Phonebooks.Com (Affiliated With Intelius)
+    domain: phonebooks.com
+    email: help@phonebooks.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: phone_registry
+    name: Phone Registry
+    domain: phoneregistry.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: placeiq_inc
+    name: PlaceIQ, Inc.
+    domain: placeiq.com
+    email: privacy@placeiq.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: plusaddress_com
+    name: Plusaddress.Com
+    domain: plusaddress.com
+    email: info@plusaddresscom
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: r_l_polk_co_2
+    name: R. L. Polk & Co.
+    domain: polk.com
+    email: bruce.noll@ihsmarkit.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: targetsmart_communications_llc_2
+    name: TargetSmart Communications LLC
+    domain: privacy.targetsmart.com
+    email: privacy@targetsmart.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: infomatics_llc_2
+    name: Infomatics LLC
+    domain: privatereports.com-mugshotlook.com
+    email: support@privatereports.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: public_record_site
+    name: Public Record Site
+    domain: public-record-site.com
+    email: privacy@1and1.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: public_arrest_records
+    name: Public Arrest Records
+    domain: publicarrestrecords.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: onlinesearches_publicrecords_onlinesearches_com
+    name: Onlinesearches (Publicrecords.Onlinesearches.Com)
+    domain: publicrecords.onlinesearches.com
+    email: privacy@peopleconnect.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: public_records_checks
+    name: Public Records Checks
+    domain: publicrecordschecks.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: publicrecordssearchonline_org
+    name: Publicrecordssearchonline.Org
+    domain: publicrecordssearchonline.org
+    email: contact@publicrecordssearchonline.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: quinstreet_inc
+    name: QuinStreet, Inc.
+    domain: quinstreet.com
+    email: qs_compliance@quinstreet.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: quotient_technology_inc
+    name: Quotient Technology Inc.
+    domain: quotient.com
+    email: privacy@quotient.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: records_authority
+    name: Records Authority
+    domain: recordsauthority.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: refinition
+    name: Refinition
+    domain: refinition.com
+    email: optout@refinition.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: response_solutions_group_llc
+    name: Response Solutions Group LLC
+    domain: responsesoulutionsllc.com
+    email: michael@alescodata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: reverse_genie
+    name: Reverse Genie
+    domain: reversegenie.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: reverse_mobile
+    name: Reverse Mobile
+    domain: reversemobile.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: reverse_number_database
+    name: Reverse Number Database
+    domain: reversenumberdatabase.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: reverse_phone_lookup
+    name: Reverse Phone Lookup
+    domain: reversephonelookup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: reverserecords_org
+    name: Reverserecords.Org
+    domain: reverserecords.org
+    email: support@infotracer.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: roiq_inc
+    name: RoiQ Inc
+    domain: ro.iq
+    email: jjinfo@dealerx.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sagestream_llc
+    name: Sagestream, Llc
+    domain: sagestreamllc.com
+    email: ken_meiser@symantec.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: careerbuilder_employment_screening_llc
+    name: CareerBuilder Employment Screening, LLC
+    domain: screen.careerbuilder.com
+    email: complianceteam@careerbuilderscreening.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: search_quarry_llc
+    name: Search Quarry LLC
+    domain: searchquarry.com
+    email: admin@searchquarry.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: publicrecords_com_affiliated_with_intelius
+    name: Publicrecords.Com (Affiliated With Intelius)
+    domain: secure.publicrecords.com
+    email: privacy@publicrecords.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: zipstorm_llc
+    name: Zipstorm LLC
+    domain: seekout.io
+    email: privacy@seekout.io
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: digital_segment_llc
+    name: Digital Segment, Llc
+    domain: segment.com
+    email: bschorer@digitalsegment.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sharethis_inc
+    name: ShareThis, Inc
+    domain: sharethis.com
+    email: privacy@sharethis.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sirdata_sas
+    name: SIRDATA SAS
+    domain: sirdata.com
+    email: dpo@sirdata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: skydeo_inc
+    name: Skydeo Inc.
+    domain: skydeo.com
+    email: privacy@skydeo.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: slintel_inc
+    name: Slintel, Inc.
+    domain: slintel.com
+    email: deepak@slintel.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: smarte_inc_2
+    name: SMARTE Inc.
+    domain: smarteinc.com
+    email: privacy@smarteinc.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: snoopstation_com
+    name: Snoopstation.Com/
+    domain: snoopstation.com
+    email: privacy@peopleconnect.us
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: social_outlier
+    name: Social Outlier
+    domain: socialoutlier.com
+    email: data@socialoutlier.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sorted_by_birthdate_com
+    name: Sorted By Birthdate.Com
+    domain: sortedbybirthdate.com
+    email: webmaster@oklavoters.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sorted_by_name
+    name: Sorted By Name
+    domain: sortedbyname.com
+    email: webmaster@oklavoters.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: srax_inc
+    name: SRAX, Inc.
+    domain: srax.com
+    email: contact@srax.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: state_records_united_states_state_records
+    name: State Records (United States State Records)
+    domain: staterecords.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: stat_resource_group_llc_dba_statlistics
+    name: Stat Resource Group LLC DBA Statlistics
+    domain: statlistics.com
+    email: michael@alescodata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sterling_data_llc
+    name: Sterling Data Llc
+    domain: sterlingd.com
+    email: info@sterlingd.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: sterling_data_company_llc_2
+    name: Sterling Data Company LLC
+    domain: sterlingstrategies.co
+    email: info@sterlingstrategies.co
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: superpages
+    name: Superpages
+    domain: superpages.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: all_the_way_up_ltd
+    name: All The Way Up LTD
+    domain: swordfishapp.com
+    email: contact@swordfishapp.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: tenant_detective
+    name: Tenant Detective
+    domain: tenantdetective.com
+    email: privacy@cisnationwide.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: digital_media_solutions
+    name: Digital Media Solutions
+    domain: thedmsgrp.com
+    email: legal@thedmsgrp.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: the_mediagrid_inc
+    name: The MediaGrid Inc.
+    domain: themediagrid.com
+    email: privacy@themediagrid.net
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: recruitbot_inc_2
+    name: RecruitBot, Inc.
+    domain: therecruitbot.com
+    email: accounting@therecruitbot.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: rooftop_digital
+    name: Rooftop Digital
+    domain: therooftop.io
+    email: privacyofficer@therooftop.io
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: tlo_online_investigative_systems
+    name: Tlo Online Investigative Systems
+    domain: tlo.com
+    email: tloxpsupport@transunion.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: tracers_information_specialists_inc
+    name: Tracers Information Specialists, Inc.
+    domain: tracersinfoonline.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: traverse_data_inc
+    name: Traverse Data, Inc.
+    domain: traversedata.com
+    email: privacy@traversedata.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: true_influence_llc
+    name: True Influence LLC
+    domain: trueinfluence.com
+    email: privacy@trueinfluence.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: tutela_technologies_ltd
+    name: Tutela Technologies Ltd.
+    domain: tutela.com
+    email: data.protection.officer@tutela.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: ubimo_inc
+    name: Ubimo Inc.
+    domain: ubimo.com
+    email: privacy@ubimo.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: ucc411
+    name: Ucc411
+    domain: ucc411.com
+    email: info@andersonadvisors.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: epsilon_data_management_llc
+    name: Epsilon Data Management, LLC
+    domain: us.epsilon.com
+    email: privacy_eps@lionresources.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: parasol_media_inc
+    name: Parasol Media Inc.
+    domain: v2.parasolleads.com
+    email: jschwartz@parasolleads.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: valassis_communications_inc
+    name: Valassis Communications, Inc.
+    domain: valassis.com
+    email: privacy@valassis.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: voter_factory
+    name: Voter Factory
+    domain: voterfactory.com
+    email: help@voterfactory.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: w2o_group
+    name: W2O Group
+    domain: w2ogroup.com
+    email: dataprivacy@w2ogroup.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: wealthengine_inc
+    name: WealthEngine, Inc.
+    domain: wealthengine.com
+    email: contracts@wealthengine.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: we_inform_llc
+    name: We Inform LLC
+    domain: weinform.org--www.truthrecord.org
+    email: support@weinform.org
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: whitepages_2
+    name: Whitepages+
+    domain: whitepages.plus
+    email: mail@whitepages.plus
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: wodwo_inc
+    name: Wodwo, Inc.
+    domain: wodwo.co
+    email: privacyofficer@wodwo.co
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: lender_feed_lc
+    name: Lender Feed LC
+    domain: ww3.monitorbase.com
+    email: ccpa@monitorbase.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: yasni
+    name: Yasni
+    domain: yasni.com
+    email: info@yasni.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: ypstate_com
+    name: Ypstate.Com
+    domain: ypstate.com
+    region: us
+    category: data_broker
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+  - id: nexxen_inc_2
+    name: Nexxen Inc.
+    domain: yourdata.nexxen.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://yourdata.nexxen.com/
+  - id: monevo_inc_3
+    name: Monevo, Inc.
+    domain: app.monevo.us
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://app.monevo.us/california-privacy-policy
+  - id: malvern_media_inc_2
+    name: Malvern Media Inc.
+    domain: privacyportal.privacypillar.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: >-
+      https://privacyportal.privacypillar.com/dsar/form?orgid=369c8ff9-8ffb-4308-8362-f01691e77db8&propid=64c8904f-8bac-4dd9-8e6c-d052be1918a2&formid=6e6ff4b8-2296-4589-ae7f-563fa743ec2d&status=publish
+  - id: people_data_labs_inc_2
+    name: People Data Labs, Inc.
+    domain: privacy.peopledatalabs.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacy.peopledatalabs.com/policies?name=privacy-center#people-data-labs-privacy-center
+  - id: hireteammate_inc
+    name: HireTeamMate, Inc.
+    domain: app.hireez.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://app.hireez.com/ownyourdata
+  - id: rampedup_llc_2
+    name: RampedUp, LLC.
+    domain: basic.rampedup.io
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://basic.rampedup.io/app/donotsell
+  - id: epsilon_data_management_llc_2
+    name: Epsilon Data Management, LLC
+    domain: legal.epsilon.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://legal.epsilon.com/dsr/
+    collects_reproductive_data: true
+  - id: clay_labs_inc_2
+    name: Clay Labs, Inc
+    domain: privacy.clay.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacy.clay.com/policies
+  - id: analyticsiq_inc_2
+    name: AnalyticsIQ, Inc.
+    domain: privacyportal.onetrust.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
+  - id: realeflow_llc_2
+    name: Realeflow LLC
+    domain: cdn.realeflow.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://cdn.realeflow.com/privacy-policy.pdf
+  - id: fideo_intelligence_inc_2
+    name: Fideo Intelligence, Inc.
+    domain: app.fideo.ai
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://app.fideo.ai/your-privacy-choices
+  - id: lead_me_media_llc_2
+    name: Lead Me Media, LLC
+    domain: policy.leadmemedia.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://policy.leadmemedia.com/States/privacyrequestform.html
+  - id: crunchbase_inc_2
+    name: Crunchbase, Inc.
+    domain: preferences.crunchbase.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://preferences.crunchbase.com/form/opt_out
+  - id: taboola_inc_2
+    name: Taboola, Inc.
+    domain: accessrequest.taboola.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://accessrequest.taboola.com/access
+  - id: path2response_llc_2
+    name: Path2Response LLC
+    domain: privacyportal-cdn.onetrust.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: >-
+      https://privacyportal-cdn.onetrust.com/dsarwebform/2de26f06-de6f-45a7-8e1d-7d1148a3f301/draft/7a5dc7d1-cc7e-43a8-9f24-702807deb65b.html
+  - id: cision_us_inc_2
+    name: Cision US, Inc
+    domain: privacyportal-uk.onetrust.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
+  - id: seamless_contacts_inc
+    name: Seamless Contacts, Inc.
+    domain: login.seamless.ai
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://login.seamless.ai/personalDataRequest
+  - id: lead_intelligence_inc
+    name: Lead Intelligence, Inc.
+    domain: marketing.verisk.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://marketing.verisk.com/privacy-center/
+  - id: first_direct_inc_2
+    name: First Direct, Inc.
+    domain: compliance.firstdirectmarketing.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://compliance.firstdirectmarketing.com/
+  - id: publicnsa_llc
+    name: PublicNSA LLC
+    domain: optout.bigdbm.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://optout.bigdbm.com/
+  - id: accurate_append_inc_2
+    name: Accurate Append Inc.
+    domain: clients.accurateappend.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://clients.accurateappend.com/public/optout/capture
+  - id: exact_opco_llc
+    name: Exact Opco, LLC
+    domain: remodelyourhome.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://remodelyourhome.com/PrivacyRequest.aspx
+  - id: key_marketing_advantage_llc_2
+    name: Key Marketing Advantage, LLC
+    domain: keymarketingcorp.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.keymarketingcorp.com/do_not_use_my_personal_information
+  - id: teads_holding_co
+    name: Teads Holding Co.
+    domain: my.outbrain.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://dsr.outbrain.com/recommendations-settings/home/en
+  - id: 360_media_direct_2
+    name: 360 Media Direct
+    domain: 360-media-direct.privacy.saymine.io
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://360-media-direct.privacy.saymine.io/360_Media_Direct
+  - id: the_alesco_group_llc_2
+    name: The Alesco Group LLC
+    domain: mydataprivacy.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.mydataprivacy.com/upload-csv
+  - id: indiemark_llc_2
+    name: Indiemark LLC
+    domain: blackbox.email
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://blackbox.email/privacy-policy
+  - id: loopme_limited_2
+    name: LoopMe Limited
+    domain: legal.loopme.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://legal.loopme.com/privacy-center
+  - id: delivr_ai_inc_2
+    name: Delivr.ai Inc
+    domain: dsrp.pii.ai
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://dsrp.pii.ai/p/7886d230-6f28-42d6-ba95-7d141f0a6520/submit.html
+  - id: prodpro_inc_2
+    name: ProdPro Inc
+    domain: app.prodpro.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://app.prodpro.com/privacy-policy
+  - id: sharethrough_inc_2
+    name: Sharethrough Inc.
+    domain: privacy-center.sharethrough.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacy-center.sharethrough.com/en/
+  - id: deloitte_consulting_llp_2
+    name: Deloitte Consulting LLP
+    domain: www2.deloitte.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.deloitte.com/us/en/legal/privacy/predictrisk-privacy-notice.html
+  - id: dealerdirect_llc
+    name: DealerDirect LLC
+    domain: forddirectprivacy.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.forddirect.com/privacy
+  - id: neustar_inc_2
+    name: NeuStar, Inc.
+    domain: privacychoices.home.neustar
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacychoices.home.neustar/?t=#/login
+  - id: purecars_technologies_llc_2
+    name: PureCars Technologies, LLC
+    domain: docs.google.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://docs.google.com/forms/d/e/1FAIpQLSdXAQsI4b0angLCONbwT4B4YSFiPyVMMLzizCuBSnPZmsTp_g/viewform
+  - id: hubspot_inc
+    name: HubSpot, Inc.
+    domain: legal.hubspot.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://legal.hubspot.com/privacy-policy
+    collects_reproductive_data: true
+  - id: viant_us_llc_2
+    name: Viant US LLC
+    domain: ccpa.viantinc.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
+  - id: tapad_inc_2
+    name: Tapad, Inc.
+    domain: crportal.tapad.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://crportal.tapad.com/#/
+  - id: dspolitical_llc
+    name: DSPolitical, LLC
+    domain: winwithoptimal.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.winwithoptimal.com/privacy-policy/
+  - id: crisil_irevna_us_llc_2
+    name: CRISIL Irevna US LLC
+    domain: crisil.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.crisil.com/content/crisilcom/en/home/crisil-privacy-notice.html
+  - id: intalytics_inc
+    name: Intalytics, Inc.
+    domain: kalibrate.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://kalibrate.com/data-subject-access-request-form/
+  - id: digital_media_solutions_llc_2
+    name: Digital Media Solutions, LLC
+    domain: dmsunsub.io
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
+  - id: cengage_learning_inc_2
+    name: Cengage Learning, Inc.
+    domain: cengagegroup.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.cengagegroup.com/privacy/
+    collects_minors_data: true
+    collects_location_data: true
+  - id: liveintent_2
+    name: LiveIntent
+    domain: privacy.liveintent.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacy.liveintent.com/
+  - id: knower_tech_usa_llc
+    name: Knower Tech USA, LLC
+    domain: rbarrel.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://www.rbarrel.com/opt-out
+    collects_location_data: true
+  - id: experian_health_inc
+    name: Experian Health, Inc.
+    domain: consumerprivacy.experian.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://consumerprivacy.experian.com/
+  - id: dun_bradstreet_inc_2
+    name: Dun & Bradstreet, Inc.
+    domain: submit-irm.trustarc.eu
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://submit-irm.trustarc.eu/services/validation/ba81b98f-997d-4216-b4cc-d64cf261b082
+  - id: lexisnexis_risk_solutions_fl_inc_2
+    name: LexisNexis Risk Solutions FL Inc.
+    domain: consumer.risk.lexisnexis.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://consumer.risk.lexisnexis.com/california
+    collects_minors_data: true
+    collects_location_data: true
+  - id: cross_pixel_media_inc_2
+    name: Cross Pixel Media, Inc.
+    domain: privacy.crsspxl.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://privacy.crsspxl.com/optout
+  - id: ownco_llc_2
+    name: Ownco, LLC
+    domain: my.monitorbase.com
+    region: us
+    category: data_broker
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    status: unverified
+    opt_out_url: https://my.monitorbase.com/privacypolicy
