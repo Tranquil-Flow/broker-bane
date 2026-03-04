@@ -1,5 +1,5 @@
 version: 1.1.0
-updated: "2026-02-26"
+updated: "2026-03-04"
 brokers:
   - id: spokeo
     name: Spokeo
@@ -37,9 +37,7 @@ brokers:
     parent_company: BeenVerified Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the
-      opt-out. Confirm via the email link sent to your inbox.
+    form_hints: Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the opt-out. Confirm via the email link sent to your inbox.
     opt_out_url: https://www.beenverified.com/app/optout/search
   - id: whitepages
     name: Whitepages
@@ -57,9 +55,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click
-      'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
+    form_hints: Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click 'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
     opt_out_url: https://www.whitepages.com/suppression-requests
   - id: intelius
     name: Intelius
@@ -78,9 +74,7 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address
-      and submit. Confirm via the email link. May take several days to process.
+    form_hints: Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address and submit. Confirm via the email link. May take several days to process.
     opt_out_url: https://www.intelius.com/optout
   - id: peoplefinder
     name: PeopleFinder
@@ -98,9 +92,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation.
-      Submit the form and confirm via the email link.
+    form_hints: Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation. Submit the form and confirm via the email link.
     opt_out_url: https://www.peoplefinder.com/optout
   - id: truepeoplesearch
     name: TruePeopleSearch
@@ -117,9 +109,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record'
-      button. Confirm the removal on the next page. The record is removed immediately.
+    form_hints: Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record' button. Confirm the removal on the next page. The record is removed immediately.
     opt_out_url: https://www.truepeoplesearch.com/removal
   - id: fastpeoplesearch
     name: FastPeopleSearch
@@ -136,9 +126,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This
-      Record'. Confirm the removal. Removal takes effect within 72 hours.
+    form_hints: Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This Record'. Confirm the removal. Removal takes effect within 72 hours.
     opt_out_url: https://www.fastpeoplesearch.com/removal
   - id: thatsthem
     name: ThatsThem
@@ -155,9 +143,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing
-      page. Confirm the removal request.
+    form_hints: Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing page. Confirm the removal request.
     opt_out_url: https://thatsthem.com/optout
   - id: radaris
     name: Radaris
@@ -176,9 +162,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control
-      Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
+    form_hints: Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
     opt_out_url: https://radaris.com/control/privacy
   - id: mylife
     name: MyLife
@@ -197,10 +181,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile
-      removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal
-      can take 7-10 business days.
+    form_hints: Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal can take 7-10 business days.
     opt_out_url: https://www.mylife.com/privacy-policy#remove
   - id: truthfinder
     name: Truthfinder
@@ -219,9 +200,7 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and
-      submit the opt-out. Confirm by clicking the link in the email you receive.
+    form_hints: Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and submit the opt-out. Confirm by clicking the link in the email you receive.
     opt_out_url: https://www.truthfinder.com/optout
   - id: instantcheckmate
     name: InstantCheckmate
@@ -240,9 +219,7 @@ brokers:
     parent_company: PeopleConnect Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your
-      email address and submit the removal request. Confirm via the email link. Processing may take a few days.
+    form_hints: Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your email address and submit the removal request. Confirm via the email link. Processing may take a few days.
     opt_out_url: https://www.instantcheckmate.com/optout
   - id: ussearch
     name: USSearch
@@ -260,9 +237,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your
-      email and confirm via the verification link.
+    form_hints: Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your email and confirm via the verification link.
     opt_out_url: https://www.ussearch.com/opt-out/submit
   - id: peoplelooker
     name: PeopleLooker
@@ -281,9 +256,7 @@ brokers:
     parent_company: BeenVerified Inc.
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address
-      and submit. Confirm the opt-out via the email link.
+    form_hints: Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address and submit. Confirm the opt-out via the email link.
     opt_out_url: https://www.peoplelooker.com/app/optout/search
   - id: pipl
     name: Pipl
@@ -508,9 +481,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your
-      email and confirm via the link.
+    form_hints: Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your email and confirm via the link.
     opt_out_url: https://www.411.com/privacy
   - id: addresses
     name: Addresses.com
@@ -8935,3 +8906,4148 @@ brokers:
     verify_before_send: false
     status: unverified
     opt_out_url: https://privacyportal.onetrust.com/webform/5cb57702-8ef7-437e-a62b-408fe78cd310/93391c3d-d6c8-45b1-a169-39a0b7f9fb74
+  - id: zabasearch
+    name: ZabaSearch
+    domain: zabasearch.com
+    email: privacy@zabasearch.com
+    region: us
+    category: people_search
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    opt_out_url: https://www.zabasearch.com/block_records
+  - id: publicrecordsnow
+    name: PublicRecordsNow
+    domain: publicrecordsnow.com
+    email: privacy@publicrecordsnow.com
+    region: us
+    category: people_search
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+  - id: advancedbackgroundchecks
+    name: AdvancedBackgroundChecks
+    domain: advancedbackgroundchecks.com
+    email: privacy@advancedbackgroundchecks.com
+    region: us
+    category: background_check
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.advancedbackgroundchecks.com/removal
+  - id: publicrecords360
+    name: PublicRecords360
+    domain: publicrecords360.com
+    email: privacy@publicrecords360.com
+    region: us
+    category: people_search
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+  - id: searchpeoplefree
+    name: SearchPeopleFree
+    domain: searchpeoplefree.com
+    email: privacy@searchpeoplefree.com
+    region: us
+    category: people_search
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    opt_out_url: https://www.searchpeoplefree.com/optout
+  - id: goodhire
+    name: GoodHire
+    domain: goodhire.com
+    email: privacy@goodhire.com
+    region: us
+    category: background_check
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: peoplesmart
+    name: PeopleSmart
+    domain: peoplesmart.com
+    email: privacy@peoplesmart.com
+    region: us
+    category: people_search
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+  - id: neighborwho
+    name: NeighborWho
+    domain: neighborwho.com
+    email: privacy@neighborwho.com
+    region: us
+    category: people_search
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    opt_out_url: https://neighborwho.com/remove
+  - id: centeda
+    name: Centeda
+    domain: centeda.com
+    email: support@centeda.com
+    region: us
+    category: people_search
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    opt_out_url: https://centeda.com/ng/control/privacy
+  - id: idtrue
+    name: IDTrue
+    domain: idtrue.com
+    email: privacy@idtrue.com
+    region: us
+    category: people_search
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+    opt_out_url: https://www.idtrue.com/optout
+  - id: towerdata
+    name: TowerData
+    domain: towerdata.com
+    email: privacy@towerdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.towerdata.com/company/privacy_policy
+  - id: veromi
+    name: Veromi
+    domain: veromi.net
+    email: privacy@veromi.net
+    region: us
+    category: people_search
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: true
+    verify_before_send: false
+  - id: 180_by_two
+    name: 180 By Two, LLC
+    domain: 180bytwo.com
+    email: karl@180bytwo.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacyportal.onetrust.com/webform/e32c5e49-85c5-4969-bfa8-8cde49952e1f/6034339d-69de-41fc-829f-7b8b51d9fabe
+  - id: 4legalleads
+    name: 4Legalleads
+    domain: 4legalleads.com
+    email: tapster13@gmail.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.4legalleads.com/removal
+  - id: open_dealer_exchange
+    name: Open Dealer Exchange, LLC
+    domain: 700credit.com
+    email: mshannon@opendealerexchange.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: accenture_llp
+    name: Accenture LLP
+    domain: accenture.com
+    email: regulatory.licenses@accenture.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.accenture.com/us-en/support/form-do-not-sell-my-personal-information
+  - id: ace_agents
+    name: ACE Agents Inc.
+    domain: degree.me
+    email: admin@academixdirect.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: activimpact
+    name: Activimpact, LLC
+    domain: activimpact.ai
+    email: privacy@activimpact.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.activimpact.ai/dsar?hsLang=en
+  - id: acuant
+    name: Acuant, Inc.
+    domain: idology.com
+    email: compliance@gbgplc.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: acutraq_background_screening
+    name: ACUTRAQ Background Screening, Inc.
+    domain: acutraq.com
+    email: admin@acutraq.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: adadapted
+    name: Adadapted Inc.
+    domain: adadapted.com
+    email: billing@adadapted.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.adadapted.com/legal/do-not-sell
+  - id: adrea_rubin_marketing
+    name: Adrea Rubin Marketing, Inc.
+    domain: adrearubin.com
+    email: jenniferv@adrearubin.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: advantage_credit
+    name: Advantage Credit, Inc.
+    domain: advcredit.com
+    email: evon@advcredit.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: advantage_sales_marketing
+    name: Advantage Sales & Marketing LLC
+    domain: take5mg.com
+    email: alex@take5mg.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: ais_portfolio_services
+    name: AIS Portfolio Services LLC
+    domain: aisinfo.com
+    email: arsllc@aisinfo.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.aisinfo.com/privacy?hsLang=en#california-privacy-rights
+  - id: all_global_resources
+    name: All Global Resources, LLC
+    domain: executiveenergy.com
+    email: drieke@executiveenergy.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: altisource_holdings
+    name: Altisource Holdings, LLC
+    domain: altisource.com
+    email: privacy@altisource.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.altisource.com/us-consumer-privacy-notice
+  - id: amerilist
+    name: Amerilist Inc
+    domain: amerilist.com
+    email: info@amerilist.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.amerilist.com/optout
+  - id: anexinet
+    name: Anexinet Corp.
+    domain: anexinet.com
+    email: privacy@anexinet.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: arity_875
+    name: Arity 875, LLC
+    domain: arity.com
+    email: privacy@arity.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://arity.com/yourprivacychoices/
+  - id: arrakis_technologies
+    name: Arrakis Technologies Corp.
+    domain: arrakis.ai
+    email: privacy@arrakis.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.arrakis.ai/optout
+  - id: american_spirit_data_solutions
+    name: AMERICAN SPIRIT DATA SOLUTIONS LLC
+    domain: aspire-north.com
+    email: privacy@aspire-north.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.aspire-north.com/do-not-sell-my-personal-information--out-out-request-form.html
+  - id: assurance_iq
+    name: Assurance Iq, Inc.
+    domain: assurance.com
+    email: swenson@assurance.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://assurance.com/assurance-privacy-practices.html#CRPDYourConsumerRightsRightToOptOut
+  - id: atlantic_fox_technologies
+    name: Atlantic Fox Technologies, Inc.
+    domain: atlanticfox.com
+    email: privacy@atlanticfox.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: attom_data_solutions
+    name: ATTOM Data Solutions LLC
+    domain: attomdata.com
+    email: erik.wind@attomdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.attomdata.com/privacy/ccpa-request-form-7233695024/
+  - id: audiencerate
+    name: Audiencerate Ltd
+    domain: audiencerate.com
+    email: gl@audiencerate.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.audiencerate.com/optout
+  - id: automotive_mastermind
+    name: Automotive Mastermind
+    domain: automotivemastermind.com
+    email: info@automotivemastermind.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.automotivemastermind.com/do-not-sell-or-share-my-personal-information-request/
+  - id: all_web_leads
+    name: All Web Leads, Inc
+    domain: allwebleads.com
+    email: onlineops@awl.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://dnc.allwebleads.com/Unsubscribe
+  - id: background_information_services
+    name: Background Information Services, Inc.
+    domain: bisi.com
+    email: compliance@bisi.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: birchwood_credit_services
+    name: Birchwood Credit Services Inc
+    domain: birchwoodcreditservices.com
+    email: billing@birchwoodcreditservices.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: biscred
+    name: Biscred
+    domain: biscred.com
+    email: rob@biscred.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.biscred.com/do-not-sell-my-information
+  - id: bliss_point_media
+    name: Bliss Point Media, Inc.
+    domain: blisspointmedia.com
+    email: privacy@blisspointmedia.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.blisspointmedia.com/privacy
+  - id: blue_action
+    name: Blue Action
+    domain: blueaction.io
+    email: info@blueaction.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://my.datasubject.com/16CV6iU2K7qFU3Poy/33263
+  - id: bridgevine
+    name: Bridgevine Inc.
+    domain: bridgevine.com
+    email: dwayne.landry@bridgevine.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: brigthswipe
+    name: Brigthswipe Inc
+    domain: brightswipe.com
+    email: admin@brightswipe.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: btrs_holdings
+    name: BTRS Holdings Inc
+    domain: billtrust.com
+    email: privacy@billtrust.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacyportal.onetrust.com/webform/82a6a736-b3a7-4e87-a2fd-04a39b7d2b19/2f5dc7b8-7698-4623-82d2-b2b969ef901e
+  - id: businesscom
+    name: Business.Com
+    domain: business.com
+    email: customercare@business.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.business.com/optout/
+  - id: carco_group
+    name: CARCO Group, Inc.
+    domain: cisive.com
+    email: compliance@cisive.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: catalyze_ai
+    name: Catalyze Ai, Inc
+    domain: catalyzeai.com
+    email: privacy@catalyzeai.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.catalyzeai.com/opt-out
+  - id: cic_mortgage_credit
+    name: CIC Mortgage Credit, Inc
+    domain: ciccredit.com
+    email: compliance@ciccredit.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.optoutprescreen.com/
+  - id: civitech
+    name: Civitech
+    domain: civitech.io
+    email: jake.london@civitech.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.civitech.io/privacy-policy/#section5
+  - id: collateral_analytics
+    name: Collateral Analytics, LLC
+    domain: mortgagetech.ice.com
+    email: compliancemortgagetech@ice.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: connect_computer
+    name: Connect Computer LLC
+    domain: calltruth.com
+    email: support@calltruth.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.calltruth.com/opt_out.php
+  - id: consider
+    name: Consider, Inc.
+    domain: consider.com
+    email: ralph@consider.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: consolidated_information_services_solutions
+    name: Consolidated Information Services Solutions LLC
+    domain: universalcis.com
+    email: ccasey@universalcredit.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: contemporary_information
+    name: CONTEMPORARY INFORMATION CORP.
+    domain: cicreports.com
+    email: compliance@cicreports.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: contentgine
+    name: Contentgine Inc.
+    domain: contentgine.com
+    email: paul@contentgine.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: credit_bureau_of_council_bluffs
+    name: Credit Bureau Of Council Bluffs, Inc
+    domain: creditinfosystems.com
+    email: heather@creditinfosystems.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: crosswalk_technologies
+    name: Crosswalk Technologies Inc
+    domain: crosswalknyc.com
+    email: privacy@crosswalknyc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.crosswalknyc.com/optout
+  - id: ctam_leadshare
+    name: CTAM Leadshare Corp.
+    domain: ctam.com
+    email: zell@ctam.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.smartmove.us/company/do-not-sell
+  - id: cyndx_networks
+    name: Cyndx Networks LLC
+    domain: cyndx.com
+    email: privacy@cyndx.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.cyndx.com/california-do-not-track/
+  - id: data_facts
+    name: Data Facts, Inc.
+    domain: datafacts.com
+    email: compliance@datafacts.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: data_marketing_solutions
+    name: Data Marketing Solutions, Inc.
+    domain: businesswatchnetwork.com
+    email: support@bizwatchnetwork.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: deluxe
+    name: Deluxe Corporation
+    domain: deluxe.com
+    email: privacyprogramoffice@deluxe.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.deluxe.com/policy/donotsell/
+  - id: corelogic_credco_of_puerto_rico
+    name: Corelogic Credco of Puerto Rico
+    domain: teletrack.com
+    email: licensing.erm@corelogic.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.optoutprescreen.com/
+  - id: deeptrace
+    name: Deeptrace Inc.
+    domain: coresignal.com
+    email: privacy@coresignal.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: digicenter
+    name: Digicenter, LLC.
+    domain: digicenter.com
+    email: privacy@digicenter.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.collectivedata.io/opt-out-do-not-sell-request-process/
+  - id: digital_segment
+    name: DIGITAL SEGMENT LLC
+    domain: digitalsegment.com
+    email: info@digitalsegment.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.digitalsegment.com/about/consumer-opt-out/
+  - id: diligent
+    name: Diligent Corporation
+    domain: diligent.com
+    email: privacy@diligent.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://diligentlegal.results.highbond.com/survey_responses/9Wrc_yiuertX-uLJ4bJA/edit
+  - id: distribution_processing_center
+    name: Distribution Processing Center LLC
+    domain: dpcoptout.com
+    email: customerservice@distpc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://dpcoptout.com/opt-out/
+  - id: driveniq
+    name: Driveniq Corporation
+    domain: driveniq.com
+    email: support@driveniq.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: drobu_media
+    name: Drobu Media LLC
+    domain: drobu.com
+    email: dblackman@drobu.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: dynata
+    name: Dynata, LLC
+    domain: dynata.com
+    email: privacy@dynata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: early_warning_services
+    name: Early Warning Services, LLC
+    domain: earlywarning.com
+    email: darla.nutting@earlywarning.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: efunds
+    name: Efunds Corporation
+    domain: worldpay.com
+    email: chexsystems.compliance@fisglobal.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: electronic_commerce_a_to_z
+    name: Electronic Commerce A To Z
+    domain: electroniccommerceatoz.com
+    email: azuttah@ubiquitysystemsusa.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: electronic_voice_services
+    name: ELECTRONIC VOICE SERVICES Inc
+    domain: telephonelists.biz
+    email: richard@evs7.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.evs7.com/personal-information-request
+  - id: email_marketing_services
+    name: Email Marketing Services, Inc
+    domain: listmatch.com
+    email: dataprivacy@listmatch.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: emailmovers
+    name: Emailmovers Ltd
+    domain: emailmovers.com
+    email: compliance@emailmovers.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: emergescom_incorporated
+    name: EMERGES.COM INCORPORATED
+    domain: emerges.com
+    email: shawn@emerges.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.emerges.com/Government-Record-Opt-Out_ep_51-1.html
+  - id: equimine
+    name: Equimine
+    domain: propstream.com
+    email: privacyinquiry@propstream.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.propstream.com/privacy-request
+  - id: experian_data
+    name: Experian Data Corp
+    domain: experianverify.com
+    email: optout@experian.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.clarityservices.com/support/opt-out-2/
+  - id: exponential_interactive
+    name: Exponential Interactive, Inc.
+    domain: vdx.tv
+    email: privacy@vdx.tv
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.vdx.tv/policies/privacy#opting-out
+  - id: factori_technologies
+    name: Factori Technologies LLC
+    domain: factori.ai
+    email: privacy@factori.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.factori.ai/do-not-sell-my-information/
+  - id: fair_screen
+    name: Fair Screen, Inc.
+    domain: fairscreen.com
+    email: compliance@fairscreen.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: fanspoko
+    name: Fanspoko, LLC
+    domain: fantasysportsknockout.com
+    email: info@fanspoko.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: faraday
+    name: Faraday, Inc.
+    domain: faraday.io
+    email: privacy@faraday.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.faraday.io/privacy-options
+  - id: first_american_data_tree
+    name: First American Data Tree LLC
+    domain: datatree.com
+    email: tree-trace-legal.sna@firstam.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.firstam.com/privacy-policy/#california
+  - id: first_movers_advantage
+    name: First Movers Advantage, LLC
+    domain: fmadata.com
+    email: privacy@fmadata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.fmadata.com/opt-out-requests/new
+  - id: stefan_certic
+    name: Stefan Certic
+    domain: myflashcloud.com
+    email: legal@myflashcloud.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.flashintel.ai/dont-sell-my-information
+  - id: foursquare_labs
+    name: Foursquare Labs, Inc.
+    domain: location.foursquare.com
+    email: legal@foursquare.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://optout.aboutads.info/?c=2&lang=EN
+  - id: freemium_data_services
+    name: Freemium Data Services, LLC
+    domain: reachdata.com
+    email: compliance@reachdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.reachdata.com/privacy
+  - id: freshaddress
+    name: Freshaddress, LLC
+    domain: freshaddress.com
+    email: privacy@freshaddress.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://instantdata.atdata.com/optout
+  - id: fused_leads
+    name: Fused Leads, LLC
+    domain: fusedleads.com
+    email: greg@fusedleads.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: fyllo
+    name: Fyllo
+    domain: hellofyllo.com
+    email: legal@hellofyllo.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.semasio.com/legal/privacy-choices
+  - id: g2_bankruptcy_risk_solutions
+    name: G2 Bankruptcy Risk Solutions, Inc.
+    domain: g2risksolutions.com
+    email: ramtin.taheri@g2risksolutions.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://g2risksolutions.com/consumer-center/
+  - id: getemails
+    name: GETEMAILS LLC
+    domain: getemails.com
+    email: support@getemails.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://app.retention.com/optout/
+  - id: glad_i_know
+    name: Glad I Know, Inc.
+    domain: gladiknow.com
+    email: support@gladiknow.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: good_boy_studios
+    name: Good Boy Studios, Inc
+    domain: parade.pet
+    email: hello@goodboystudios.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.parade.pet/
+  - id: granite_lists
+    name: Granite Lists, LLC
+    domain: granitelists.com
+    email: erin@granitelists.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: grata
+    name: Grata Inc
+    domain: grata.com
+    email: hello@grata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.grata.com/legal/do-not-sell-my-information
+  - id: gravy_analytics
+    name: Gravy Analytics, Inc.
+    domain: gravyanalytics.com
+    email: legal@gravyanalytics.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.unacast.com/opt-out
+  - id: greenhouse_software
+    name: Greenhouse Software, Inc.
+    domain: greenhouse.com
+    email: privacy@greenhouse.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: gumgum
+    name: Gumgum, Inc.
+    domain: gumgum.com
+    email: talbert@gumgum.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: gunderson_direct
+    name: Gunderson Direct
+    domain: gundersondirect.com
+    email: jeff@gundir.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://gundir.com/opt-out/
+  - id: h1_insights
+    name: H1 Insights Inc.
+    domain: h1insights.com
+    email: inquiries@h1insights.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.h1.co/legal/privacy-preferences
+  - id: harmon_research_group
+    name: Harmon Research Group, LLC
+    domain: harmonresearch.com
+    email: info@harmonresearch.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: hd_information
+    name: HD INFORMATION LLC
+    domain: hygenicsdata.com
+    email: hdi_support@hygenicsdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://myprivacy.equifax.com/opt-in-opt-out/personal-info
+  - id: health_is_wealth_marketing
+    name: Health Is Wealth Marketing LLC
+    domain: pickmedicare.com
+    email: info@pickmedicare.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: here_north_america
+    name: HERE North America LLC
+    domain: here.com
+    email: privacy@here.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://legal.here.com/en-gb/privacy/do-not-sell
+  - id: hexasoft_development_sdn_bhd
+    name: Hexasoft Development Sdn. Bhd.
+    domain: ip2location.com
+    email: support@ip2location.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.ip2location.com/do-not-sell
+  - id: general_information_solutions
+    name: General Information Solutions LLC
+    domain: backgroundchecks.com
+    email: cklafehn@backgroundchecks.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: homeowners_marketing_services
+    name: Homeowners Marketing Services Inc
+    domain: homeownersmarketingservices.com
+    email: dnm@homeownersmarketingservices.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://homeownersmarketingservices.com/list-removal-request-new/
+  - id: hybrid_theory
+    name: Hybrid Theory
+    domain: hybridtheory.com
+    email: privacy@hybridtheory.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: idengine
+    name: Idengine LLC
+    domain: idengine.com
+    email: chad@idengine.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://idengine.com/dnsmpi/
+  - id: illumin
+    name: Illumin Inc.
+    domain: illumin.com
+    email: itops@acuityads.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacy.acuityads.com/opt-out.html
+  - id: imprint_analytics
+    name: Imprint Analytics LLC
+    domain: imprintanalytics.io
+    email: privacy@imprintanalytics.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://imprintanalytics.io/limit-the-use-of-my-sensitive-personal-information/
+  - id: incheck
+    name: Incheck Inc
+    domain: inchecksolutions.com
+    email: jenwaite@inchecksolutions.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: infinite_media_concepts
+    name: Infinite Media Concepts Inc
+    domain: mlxp.com
+    email: sheck@mlxp.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: inflection_risk_solutions
+    name: Inflection Risk Solutions, LLC
+    domain: inflection.com
+    email: legal@inflection.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: infocore
+    name: Infocore Inc.
+    domain: infocore.com
+    email: bjupp@infocore.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: infofreecom
+    name: Infofree.Com LLC
+    domain: infofree.com
+    email: accounting@infofree.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacycompliance.biz/databaseusa-opt-out-process/
+  - id: infogroup
+    name: Infogroup Inc.
+    domain: infogroup.com
+    email: privacyteam@infogroup.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.data-axle.com/do-not-sell-my-data/
+  - id: infomatics
+    name: INFOMATICS LLC
+    domain: privatereports.com
+    email: llcinfomatics@gmail.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.privatereports.com/optOut/name/landing
+  - id: infutor_data_solutions
+    name: Infutor Data Solutions LLC
+    domain: ruf.com
+    email: security@infutor.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacy.infutor.com/s/
+  - id: inmobi
+    name: Inmobi
+    domain: trufactor.io
+    email: privacy@inmobi.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: innovis_data_solutions
+    name: Innovis Data Solutions, Inc.
+    domain: innovis.com
+    email: vtdata@innovis.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.innovis.com/personal/optOutOptIn
+  - id: insideview
+    name: InsideView, Inc.
+    domain: insideview.com
+    email: privacy@insideview.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: integrated_medical_data
+    name: Integrated Medical Data, LLC.
+    domain: integratedmedicaldata.com
+    email: bzink@integratedmedicaldata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: intellicorp_records
+    name: Intellicorp Records, Inc.
+    domain: intellicorp.net
+    email: compliance@intellicorp.net
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.intellicorp.net/marketing/Your-California-Privacy-Rights
+  - id: intentgine
+    name: Intentgine Inc.
+    domain: intentgine.com
+    email: paul@intentgine.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.intentgine.com/ccpa-privacy
+  - id: intentmacro
+    name: Intentmacro Inc.
+    domain: intentmacro.com
+    email: paul@intentmacro.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.intentmacro.com/ccpa-privacy
+  - id: ihs_markit
+    name: IHS Markit
+    domain: ipreo.com
+    email: bruce.noll@ihsmarkit.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: ipsos
+    name: Ipsos
+    domain: ipsos.com
+    email: dpo.usa@ipsos.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: iq_data_systems
+    name: IQ Data Systems, Inc.
+    domain: backgroundsonline.com
+    email: nate.waymire@backgroundsonline.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: iso_services
+    name: ISO Services Inc
+    domain: jornaya.com
+    email: bgeorge@verisk.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacy.infutor.com/s/
+  - id: ivy_tech_re
+    name: Ivy Tech Re, LLC
+    domain: getivydata.com
+    email: kyle@getivydata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: jverify
+    name: Jverify, Inc.
+    domain: jverify.com
+    email: admin@jverify.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: kbm_group
+    name: KBM GROUP LLC
+    domain: kbmg.com
+    email: john.petrillo@wundermandata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: killi
+    name: Killi Ltd.
+    domain: killi.io
+    email: privacy@killi.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: klarifi
+    name: Klarifi
+    domain: klarifi.io
+    email: soren@klarifi.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: kloudend
+    name: KLOUDEND Inc
+    domain: kloudend.com
+    email: legal@kloudend.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://ipapi.co/donotsell/
+  - id: knowwho
+    name: Knowwho
+    domain: knowwho.com
+    email: bbrownson@knowwho.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: kochava
+    name: KOCHAVA Inc.
+    domain: kochava.com
+    email: legal@kochava.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.kochava.com/opt-out-do-not-sell-request-process/
+  - id: kols_key_opinion_leaders
+    name: Kols (Key Opinion Leaders)
+    domain: keyopinionleaders.com
+    email: kol-privacy@keyopinionleaders.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.keyopinionleaders.com/
+  - id: kyber_health_data
+    name: Kyber Health Data LLC
+    domain: cowen.com
+    email: kyberccpa@cowen.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.cowen.com/kyber-data-science-disclosures/do-not-sell-my-information-request-form/
+  - id: leadership_connect
+    name: Leadership Connect
+    domain: leadershipconnect.io
+    email: privacy@leadershipconnect.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.leadershipconnect.io/opt-out
+  - id: leadloft
+    name: Leadloft Inc.
+    domain: leadloft.com
+    email: privacy@leadloft.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: leidos_digital_solutions
+    name: Leidos Digital Solutions, Inc.
+    domain: leidos.com
+    email: teresa.chesson@leidos.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://leidosiq.com/privacy-statement/
+  - id: let_it_ride_sports
+    name: LET IT RIDE SPORTS LLC
+    domain: outlastdfs.com
+    email: brenton@outlastdfs.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: lifesight
+    name: Lifesight LLC
+    domain: lifesight.io
+    email: privacy@lifesight.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://lifesight.io/opt-out/
+  - id: lighthouse_list
+    name: Lighthouse List
+    domain: lighthouselist.com
+    email: robert@lighthouselist.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://unsubscribe.stirista.com
+  - id: limeleads
+    name: Limeleads
+    domain: limeleads.com
+    email: privacy@limeleads.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.limeleads.com/do-not-sell-my-data-request/
+  - id: listings_information_systems_and_tabulation_services
+    name: Listings, Information, Systems And Tabulation Services, Inc
+    domain: lists-inc.com
+    email: info@lists-inc.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: list_service_direct
+    name: List Service Direct Inc.
+    domain: listservicedirect.com
+    email: dataremoval@listservicedirect.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://listservicedirect.com/opt-out/
+  - id: listsonline
+    name: Listsonline
+    domain: listsonline.com
+    email: privacyofficer@listsonline.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: localblox
+    name: Localblox
+    domain: localblox.com
+    email: sabira@localblox.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://consumer.localblox.com/privacy_policy
+  - id: logiq
+    name: Logiq, Inc
+    domain: logiq.com
+    email: compliance@logiq.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: lotadata
+    name: Lotadata, Inc.
+    domain: lotadata.com
+    email: apu@lotadata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://lotadata.com/personal_information
+  - id: lucid_holdings
+    name: Lucid Holdings, LLC
+    domain: luc.id
+    email: privacy@luc.id
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: lundquist_consulting
+    name: Lundquist Consulting, Inc.
+    domain: lciinc.com
+    email: info@lciinc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://g2risksolutions.com/consumer-center/
+  - id: machintel
+    name: Machintel Inc.
+    domain: machintel.com
+    email: mark.choudhari@machintel.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: madison_logic
+    name: Madison Logic, Inc.
+    domain: madisonlogic.com
+    email: privacy@madisonlogic.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: marinus_analytics
+    name: Marinus Analytics
+    domain: marinusanalytics.com
+    email: privacy@marinusanalytics.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.marinusanalytics.com/do-not-sell-my-personal-information
+  - id: martin_data
+    name: Martin Data LLC
+    domain: usinfosearch.com
+    email: aj@usinfosearch.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: matchandappendcom
+    name: Matchandappend.Com LLC
+    domain: matchandappend.com
+    email: info@matchandappend.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.matchandappend.com/do-not-sell-my-data/
+  - id: mch
+    name: MCH Inc
+    domain: mchdata.com
+    email: privacy@mchdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.mchdata.com/about/ccpaemail
+  - id: media_direct
+    name: Media Direct, Inc.
+    domain: digdevdirect.com
+    email: slubin@digdev.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: mediamath
+    name: Mediamath, Inc.
+    domain: mediamath.com
+    email: privacy@mediamath.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.mediamath.com/privacy-policy/ccpa-optout/
+  - id: media_resource_group
+    name: Media Resource Group LLC
+    domain: mrginc.com
+    email: info@mrginc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.mrginc.com/opt-out/
+  - id: mediasoft
+    name: Mediasoft, LLC
+    domain: mediasoftstudio.com
+    email: info@mediasoftstudio.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.mediasoftstudio.com/unsubscribe.php
+  - id: media_source_solutions
+    name: Media Source Solutions
+    domain: mediasourcesolutions.com
+    email: mvolpe@mediasourcesolutions.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://unsubscribe.stirista.com/
+  - id: mediazod
+    name: Mediazod LLC
+    domain: leadzod.com
+    email: privacy@leadzod.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: merkle
+    name: Merkle Inc.
+    domain: merkleinc.com
+    email: david.yonchak@dentsu.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://merkleinc.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html
+  - id: mfi_credit_solutions
+    name: MFI Credit Solutions
+    domain: mfidata.com
+    email: mfitzpatrick@mfidata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: mightyrep
+    name: Mightyrep
+    domain: mightyrep.com
+    email: privacy@mightyrep.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: minerva_bi
+    name: MINERVA BI Inc
+    domain: realtors.minervadata.xyz
+    email: privacy@minervadata.xyz
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://realtors.minervadata.xyz/opt-out
+  - id: modernize
+    name: Modernize, Inc.
+    domain: modernize.com
+    email: support@modernize.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacy-central.securiti.ai/#/dsr/1b319101-f00c-470f-a7f0-26aa81f057b8
+  - id: monocl
+    name: Monocl
+    domain: monocl.com
+    email: privacy@definitivehc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://preferences.definitivehc.com/privacy
+  - id: msim
+    name: Msim, LLC
+    domain: none
+    email: dl-msim@move.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: my_renter_checker
+    name: MY RENTER CHECKER LLC
+    domain: myrenterchecker.com
+    email: myrenterchecker@gmail.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: narvar
+    name: Narvar, Inc.
+    domain: corp.narvar.com
+    email: legal@narvar.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://narvar.my.onetrust.com/webform/04b3731f-2a9a-42ce-bd6b-106d4b4ec3bf/a7c944bf-3cec-4f00-9dc5-dea5bf2b6f4f
+  - id: national_consumer_telecom_utilities_exchange
+    name: National Consumer Telecom & Utilities Exchange, Inc.
+    domain: nctue.com
+    email: abby@nacmsw.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: national_student_clearinghouse
+    name: NATIONAL STUDENT CLEARINGHOUSE
+    domain: studentclearinghouse.org
+    email: legal@studentclearinghouse.org
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: ncr
+    name: NCR Corporation
+    domain: ncr.com
+    email: office.privacy@ncr.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: near_north_america
+    name: Near North America
+    domain: near.co
+    email: privacy@near.co
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: new_england_list_services
+    name: New England List Services
+    domain: nelists.com
+    email: dave@nelists.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: new_strata
+    name: New Strata Inc.
+    domain: fivestrata.com
+    email: info@fivestrata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: nexsales_solutions
+    name: Nexsales Solutions Inc.
+    domain: nexsales.com
+    email: privacy@nexsales.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: next_wave_marketing_strategies
+    name: Next Wave Marketing Strategies, Inc
+    domain: nextwavemarketingstrategies.com
+    email: troy@nextwavemarketingstrategies.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://agedleadstore.com/opt-out-share-sale-info-form/
+  - id: nexxa_group
+    name: Nexxa Group, Inc.
+    domain: nexxagroup.com
+    email: consumerchoice@nexxagroup.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.nexxagroup.com/corporate-overview/consumer-opt-out/
+  - id: nova_list_company
+    name: NOVA List Company, LLC
+    domain: novalist.com
+    email: ckoch@novalist.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.novalist.com/opt-out
+  - id: nymblr
+    name: Nymblr, Inc.
+    domain: nymblr.com
+    email: support@nimbler.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.nymblr.com
+  - id: onemata
+    name: Onemata Corporation
+    domain: onemata.com
+    email: privacy@onemata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: one_model
+    name: One Model, Inc.
+    domain: onemodel.co
+    email: privacy@onemodel.co
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: on_hold_america
+    name: On Hold-America, Inc.
+    domain: kycdata.com
+    email: consumers@kycdata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.kycdata.com/consumer-privacy/
+  - id: optimal_fusion
+    name: Optimal Fusion
+    domain: optimalfusion.com
+    email: dataprotectionofficer@optimalfusion.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.optimalfusion.com/adpreferences/
+  - id: origin8
+    name: ORIGIN8 Inc
+    domain: pushint.com
+    email: compliance@pushint.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://pushint.com/manage-my-data
+  - id: parasol_media
+    name: Parasol Media Inc.
+    domain: parasolleads.com
+    email: jschwartz@parasolleads.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: partners_credit_and_verification_solutions
+    name: Partners Credit And Verification Solutions
+    domain: partnerscredit.com
+    email: support@partnerscredit.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: pathway_ventures
+    name: PATHWAY VENTURES LLC
+    domain: indivizio.com
+    email: privacyofficer@indivizio.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.protectdataprivacy.com/
+  - id: pension_benefit_information
+    name: Pension Benefit Information, LLC
+    domain: pbinfo.com
+    email: ccparequests@pbinfo.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: peopleconnect
+    name: Peopleconnect, Inc.
+    domain: peopleconnect.us
+    email: brad.toney@peopleconnect.us
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://suppression.peopleconnect.us/privacy-center
+  - id: perf_labs
+    name: Perf Labs, Inc.
+    domain: interseller.io
+    email: privacy@interseller.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: permutive
+    name: Permutive, Inc
+    domain: permutive.com
+    email: privacy@permutive.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://permutive.com/privacy/
+  - id: plexuss
+    name: Plexuss, Inc.
+    domain: plexuss.com
+    email: compliance@plexuss.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.plexuss.com/ccpa-opt-out
+  - id: plural_marketing_solutions
+    name: Plural Marketing Solutions Inc.
+    domain: plmrkg.com
+    email: george@plmrkg.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: polity
+    name: Polity
+    domain: polityinc.com
+    email: info@polityinc.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: preferred_communications
+    name: Preferred Communications
+    domain: preferredcommunications.com
+    email: opt-out-ccpa@preferredcommunications.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://preferredcommunications.com/consumer-opt-out/
+  - id: project_applecart
+    name: Project Applecart LLC
+    domain: applecart.co
+    email: matt@applecart.co
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.applecart.co/privacyrights
+  - id: prospector_database
+    name: Prospector Database, LLC
+    domain: prospectordatabase.com
+    email: privacy@prospectordatabase.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.prospectordatabase.com/privacy-center
+  - id: proxima_platform
+    name: Proxima Platform
+    domain: proximaplatform.com
+    email: aleex.de.aybar@outlook.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.proximaplatform.com/opt-out-portal
+  - id: qwoted
+    name: Qwoted, Inc.
+    domain: qwoted.com
+    email: hello@qwoted.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: reach_marketing
+    name: Reach Marketing LLC
+    domain: reachmarketing.com
+    email: info@reachmarketing.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: reality_media
+    name: Reality Media, Inc.
+    domain: realitydebtsolutions.com
+    email: cform@realitymediainc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.realitydebtsolutions.com/do-not-sell-my-personal-information/
+  - id: recsolu
+    name: Recsolu Inc.
+    domain: yello.co
+    email: privacy@yello.co
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://yello.co/do-not-sell-my-personal-information/
+  - id: redbird_direct
+    name: Redbird Direct LLC
+    domain: redbirddirect.com
+    email: carrie@redbirddirect.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: refinitiv_us
+    name: Refinitiv US LLC
+    domain: refinitiv.com
+    email: jonny.bell@refinitiv.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: regulatory_datacorp
+    name: Regulatory Datacorp, Inc.
+    domain: bvdinfo.com
+    email: privacy@bvdinfo.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://survey.alchemer.com/s3/8249180/Do-Not-Sell-Request
+  - id: reis
+    name: Reis Inc.
+    domain: cre.moodysanalytics.com
+    email: info@reis.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: rent_risk
+    name: Rent Risk LLC
+    domain: rentrisk.com
+    email: rich@rentrisk.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: researchusa
+    name: Researchusa LLC
+    domain: researchusallc.com
+    email: privacy@researchusallc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacycompliance.biz/researchusallc-ccpa/
+  - id: results_only_consulting_and_advertising
+    name: Results Only Consulting And Advertising
+    domain: rocadvertising.com
+    email: dataprivacy_rocadvertising@simpleoptoutcompliance.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.rocadvertising.com/privacy-policy/#donotsell
+  - id: revenuebase
+    name: Revenuebase Inc
+    domain: revenuebase.ai
+    email: privacy@revenuebase.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://revenuebase.ai/do-not-sell-my-info/
+  - id: riv_data
+    name: Riv Data Corp.
+    domain: carpe.io
+    email: alexis.leitner@carpe.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: dealerx_partners
+    name: Dealerx Partners LLC
+    domain: data.exchange
+    email: compliance@dealerx.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.dealerx.com/privacy-options/
+  - id: rp_on_site
+    name: RP On-Site LLC
+    domain: realpage.com
+    email: rponsitecompliance@realpage.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: safegraph
+    name: Safegraph Inc.
+    domain: safegraph.com
+    email: privacy@safegraph.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: saferent_solutions
+    name: Saferent Solutions, LLC
+    domain: saferentsolutions.com
+    email: licensing@saferentsolutions.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: saha_ventures
+    name: Saha Ventures LLC
+    domain: findtrueowner.com
+    email: harmik@propertyownerlookup.io
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: salesintel_research
+    name: Salesintel Research Inc.
+    domain: salesintel.io
+    email: privacy@salesintel.io
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://salesintel.io/opt-out/
+  - id: sawyer_lists
+    name: Sawyer Lists, LLC
+    domain: sawyerlists.com
+    email: admin@sawyerdatadirect.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: scileads
+    name: Scileads Ltd
+    domain: scileads.com
+    email: privacy@scileads.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://scileads.com/opt-out/
+  - id: scraping_robot
+    name: Scraping Robot, LLC
+    domain: scrapingrobot.com
+    email: support@scrapingrobot.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: scryer
+    name: Scryer, Inc.
+    domain: reonomy.com
+    email: info@reonomy.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: search_america
+    name: Search America LLC
+    domain: locateplus.com
+    email: dserrano@locateplus.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: searchbug
+    name: Searchbug
+    domain: searchbug.com
+    email: support@searchbug.zohodesk.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.searchbug.com/ccpa.aspx#DoNoSell
+  - id: sentilink
+    name: Sentilink Corp
+    domain: sentilink.com
+    email: privacy@sentilink.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: service_1st_information_solutions
+    name: Service 1St Information Solutions LLC
+    domain: srv1st.com
+    email: info@srv1st.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: sg360
+    name: SG360
+    domain: sg360.com
+    email: dataprivacy@sg360.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://sg360.com/do-not-sell-my-info/
+  - id: skipmasher
+    name: Skipmasher, Inc.
+    domain: skipsmasher.com
+    email: skipsmasher.com@gmail.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.skipsmasher.com/Consumers/
+  - id: skyhook_holding
+    name: Skyhook Holding, Inc.
+    domain: skyhook.com
+    email: privacy@skyhook.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.skyhook.com/opt-out-of-skyhook-products.
+  - id: sma_communications
+    name: SMA Communications, LLC.
+    domain: smacomm.com
+    email: steven@smacomm.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://smacomm.com/do-not-sell/
+  - id: exact_opco
+    name: EXACT OPCO LLC
+    domain: solarpower-experts.com
+    email: privacy@exactcustomer.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.exactcustomer.com/DoNotSell.aspx
+  - id: sourceit_technologies
+    name: Sourceit Technologies, Inc
+    domain: sourceitmarketing.com
+    email: dataprivacy@sourceitmarketing.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: sourcescrub
+    name: Sourcescrub LLC
+    domain: sourcescrub.com
+    email: dataprivacy@sourcescrub.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.sourcescrub.com/legal/do-not-sell-my-personal-information
+  - id: spectrum_mailing_lists
+    name: Spectrum Mailing Lists
+    domain: spectrumlists.com
+    email: privacy@spectrumlists.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://spectrummailinglists.com/privacy-statement/
+  - id: spy_dialer
+    name: Spy Dialer, Inc.
+    domain: spydialer.com
+    email: info@spydialer.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.spydialer.com/Consumers/
+  - id: staircase
+    name: Staircase, Inc.
+    domain: staircase.co
+    email: optout@staircase.co
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: step2success_marketing
+    name: STEP2SUCCESS Marketing
+    domain: step2successmarketing.com
+    email: mary@step2successmarketing.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: strata
+    name: Strata Company
+    domain: gostrata.com
+    email: dataprivacy@gostrata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.gostrata.com/opt-out-preferences
+  - id: strategic_data_intelligence
+    name: Strategic Data Intelligence
+    domain: strategicdataintelligence.com
+    email: m.brostoff@sdintelligence.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: strategic_information_resources
+    name: Strategic Information Resources
+    domain: strategicinfo.com
+    email: jdrziak@strategicinfo.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: stratmish
+    name: Stratmish, LLC
+    domain: spoker.com
+    email: phil@spoker.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: structure
+    name: Structure
+    domain: structure.ac
+    email: thoran@structure.ac
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.structure.ac/opt_outs/new
+  - id: suus
+    name: Suus, LLC
+    domain: suus.inc
+    email: lcrocker@onboardpartners.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: tandem_marketing
+    name: Tandem Marketing, LLC
+    domain: fhamortgagefinder.com
+    email: info@tandemmarketingnv.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.fhamortgagefinder.com/CCPArequest.php
+  - id: telefi
+    name: Telefi LLC
+    domain: telefi.app
+    email: ccpa@telefi.app
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: the_lead_company
+    name: The Lead Company, Inc.
+    domain: lead.co
+    email: dave@lead.co
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: the_open_data_people
+    name: The Open Data People, Inc.
+    domain: openpeoplesearch.com
+    email: info@openpeoplesearch.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.openpeoplesearch.com/Consumer
+  - id: the_people_searchers
+    name: The People Searchers LLC
+    domain: peoplesearcher.com
+    email: support@peoplesearcher.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.peoplesearcher.com/optOut/name/landing
+  - id: tinuiti
+    name: Tinuiti, Inc.
+    domain: tinuiti.com
+    email: hello@tinuiti.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://tinuiti.com/privacy-policy/
+  - id: tiplinks
+    name: Tiplinks Inc
+    domain: fetcher.ai
+    email: support@fetcher.ai
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://app.fetcher.ai/opt-out
+  - id: tl1mkt_sl_sl
+    name: TL1MKT SL SL
+    domain: tl1mkt.com
+    email: info@tl1mkt.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.tl1mkt.com/opt-out.html
+  - id: tracers_information_specialists
+    name: Tracers Information Specialists, Inc.
+    domain: tracersinfo.com
+    email: compliance@tracersinfo.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: truth_now
+    name: TRUTH NOW LLC
+    domain: checksecrets.com
+    email: support@checksecrets.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.checksecrets.com/optOut/name/landing.
+  - id: twine_data
+    name: Twine Data, Inc
+    domain: twinedata.com
+    email: bmorgan@twinedata.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: tymax_media
+    name: Tymax Media
+    domain: tymaxmedia.com
+    email: privacyofficer@datacomplianceportal.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.tymaxmedia.com/ccpa.php
+  - id: ubermedia
+    name: Ubermedia
+    domain: ubermedia.com
+    email: privacy@ubermedia.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: united_one_resources
+    name: United One Resources, Inc.
+    domain: unitedone.com
+    email: lbrady@unitedone.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: unity_technologies_sf
+    name: Unity Technologies SF
+    domain: unity.com
+    email: dpo@unity3d.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.unity.com/legal/do-not-sell-my-personal-information
+  - id: datamentors_2
+    name: Datamentors LLC
+    domain: v12data.com
+    email: pkuman@v12data.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.v12data.com/inbound/do-not-sell-my-personal-information/
+  - id: verse_gaming
+    name: Verse Gaming
+    domain: versefantasysports.com
+    email: dan@versegaming.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: vertify
+    name: Vertify, Inc
+    domain: vertify.com
+    email: gpineda@vertify.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: wholesale_mail
+    name: Wholesale Mail
+    domain: domymail.com
+    email: jenny@helmerprinting.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: whoodle
+    name: Whoodle, LLC
+    domain: whoodle.com
+    email: support@whoodle.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: windfall_data
+    name: Windfall Data, Inc.
+    domain: windfalldata.com
+    email: privacy@windfalldata.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.windfall.com/do-not-sell-my-info
+  - id: wisdom_media_group
+    name: Wisdom Media Group LLC
+    domain: wisdommediagroupllc.com
+    email: contact@wisdommediagroupllc.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.wisdommediagroupllc.com/unsubscribe.php
+  - id: wiza
+    name: Wiza, Inc.
+    domain: wiza.co
+    email: hello@wiza.co
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.wiza.co/optout_directory
+  - id: xactus
+    name: Xactus, LLC
+    domain: xactus.com
+    email: carolyn.casey@xactus.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: x_mode_social
+    name: X-Mode Social, Inc.
+    domain: xmode.io
+    email: ap@xmodesocial.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://outlogic.io/opt-out-form/
+  - id: xome_leads
+    name: Xome Leads LLC
+    domain: xome.com
+    email: licensing@xome.com
+    region: us
+    category: marketing_data
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+  - id: yobi_ventures
+    name: Yobi Ventures, LLC
+    domain: yobi.ventures
+    email: admin@yobi.ventures
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.yobi.ventures/opt-out
+  - id: eab_global
+    name: EAB Global, Inc.
+    domain: appily.com
+    email: privacy@eab.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://cappex.formstack.com/forms/do_not_sell
+  - id: zeotap_gmbh
+    name: Zeotap GmbH
+    domain: zeotap.com
+    email: team.legal@zeotap.com
+    region: us
+    category: marketing_data
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
