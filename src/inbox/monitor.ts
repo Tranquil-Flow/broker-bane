@@ -1,5 +1,6 @@
 import type { ImapConfig } from "../types/config.js";
 import type { Broker } from "../types/broker.js";
+import { simpleParser } from "mailparser";
 import { parseConfirmationEmail } from "./parser.js";
 import { clickConfirmationLink } from "./confirmer.js";
 import { logger } from "../util/logger.js";
@@ -69,9 +70,12 @@ export class InboxMonitor {
             source: true,
           });
 
-          const from = message.envelope.from[0]?.address ?? "";
-          const subject = message.envelope.subject ?? "";
-          const body = message.source.toString("utf-8");
+          // Use mailparser to properly decode MIME (quoted-printable,
+          // base64, charset conversion) before extracting URLs
+          const mail = await simpleParser(message.source);
+          const from = mail.from?.value[0]?.address ?? message.envelope.from[0]?.address ?? "";
+          const subject = mail.subject ?? message.envelope.subject ?? "";
+          const body = mail.html || mail.textAsHtml || mail.text || "";
 
           this.callbacks.onNewEmail?.(from, subject);
 

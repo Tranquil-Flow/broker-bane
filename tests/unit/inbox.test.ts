@@ -129,6 +129,34 @@ describe("EmailParser", () => {
     it("returns empty array when no URLs found", () => {
       expect(extractUrls("no urls here")).toEqual([]);
     });
+
+    it("decodes HTML &amp; entities in URLs", () => {
+      const html = '<a href="https://spokeo.com/confirm?token=abc&amp;action=verify">Confirm</a>';
+      const urls = extractUrls(html);
+      expect(urls).toContain("https://spokeo.com/confirm?token=abc&action=verify");
+    });
+
+    it("decodes numeric HTML entities in URLs", () => {
+      const html = 'https://spokeo.com/confirm?a&#61;1';
+      const urls = extractUrls(html);
+      expect(urls).toContain("https://spokeo.com/confirm?a=1");
+    });
+
+    it("rejects invalid URLs", () => {
+      // regex stops at whitespace, but "https://not" is technically a valid URL
+      // so we filter by isValidUrl — "https://not" parses as valid with URL()
+      const html = 'https://spokeo.com/real https://[invalid]/broken';
+      const urls = extractUrls(html);
+      expect(urls).toContain("https://spokeo.com/real");
+      expect(urls.every(u => !u.includes("[invalid]"))).toBe(true);
+    });
+
+    it("preserves query parameters with = signs", () => {
+      // Ensure HTML entity decoding doesn't corrupt =abc query values
+      const html = 'https://spokeo.com/confirm?token=abc123&ref=def456';
+      const urls = extractUrls(html);
+      expect(urls).toContain("https://spokeo.com/confirm?token=abc123&ref=def456");
+    });
   });
 
   describe("matchEmailToBroker", () => {

@@ -17,13 +17,42 @@ export function hashEmailBody(body: string): string {
   return createHash("sha256").update(body).digest("hex");
 }
 
+/**
+ * Decode HTML entities that appear in email HTML bodies.
+ * Does NOT handle quoted-printable — that should be decoded
+ * at the MIME level (via mailparser) before reaching here.
+ */
+function decodeHtmlEntities(html: string): string {
+  return html
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(Number(dec)))
+    .replace(/&#x([0-9A-Fa-f]+);/gi, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    );
+}
+
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function extractUrls(htmlBody: string): string[] {
-  const matches = htmlBody.match(URL_REGEX);
+  const decoded = decodeHtmlEntities(htmlBody);
+  const matches = decoded.match(URL_REGEX);
   if (!matches) return [];
 
-  // Deduplicate and filter obvious non-confirmation URLs
+  // Deduplicate, validate, and filter obvious non-confirmation URLs
   const unique = [...new Set(matches)];
   return unique.filter((url) => {
+    if (!isValidUrl(url)) return false;
+
     // Skip common non-confirmation URLs
     const lower = url.toLowerCase();
     if (lower.includes("unsubscribe")) return false;
