@@ -221,9 +221,21 @@ describe("Dashboard", () => {
       expect(taskRepo.countPending()).toBe(0);
     });
 
+    it("GET /api/tasks returns 200", async () => {
+      const res = await app.request("/api/tasks");
+      expect(res.status).toBe(200);
+    });
+
     it("GET /api/brokers returns 200", async () => {
       const res = await app.request("/api/brokers");
       expect(res.status).toBe(200);
+    });
+
+    it("GET /api/brokers/:id returns broker detail", async () => {
+      const res = await app.request("/api/brokers/spokeo");
+      expect(res.status).toBe(200);
+      const text = await res.text();
+      expect(text).toContain("spokeo.com");
     });
 
     it("GET /api/brokers?category=people_search filters correctly", async () => {
