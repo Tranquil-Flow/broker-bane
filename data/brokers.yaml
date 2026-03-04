@@ -15269,7 +15269,7 @@ brokers:
   - id: plusaddress_com
     name: Plusaddress.Com
     domain: plusaddress.com
-    email: info@plusaddresscom
+    email: info@plusaddress.com
     region: us
     category: data_broker
     removal_method: email
