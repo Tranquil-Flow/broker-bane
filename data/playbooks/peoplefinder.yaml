@@ -1,0 +1,44 @@
+broker_id: peoplefinder
+version: 1
+last_verified: "2026-03-04"
+
+# PeopleFinder opt-out: search by name, select record, confirm removal via email.
+phases:
+  - name: search
+    steps:
+      - action: goto
+        url: "https://www.peoplefinder.com/optout"
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[name="firstName"], input[placeholder*="First"], input#firstName'
+        value: "{{first_name}}"
+      - action: fill
+        selector: 'input[name="lastName"], input[placeholder*="Last"], input#lastName'
+        value: "{{last_name}}"
+      - action: fill
+        selector: 'input[name="city"], input[placeholder*="City"], input#city'
+        value: "{{city}}"
+      - action: select
+        selector: 'select[name="state"], select#state'
+        value: "{{state}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Search"), input[type="submit"]'
+      - action: wait
+        ms: 4000
+
+  - name: submit
+    steps:
+      - action: click
+        selector: 'a:has-text("Remove"), button:has-text("Remove"), a:has-text("Opt Out"), [data-action="optout"]'
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[type="email"], input[name="email"], input#email'
+        value: "{{email}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Submit"), button:has-text("Confirm"), button:has-text("Remove")'
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

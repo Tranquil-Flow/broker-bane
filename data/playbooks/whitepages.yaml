@@ -1,0 +1,44 @@
+broker_id: whitepages
+version: 1
+last_verified: "2026-03-04"
+
+# Whitepages suppression: search for name, select listing, confirm removal.
+phases:
+  - name: search
+    steps:
+      - action: goto
+        url: "https://www.whitepages.com/suppression-requests"
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[name="firstName"], input[placeholder*="First"], input#firstName'
+        value: "{{first_name}}"
+      - action: fill
+        selector: 'input[name="lastName"], input[placeholder*="Last"], input#lastName'
+        value: "{{last_name}}"
+      - action: fill
+        selector: 'input[name="city"], input[placeholder*="City"], input#city'
+        value: "{{city}}"
+      - action: select
+        selector: 'select[name="state"], select#state'
+        value: "{{state}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Search"), button:has-text("Find")'
+      - action: wait
+        ms: 4000
+
+  - name: submit
+    steps:
+      - action: click
+        selector: 'a:has-text("Remove"), button:has-text("Remove"), a.remove-link, [data-action="remove"]'
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[type="email"], input[name="email"], input#email'
+        value: "{{email}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Submit"), button:has-text("Confirm")'
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

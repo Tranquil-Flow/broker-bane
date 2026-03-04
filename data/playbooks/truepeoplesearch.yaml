@@ -1,0 +1,32 @@
+broker_id: truepeoplesearch
+version: 1
+last_verified: "2026-03-04"
+
+# TruePeopleSearch removal: paste record URL or search by name, confirm removal.
+phases:
+  - name: search
+    steps:
+      - action: goto
+        url: "https://www.truepeoplesearch.com/removal"
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[name="name"], input[placeholder*="Name"], input[name="recordUrl"], input[type="text"]'
+        value: "{{first_name}} {{last_name}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Search"), button:has-text("Find"), input[type="submit"]'
+      - action: wait
+        ms: 4000
+
+  - name: submit
+    steps:
+      - action: click
+        selector: 'a:has-text("Remove"), button:has-text("Remove This Record"), button:has-text("Remove"), [data-action="remove"]'
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: 'button:has-text("Confirm"), button:has-text("Yes"), button:has-text("Submit"), button[type="submit"]'
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

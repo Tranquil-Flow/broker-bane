@@ -1,0 +1,49 @@
+broker_id: mylife
+version: 1
+last_verified: "2026-03-04"
+
+# MyLife opt-out: search for profile, request removal.
+# NOTE: This broker uses CAPTCHA — automation will likely fail at CAPTCHA step.
+# Falls back to manual removal when CAPTCHA is detected.
+phases:
+  - name: search
+    steps:
+      - action: goto
+        url: "https://www.mylife.com/privacy-policy#remove"
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[name="firstName"], input[placeholder*="First"], input#firstName'
+        value: "{{first_name}}"
+      - action: fill
+        selector: 'input[name="lastName"], input[placeholder*="Last"], input#lastName'
+        value: "{{last_name}}"
+      - action: fill
+        selector: 'input[name="city"], input[placeholder*="City"], input#city'
+        value: "{{city}}"
+      - action: select
+        selector: 'select[name="state"], select#state'
+        value: "{{state}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Search"), button:has-text("Find"), input[type="submit"]'
+      - action: wait
+        ms: 5000
+
+  - name: submit
+    steps:
+      - action: click
+        selector: 'a:has-text("Remove"), button:has-text("Remove"), a:has-text("Delete"), button:has-text("Opt Out")'
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[type="email"], input[name="email"], input#email'
+        value: "{{email}}"
+      - action: fill
+        selector: 'input[type="tel"], input[name="phone"], input#phone'
+        value: "{{phone}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Submit"), button:has-text("Confirm")'
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

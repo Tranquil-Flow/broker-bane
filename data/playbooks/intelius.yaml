@@ -1,0 +1,43 @@
+broker_id: intelius
+version: 1
+last_verified: "2026-03-04"
+
+# Intelius opt-out: search for record, select profile, submit removal.
+# NOTE: This broker uses CAPTCHA — automation will likely fail at CAPTCHA step.
+# Falls back to manual removal when CAPTCHA is detected.
+phases:
+  - name: search
+    steps:
+      - action: goto
+        url: "https://www.intelius.com/optout"
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[name="firstName"], input[placeholder*="First"], input#firstName'
+        value: "{{first_name}}"
+      - action: fill
+        selector: 'input[name="lastName"], input[placeholder*="Last"], input#lastName'
+        value: "{{last_name}}"
+      - action: select
+        selector: 'select[name="state"], select#state'
+        value: "{{state}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Search"), input[type="submit"], button:has-text("Find")'
+      - action: wait
+        ms: 5000
+
+  - name: submit
+    steps:
+      - action: click
+        selector: 'button:has-text("Remove"), a:has-text("Remove"), button:has-text("Opt Out"), a:has-text("Select")'
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: 'input[type="email"], input[name="email"], input#email'
+        value: "{{email}}"
+      - action: click
+        selector: 'button[type="submit"], button:has-text("Submit"), button:has-text("Confirm"), button:has-text("Send")'
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success
