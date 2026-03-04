@@ -289,6 +289,29 @@ describe("Pipeline Integration", () => {
     await orchestrator.cleanup();
   });
 
+  it("loads playbooks from custom directory for web_form broker", async () => {
+    const playbookDir = join(tmpDir, "playbooks");
+    mkdirSync(playbookDir, { recursive: true });
+    const pb = {
+      broker_id: "spokeo",
+      version: 1,
+      last_verified: "2026-03-04",
+      phases: [{ name: "submit", steps: [{ action: "goto", url: "https://www.spokeo.com/optout" }] }],
+    };
+    writeFileSync(join(playbookDir, "spokeo.yaml"), yaml.dump(pb));
+
+    const config = loadConfig(configPath);
+    const orchestrator = new Orchestrator(config, { playbookDir });
+
+    // In dry-run without browser, playbook won't execute but orchestrator should construct fine
+    const summary = await orchestrator.run({ dryRun: true, brokerIds: ["spokeo"] });
+    expect(summary.totalBrokers).toBe(1);
+    // Without browser, falls through to manual task even with playbook
+    expect(summary.manualRequired).toBe(1);
+
+    await orchestrator.cleanup();
+  });
+
   it("skips brokers whose opt-out was sent within the validity window", async () => {
     // Both runs use dryRun: true (no real SMTP). Validity skipping is triggered
     // by !options.resume (not by dryRun), so the second run skips acxiom because

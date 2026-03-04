@@ -19,6 +19,11 @@ import { scheduleBrokers } from "./scheduler.js";
 import { randomDelay } from "../util/delay.js";
 import { logger } from "../util/logger.js";
 import { EmailError } from "../util/errors.js";
+import { loadAllPlaybooks } from "../playbook/loader.js";
+import { PlaybookExecutor } from "../playbook/executor.js";
+import type { Playbook } from "../playbook/schema.js";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import type Database from "better-sqlite3";
 
@@ -38,12 +43,23 @@ export interface PipelineSummary {
   dryRun: boolean;
 }
 
+export interface OrchestratorInit {
+  playbookDir?: string;
+}
+
 export class Orchestrator {
   private db: InstanceType<typeof Database> | null = null;
   private emailSender: EmailSender | null = null;
   private aborted = false;
+  private readonly playbooks: Map<string, Playbook>;
 
-  constructor(private readonly config: AppConfig) {}
+  constructor(
+    private readonly config: AppConfig,
+    init: OrchestratorInit = {}
+  ) {
+    const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
+    this.playbooks = loadAllPlaybooks(init.playbookDir ?? defaultDir);
+  }
 
   async run(options: OrchestratorOptions = {}): Promise<PipelineSummary> {
     const dryRun = options.dryRun ?? this.config.options.dry_run;
@@ -272,7 +288,18 @@ export class Orchestrator {
           broker.removal_method === "web_form" ||
           broker.removal_method === "hybrid"
         ) {
-          if (browser && !dryRun) {
+          const playbook = this.playbooks.get(broker.id);
+
+          if (playbook && browser && !dryRun) {
+            // Tier 2: deterministic playbook execution
+            webFormSucceeded = await this.processPlaybookRemoval(
+              broker, request.id, requestRepo, pendingTaskRepo, browser, playbook
+            );
+            if (!webFormSucceeded) {
+              summary.manualRequired++;
+            }
+          } else if (browser && !dryRun) {
+            // Tier 3: AI-powered Stagehand fallback
             webFormSucceeded = await this.processWebRemoval(
               broker,
               request.id,
@@ -438,6 +465,87 @@ export class Orchestrator {
       });
       return false;
     }
+  }
+
+  private async processPlaybookRemoval(
+    broker: Broker,
+    requestId: number,
+    requestRepo: RemovalRequestRepo,
+    pendingTaskRepo: PendingTaskRepo,
+    browser: import("../browser/session.js").StagehandInstance,
+    playbook: Playbook
+  ): Promise<boolean> {
+    requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
+    requestRepo.incrementAttempt(requestId);
+
+    const executor = new PlaybookExecutor(
+      browser.page as any,
+      this.config.profile
+    );
+    const result = await executor.execute(playbook);
+
+    if (result.success) {
+      if (result.screenshotPath) {
+        requestRepo.setScreenshot(requestId, result.screenshotPath);
+      }
+      logger.info({ brokerId: broker.id }, "Playbook removal completed");
+      return true;
+    }
+
+    // Playbook failed — try self-healing if browser supports extract()
+    if (result.failedStep?.selector) {
+      try {
+        const { repairSelector, applyRepair } = await import("../playbook/repair.js");
+        const domSnippet = await (browser.page as any).extract(
+          "Return the HTML of the main form on this page, max 2000 characters"
+        ) as string;
+
+        const newSelector = await repairSelector(browser as any, {
+          brokerId: broker.id,
+          failedSelector: result.failedStep.selector,
+          stepAction: result.failedStep.action,
+          pageUrl: (browser.page as any).url(),
+          domSnippet: typeof domSnippet === "string" ? domSnippet : JSON.stringify(domSnippet),
+        });
+
+        if (newSelector) {
+          const repaired = applyRepair(playbook, {
+            phase: result.failedStep.phase,
+            action: result.failedStep.action,
+            oldSelector: result.failedStep.selector,
+            newSelector,
+          });
+
+          // Retry with repaired playbook
+          const retryResult = await executor.execute(repaired);
+          if (retryResult.success) {
+            // Save repaired playbook to disk
+            const { writeFileSync } = await import("node:fs");
+            const yamlLib = (await import("js-yaml")).default;
+            const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
+            const playbookPath = join(defaultDir, `${broker.id}.yaml`);
+            writeFileSync(playbookPath, yamlLib.dump(repaired));
+            logger.info({ brokerId: broker.id }, "Playbook self-healed and saved");
+
+            if (retryResult.screenshotPath) {
+              requestRepo.setScreenshot(requestId, retryResult.screenshotPath);
+            }
+            return true;
+          }
+        }
+      } catch (err) {
+        logger.warn({ brokerId: broker.id, err }, "Self-healing repair failed");
+      }
+    }
+
+    // Fall back to manual task
+    pendingTaskRepo.create({
+      requestId,
+      taskType: "manual_form",
+      description: `Playbook failed for ${broker.opt_out_url ?? broker.domain}: ${result.error}`,
+      url: broker.opt_out_url,
+    });
+    return false;
   }
 
   abort(): void {
