@@ -10,6 +10,7 @@ import { exportCommand } from "./commands/export.cmd.js";
 import { testConfigCommand } from "./commands/test-config.cmd.js";
 import { menuCommand } from "./commands/menu.cmd.js";
 import { scheduleCommand } from "./commands/schedule.cmd.js";
+import { dashboardCommand } from "./commands/dashboard.cmd.js";
 
 const program = new Command();
 
@@ -102,6 +103,18 @@ program
   .option("-i, --interval <days>", "Days between runs (default: 90)")
   .action(async (action: string, opts: { config?: string; interval?: string }) => {
     await scheduleCommand(action, opts);
+  });
+
+program
+  .command("dashboard")
+  .description("Launch web dashboard on localhost")
+  .option("-p, --port <port>", "Port number (default: 3847)")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await dashboardCommand({
+      port: opts.port ? Number(opts.port) : undefined,
+      config: opts.config,
+    });
   });
 
 // Global error handler
