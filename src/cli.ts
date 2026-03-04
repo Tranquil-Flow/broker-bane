@@ -9,6 +9,7 @@ import { confirmCommand } from "./commands/confirm.cmd.js";
 import { exportCommand } from "./commands/export.cmd.js";
 import { testConfigCommand } from "./commands/test-config.cmd.js";
 import { menuCommand } from "./commands/menu.cmd.js";
+import { scheduleCommand } from "./commands/schedule.cmd.js";
 
 const program = new Command();
 
@@ -91,6 +92,16 @@ program
   .option("-c, --config <path>", "Override config file path")
   .action(async (opts) => {
     await testConfigCommand(opts);
+  });
+
+program
+  .command("schedule")
+  .description("Manage OS-level scheduled removal runs")
+  .argument("<action>", "install, uninstall, or status")
+  .option("-c, --config <path>", "Override config file path")
+  .option("-i, --interval <days>", "Days between runs (default: 90)")
+  .action(async (action: string, opts: { config?: string; interval?: string }) => {
+    await scheduleCommand(action, opts);
   });
 
 // Global error handler

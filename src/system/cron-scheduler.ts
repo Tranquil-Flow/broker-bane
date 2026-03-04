@@ -17,7 +17,30 @@ const PLIST_LABEL = "com.brokerbane.quarterly";
 const PLIST_PATH = join(homedir(), "Library", "LaunchAgents", `${PLIST_LABEL}.plist`);
 const LOG_PATH = join(homedir(), ".brokerbane", "run.log");
 
-export function buildLaunchdPlist(binaryPath: string, configPath: string): string {
+/**
+ * Convert an interval in days to a month-based schedule.
+ * Rounds to the nearest reasonable month count (1–12), minimum 1.
+ */
+export function daysToMonthInterval(days: number): number {
+  return Math.max(1, Math.min(12, Math.round(days / 30)));
+}
+
+/**
+ * Generate launchd StartCalendarInterval entries for a given month interval.
+ * E.g., monthInterval=3 → months 1,4,7,10; monthInterval=6 → months 1,7.
+ */
+function buildCalendarEntries(monthInterval: number): string {
+  const months: number[] = [];
+  for (let m = 1; m <= 12; m += monthInterval) {
+    months.push(m);
+  }
+  return months
+    .map(m => `    <dict><key>Month</key><integer>${m}</integer><key>Day</key><integer>1</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>`)
+    .join("\n");
+}
+
+export function buildLaunchdPlist(binaryPath: string, configPath: string, intervalDays = 90): string {
+  const monthInterval = daysToMonthInterval(intervalDays);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -34,10 +57,7 @@ export function buildLaunchdPlist(binaryPath: string, configPath: string): strin
   </array>
   <key>StartCalendarInterval</key>
   <array>
-    <dict><key>Month</key><integer>1</integer><key>Day</key><integer>1</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
-    <dict><key>Month</key><integer>4</integer><key>Day</key><integer>1</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
-    <dict><key>Month</key><integer>7</integer><key>Day</key><integer>1</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
-    <dict><key>Month</key><integer>10</integer><key>Day</key><integer>1</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+${buildCalendarEntries(monthInterval)}
   </array>
   <key>StandardOutPath</key>
   <string>${LOG_PATH}</string>
@@ -57,8 +77,9 @@ function shellQuote(s: string): string {
   return `'${s.replace(/'/g, "'\\''")}'`;
 }
 
-export function buildCrontabLine(binaryPath: string, configPath: string): string {
-  return `0 9 1 */3 * ${shellQuote(binaryPath)} remove --config ${shellQuote(configPath)} >> ${shellQuote(LOG_PATH)} 2>&1 ${CRON_MARKER}`;
+export function buildCrontabLine(binaryPath: string, configPath: string, intervalDays = 90): string {
+  const monthInterval = daysToMonthInterval(intervalDays);
+  return `0 9 1 */${monthInterval} * ${shellQuote(binaryPath)} remove --config ${shellQuote(configPath)} >> ${shellQuote(LOG_PATH)} 2>&1 ${CRON_MARKER}`;
 }
 
 export function isScheduleInstalled(crontab: string): boolean {
@@ -92,13 +113,14 @@ export interface ScheduleStatus {
   configPath: string | null;
 }
 
-export function installSchedule(binaryPath: string, configPath: string): void {
+export function installSchedule(binaryPath: string, configPath: string, intervalDays = 90): void {
   const platform = detectPlatform();
+  const monthInterval = daysToMonthInterval(intervalDays);
   mkdirSync(join(homedir(), ".brokerbane"), { recursive: true });
 
   if (platform === "macos") {
     mkdirSync(join(homedir(), "Library", "LaunchAgents"), { recursive: true });
-    writeFileSync(PLIST_PATH, buildLaunchdPlist(binaryPath, configPath), "utf-8");
+    writeFileSync(PLIST_PATH, buildLaunchdPlist(binaryPath, configPath, intervalDays), "utf-8");
     run("launchctl", ["load", PLIST_PATH]);
     return;
   }
@@ -111,7 +133,7 @@ export function installSchedule(binaryPath: string, configPath: string): void {
     }
     const updated =
       (existing.trim() ? existing.trim() + "\n" : "") +
-      buildCrontabLine(binaryPath, configPath) + "\n";
+      buildCrontabLine(binaryPath, configPath, intervalDays) + "\n";
     // Write to temp file then pass to crontab (avoids shell pipe)
     const tmpDir = mkdtempSync(join(tmpdir(), "brokerbane-"));
     const tmpFile = join(tmpDir, "crontab.tmp");
@@ -126,7 +148,7 @@ export function installSchedule(binaryPath: string, configPath: string): void {
     run("schtasks", [
       "/create", "/tn", "BrokerBaneQuarterly",
       "/tr", `"${binaryPath.replace(/"/g, '""')}" remove --config "${configPath.replace(/"/g, '""')}"`,
-      "/sc", "MONTHLY", "/mo", "3", "/d", "1", "/st", "09:00", "/f",
+      "/sc", "MONTHLY", "/mo", String(monthInterval), "/d", "1", "/st", "09:00", "/f",
     ]);
   }
 }
@@ -176,7 +198,15 @@ export function getScheduleStatus(): ScheduleStatus {
         configPath = match?.[1] ?? null;
       } catch { /* ignore */ }
     }
-    return { installed, platform, nextRunDescription: "1st of every 3rd month at 9:00 AM", configPath };
+    let monthInterval = 3;
+    if (installed) {
+      try {
+        const content = readFileSync(PLIST_PATH, "utf-8");
+        const monthMatches = content.match(/<key>Month<\/key>/g) ?? [];
+        if (monthMatches.length > 0) monthInterval = Math.round(12 / monthMatches.length);
+      } catch { /* ignore */ }
+    }
+    return { installed, platform, nextRunDescription: `1st of every ${monthInterval === 1 ? "" : monthInterval + " "}month${monthInterval === 1 ? "" : "s"} at 9:00 AM`, configPath };
   }
 
   if (platform === "linux") {
@@ -184,12 +214,15 @@ export function getScheduleStatus(): ScheduleStatus {
     const crontab = result.status === 0 ? result.stdout : "";
     const installed = isScheduleInstalled(crontab);
     let configPath: string | null = null;
+    let monthInterval = 3;
     if (installed) {
       const line = crontab.split("\n").find((l) => l.includes(CRON_MARKER));
       const match = line?.match(/--config\s+(\S+)/);
       configPath = match?.[1] ?? null;
+      const cronMatch = line?.match(/\*\/(\d+)/);
+      if (cronMatch) monthInterval = parseInt(cronMatch[1], 10);
     }
-    return { installed, platform, nextRunDescription: "1st of every 3rd month at 9:00 AM", configPath };
+    return { installed, platform, nextRunDescription: `1st of every ${monthInterval === 1 ? "" : monthInterval + " "}month${monthInterval === 1 ? "" : "s"} at 9:00 AM`, configPath };
   }
 
   // Windows

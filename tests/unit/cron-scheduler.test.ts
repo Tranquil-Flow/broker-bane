@@ -4,6 +4,7 @@ import {
   buildCrontabLine,
   isScheduleInstalled,
   removeCrontabLine,
+  daysToMonthInterval,
 } from "../../src/system/cron-scheduler.js";
 
 describe("buildLaunchdPlist", () => {
@@ -16,10 +17,22 @@ describe("buildLaunchdPlist", () => {
     expect(plist).toContain("StartCalendarInterval");
   });
 
-  it("schedules 4 calendar entries (quarterly)", () => {
+  it("schedules 4 calendar entries (quarterly) by default", () => {
     const plist = buildLaunchdPlist("/bb", "/cfg.json");
     const monthMatches = plist.match(/<key>Month<\/key>/g) ?? [];
     expect(monthMatches).toHaveLength(4);
+  });
+
+  it("respects custom interval (monthly)", () => {
+    const plist = buildLaunchdPlist("/bb", "/cfg.json", 30);
+    const monthMatches = plist.match(/<key>Month<\/key>/g) ?? [];
+    expect(monthMatches).toHaveLength(12);
+  });
+
+  it("respects custom interval (semi-annual)", () => {
+    const plist = buildLaunchdPlist("/bb", "/cfg.json", 180);
+    const monthMatches = plist.match(/<key>Month<\/key>/g) ?? [];
+    expect(monthMatches).toHaveLength(2);
   });
 });
 
@@ -32,9 +45,29 @@ describe("buildCrontabLine", () => {
     expect(line).toContain("/home/user/.brokerbane/config.json");
   });
 
-  it("uses quarterly cron schedule (every 3 months, day 1)", () => {
+  it("uses quarterly cron schedule (every 3 months, day 1) by default", () => {
     const line = buildCrontabLine("/bb", "/cfg.json");
     expect(line).toMatch(/^\d+ \d+ 1 \*\/3 \*/);
+  });
+
+  it("respects custom interval", () => {
+    const line = buildCrontabLine("/bb", "/cfg.json", 60);
+    expect(line).toMatch(/^\d+ \d+ 1 \*\/2 \*/);
+  });
+});
+
+describe("daysToMonthInterval", () => {
+  it("converts days to months correctly", () => {
+    expect(daysToMonthInterval(30)).toBe(1);
+    expect(daysToMonthInterval(60)).toBe(2);
+    expect(daysToMonthInterval(90)).toBe(3);
+    expect(daysToMonthInterval(180)).toBe(6);
+    expect(daysToMonthInterval(365)).toBe(12);
+  });
+
+  it("clamps to 1-12 range", () => {
+    expect(daysToMonthInterval(1)).toBe(1);
+    expect(daysToMonthInterval(500)).toBe(12);
   });
 });
 
