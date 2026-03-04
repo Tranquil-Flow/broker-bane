@@ -406,7 +406,7 @@ export class Orchestrator {
         requestRepo.incrementAttempt(requestId);
 
         const result = await this.emailSender!.send({
-          from: this.config.email.auth.user,
+          from: this.config.email.alias ?? this.config.email.auth.user,
           to: broker.email!,
           subject: rendered.subject,
           text: rendered.body,
@@ -416,7 +416,7 @@ export class Orchestrator {
           requestId,
           direction: "outbound",
           messageId: result.messageId,
-          fromAddr: this.config.email.auth.user,
+          fromAddr: this.config.email.alias ?? this.config.email.auth.user,
           toAddr: broker.email!,
           subject: rendered.subject,
           status: result.rejected.length > 0 ? "rejected" : "sent",

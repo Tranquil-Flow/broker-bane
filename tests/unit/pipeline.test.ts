@@ -4,9 +4,16 @@ import { CircuitBreaker } from "../../src/pipeline/circuit-breaker.js";
 import { REQUEST_STATUS } from "../../src/types/pipeline.js";
 import { StateTransitionError, CircuitBreakerOpenError } from "../../src/util/errors.js";
 import Database from "better-sqlite3";
-import { createInMemoryDatabase } from "../../src/db/connection.js";
+import { createInMemoryDatabase, createDatabase, closeDatabase } from "../../src/db/connection.js";
 import { runMigrations } from "../../src/db/migrations.js";
 import { CircuitBreakerRepo } from "../../src/db/repositories/circuit-breaker.repo.js";
+import { EmailLogRepo } from "../../src/db/repositories/email-log.repo.js";
+import { Orchestrator } from "../../src/pipeline/orchestrator.js";
+import { AppConfigSchema } from "../../src/types/config.js";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import yaml from "js-yaml";
 
 describe("StateMachine", () => {
   it("allows valid transitions", () => {
@@ -165,5 +172,108 @@ describe("CircuitBreaker", () => {
     // Success should reset to closed
     breaker.recordSuccess("test");
     expect(breaker.getState("test")).toBe("closed");
+  });
+});
+
+describe("Orchestrator email alias", () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = join(tmpdir(), `brokerbane-alias-test-${Date.now()}`);
+    mkdirSync(tmpDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("uses email.alias as From address when configured", async () => {
+    const dbPath = join(tmpDir, "alias-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@example.com",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@example.com", pass: "testpass" },
+        alias: "jane+brokerbane@example.com",
+      },
+      options: {
+        template: "gdpr",
+        dry_run: true,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+      },
+      database: { path: dbPath },
+    });
+
+    const orchestrator = new Orchestrator(config);
+    await orchestrator.run({
+      dryRun: true,
+      brokerIds: ["zoominfo"],
+    });
+
+    // Check the email log for the From address
+    const db = createDatabase(dbPath);
+    runMigrations(db);
+    const emailLogRepo = new EmailLogRepo(db);
+    const logs = emailLogRepo.getByRequestId(1);
+    expect(logs.length).toBeGreaterThan(0);
+    expect(logs[0].from_addr).toBe("jane+brokerbane@example.com");
+    closeDatabase(db);
+
+    await orchestrator.cleanup();
+  });
+
+  it("falls back to auth.user when no alias is set", async () => {
+    const dbPath = join(tmpDir, "noalias-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@example.com",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@example.com", pass: "testpass" },
+      },
+      options: {
+        template: "gdpr",
+        dry_run: true,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+      },
+      database: { path: dbPath },
+    });
+
+    const orchestrator = new Orchestrator(config);
+    await orchestrator.run({
+      dryRun: true,
+      brokerIds: ["zoominfo"],
+    });
+
+    const db = createDatabase(dbPath);
+    runMigrations(db);
+    const emailLogRepo = new EmailLogRepo(db);
+    const logs = emailLogRepo.getByRequestId(1);
+    expect(logs.length).toBeGreaterThan(0);
+    expect(logs[0].from_addr).toBe("jane@example.com");
+    closeDatabase(db);
+
+    await orchestrator.cleanup();
   });
 });
