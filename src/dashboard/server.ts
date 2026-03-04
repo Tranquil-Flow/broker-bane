@@ -7,7 +7,8 @@ import type { Database } from "better-sqlite3";
 import { createDatabase, closeDatabase } from "../db/connection.js";
 import { runMigrations } from "../db/migrations.js";
 import type { AppConfig } from "../types/config.js";
-import { layout } from "./views/layout.js";
+import { registerDashboardRoutes } from "./routes/dashboard.js";
+import { registerApiRoutes } from "./routes/api.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -22,12 +23,9 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database): { 
     return c.text(js, 200, { "Content-Type": "application/javascript" });
   });
 
-  // Placeholder dashboard route
-  app.get("/", (c) => {
-    return c.html(
-      layout("Dashboard", "DASHBOARD", "<p class='dim'>Dashboard coming soon...</p>"),
-    );
-  });
+  // Register routes
+  registerDashboardRoutes(app, db);
+  registerApiRoutes(app, db);
 
   return { app, db };
 }
