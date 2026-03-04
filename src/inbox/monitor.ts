@@ -1,9 +1,35 @@
-import type { ImapConfig } from "../types/config.js";
+import type { ImapConfig, EmailAuth } from "../types/config.js";
 import type { Broker } from "../types/broker.js";
 import { simpleParser } from "mailparser";
 import { parseConfirmationEmail } from "./parser.js";
 import { clickConfirmationLink } from "./confirmer.js";
 import { logger } from "../util/logger.js";
+import { loadTokens, isExpired } from "../auth/token-store.js";
+import { refreshGoogleToken } from "../auth/google-oauth.js";
+import { refreshMicrosoftToken } from "../auth/microsoft-oauth.js";
+
+export async function resolveImapAuth(
+  auth: EmailAuth,
+): Promise<{ user: string; pass: string } | { user: string; accessToken: string }> {
+  if (auth.type === "password") {
+    return { user: auth.user, pass: auth.pass };
+  }
+
+  // OAuth2
+  let tokens = await loadTokens(auth.provider);
+  if (!tokens) {
+    throw new Error(`No OAuth tokens found for ${auth.provider}. Run 'brokerbane init' to set up.`);
+  }
+
+  if (isExpired(tokens)) {
+    tokens =
+      auth.provider === "google"
+        ? await refreshGoogleToken(tokens.refreshToken)
+        : await refreshMicrosoftToken(auth.user);
+  }
+
+  return { user: auth.user, accessToken: tokens.accessToken };
+}
 
 export interface MonitorCallbacks {
   onConfirmation?: (brokerId: string, url: string, success: boolean) => void;
@@ -33,14 +59,13 @@ export class InboxMonitor {
     try {
       const { ImapFlow } = await import("imapflow");
 
+      const imapAuth = await resolveImapAuth(this.config.auth);
+
       this.client = new ImapFlow({
         host: this.config.host,
         port: this.config.port,
         secure: this.config.secure,
-        auth: {
-          user: this.config.auth.user,
-          pass: this.config.auth.pass,
-        },
+        auth: imapAuth,
         logger: false,
       });
 

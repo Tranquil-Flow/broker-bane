@@ -8,7 +8,11 @@ import { saveTokens, type OAuthTokens } from "./token-store.js";
 const CLIENT_ID = process.env.BROKERBANE_MICROSOFT_CLIENT_ID ?? "";
 const REDIRECT_PORT = 9234;
 const REDIRECT_URI = `http://localhost:${REDIRECT_PORT}/callback`;
-const SCOPES = ["https://outlook.office.com/SMTP.Send", "offline_access"];
+const SCOPES = [
+  "https://outlook.office.com/SMTP.Send",
+  "https://outlook.office.com/IMAP.AccessAsUser.All",
+  "offline_access",
+];
 
 const MSAL_CACHE_KEY = "brokerbane-msal-cache";
 const MSAL_CACHE_ACCOUNT = "cache";
