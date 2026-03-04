@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import yaml from "js-yaml";
 import { loadConfig, checkConfigPermissions } from "../../src/config/loader.js";
+import { AppConfigSchema } from "../../src/types/config.js";
 
 function makeMinimalConfig(): Record<string, unknown> {
   return {
@@ -176,5 +177,62 @@ describe("Config loader", () => {
       expect(config.inbox?.secure).toBe(true);
       expect(config.inbox?.mailbox).toBe("INBOX"); // default
     });
+  });
+});
+
+describe("Config schema — new fields", () => {
+  it("accepts email.provider and email.alias as optional fields", () => {
+    const cfg = makeMinimalConfig();
+    cfg.email = {
+      ...cfg.email as Record<string, unknown>,
+      provider: "gmail",
+      alias: "jane+brokerbane@gmail.com",
+    };
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.email.provider).toBe("gmail");
+    expect(parsed.email.alias).toBe("jane+brokerbane@gmail.com");
+  });
+
+  it("accepts old config without provider/alias fields", () => {
+    const cfg = makeMinimalConfig();
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.email.provider).toBeUndefined();
+    expect(parsed.email.alias).toBeUndefined();
+  });
+
+  it("accepts IMAP auth with oauth2 type", () => {
+    const cfg = makeMinimalConfig();
+    cfg.inbox = {
+      host: "imap.gmail.com",
+      port: 993,
+      secure: true,
+      auth: { type: "oauth2", user: "jane@gmail.com", provider: "google" },
+    };
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.inbox!.auth.type).toBe("oauth2");
+  });
+
+  it("accepts IMAP auth with password type (explicit)", () => {
+    const cfg = makeMinimalConfig();
+    cfg.inbox = {
+      host: "imap.gmail.com",
+      port: 993,
+      secure: true,
+      auth: { type: "password", user: "jane@gmail.com", pass: "app-pass" },
+    };
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.inbox!.auth.type).toBe("password");
+  });
+
+  it("defaults IMAP auth type to password when type is missing (backwards compat)", () => {
+    const cfg = makeMinimalConfig();
+    cfg.inbox = {
+      host: "imap.gmail.com",
+      port: 993,
+      secure: true,
+      auth: { user: "jane@gmail.com", pass: "app-pass" },
+    };
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.inbox!.auth.type).toBe("password");
   });
 });

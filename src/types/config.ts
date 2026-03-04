@@ -45,6 +45,8 @@ export const SmtpConfigSchema = z.object({
   port: z.number().default(587),
   secure: z.boolean().default(false),
   auth: EmailAuthSchema,
+  provider: z.string().optional(),
+  alias: z.string().email().optional(),
   pool: z.boolean().default(true),
   rate_limit: z.number().default(5),
   rate_delta_ms: z.number().default(60_000),
@@ -54,10 +56,7 @@ export const ImapConfigSchema = z.object({
   host: z.string(),
   port: z.number().default(993),
   secure: z.boolean().default(true),
-  auth: z.object({
-    user: z.string(),
-    pass: z.string(),
-  }),
+  auth: EmailAuthSchema,
   mailbox: z.string().default("INBOX"),
 });
 
