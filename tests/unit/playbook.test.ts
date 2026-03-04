@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { PlaybookSchema } from "../../src/playbook/schema.js";
+import { resolveTemplateValue } from "../../src/playbook/template.js";
+import type { Profile } from "../../src/types/config.js";
 
 describe("PlaybookSchema", () => {
   it("validates a minimal playbook with one phase", () => {
@@ -90,5 +92,42 @@ describe("PlaybookSchema", () => {
       }],
     });
     expect(allActions.success).toBe(true);
+  });
+});
+
+const testProfile: Profile = {
+  first_name: "Jane",
+  last_name: "Doe",
+  email: "jane@example.com",
+  address: "123 Main St",
+  city: "Springfield",
+  state: "IL",
+  zip: "62704",
+  country: "US",
+  phone: "555-0100",
+  aliases: [],
+};
+
+describe("resolveTemplateValue", () => {
+  it("resolves single variable", () => {
+    expect(resolveTemplateValue("{{email}}", testProfile)).toBe("jane@example.com");
+  });
+
+  it("resolves multiple variables in one string", () => {
+    expect(resolveTemplateValue("{{first_name}} {{last_name}}", testProfile))
+      .toBe("Jane Doe");
+  });
+
+  it("returns literal strings unchanged", () => {
+    expect(resolveTemplateValue("hello world", testProfile)).toBe("hello world");
+  });
+
+  it("leaves unknown variables as-is", () => {
+    expect(resolveTemplateValue("{{unknown}}", testProfile)).toBe("{{unknown}}");
+  });
+
+  it("resolves address components", () => {
+    expect(resolveTemplateValue("{{address}}, {{city}}, {{state}} {{zip}}", testProfile))
+      .toBe("123 Main St, Springfield, IL 62704");
   });
 });
