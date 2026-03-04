@@ -1,6 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { PlaybookSchema } from "../../src/playbook/schema.js";
 import { resolveTemplateValue } from "../../src/playbook/template.js";
+import { loadPlaybook, loadAllPlaybooks } from "../../src/playbook/loader.js";
+import { writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import yaml from "js-yaml";
 import type { Profile } from "../../src/types/config.js";
 
 describe("PlaybookSchema", () => {
@@ -129,5 +134,58 @@ describe("resolveTemplateValue", () => {
   it("resolves address components", () => {
     expect(resolveTemplateValue("{{address}}, {{city}}, {{state}} {{zip}}", testProfile))
       .toBe("123 Main St, Springfield, IL 62704");
+  });
+});
+
+describe("PlaybookLoader", () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = join(tmpdir(), `playbook-test-${Date.now()}`);
+    mkdirSync(tmpDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("loads and validates a playbook YAML file", () => {
+    const pb = {
+      broker_id: "test",
+      version: 1,
+      last_verified: "2026-03-04",
+      phases: [{ name: "submit", steps: [{ action: "goto", url: "https://example.com" }] }],
+    };
+    writeFileSync(join(tmpDir, "test.yaml"), yaml.dump(pb));
+
+    const loaded = loadPlaybook(join(tmpDir, "test.yaml"));
+    expect(loaded.broker_id).toBe("test");
+    expect(loaded.phases).toHaveLength(1);
+  });
+
+  it("throws on invalid playbook", () => {
+    writeFileSync(join(tmpDir, "bad.yaml"), yaml.dump({ broker_id: "x" }));
+    expect(() => loadPlaybook(join(tmpDir, "bad.yaml"))).toThrow();
+  });
+
+  it("loads all playbooks from a directory", () => {
+    for (const id of ["a", "b", "c"]) {
+      const pb = {
+        broker_id: id,
+        version: 1,
+        last_verified: "2026-03-04",
+        phases: [{ name: "submit", steps: [{ action: "goto", url: "https://example.com" }] }],
+      };
+      writeFileSync(join(tmpDir, `${id}.yaml`), yaml.dump(pb));
+    }
+
+    const all = loadAllPlaybooks(tmpDir);
+    expect(all.size).toBe(3);
+    expect(all.has("a")).toBe(true);
+  });
+
+  it("returns empty map for missing directory", () => {
+    const all = loadAllPlaybooks(join(tmpDir, "nonexistent"));
+    expect(all.size).toBe(0);
   });
 });
