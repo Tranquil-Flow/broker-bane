@@ -26,15 +26,28 @@ export async function initBrowser(config: BrowserConfig): Promise<StagehandInsta
   try {
     const { Stagehand } = await import("@browserbasehq/stagehand");
 
-    const stagehand = new Stagehand({
-      env: "LOCAL",
+    const useBrowserbase = Boolean(config.browserbase_api_key);
+
+    const stagehandOptions: Record<string, unknown> = {
       enableCaching: true,
       headless: config.headless,
       modelName: config.model,
       modelClientOptions: {
         apiKey: config.api_key,
       },
-    });
+    };
+
+    if (useBrowserbase) {
+      stagehandOptions.env = "BROWSERBASE";
+      stagehandOptions.apiKey = config.browserbase_api_key;
+      stagehandOptions.projectId = config.browserbase_project_id;
+      logger.info("Using Browserbase cloud browser");
+    } else {
+      stagehandOptions.env = "LOCAL";
+      logger.info("Using local browser");
+    }
+
+    const stagehand = new Stagehand(stagehandOptions as any);
 
     await stagehand.init();
     instance = stagehand as unknown as StagehandInstance;

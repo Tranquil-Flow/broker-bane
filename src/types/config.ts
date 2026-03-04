@@ -66,6 +66,8 @@ export const BrowserConfigSchema = z.object({
   model: z.string().default("gpt-4o"),
   provider: z.enum(["openai", "anthropic", "ollama"]).default("openai"),
   api_key: z.string().optional(),
+  browserbase_api_key: z.string().optional(),
+  browserbase_project_id: z.string().optional(),
   cache_dir: z.string().optional(),
   timeout_ms: z.number().default(30_000),
 });

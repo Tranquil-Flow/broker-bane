@@ -28,10 +28,14 @@
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.5",
+    "@browserbasehq/stagehand": "^2.0.0",
+    "@playwright/test": "^1.58.2",
     "better-sqlite3": "11.8.1",
     "chalk": "5.4.1",
     "cli-table3": "0.6.5",
     "commander": "13.1.0",
+    "deepmerge": "^4.3.1",
+    "dotenv": "^17.3.1",
     "googleapis": "^171.4.0",
     "handlebars": "4.7.8",
     "imapflow": "1.0.175",
@@ -42,11 +46,12 @@
     "nodemailer": "6.10.0",
     "nopecha": "1.0.11",
     "open": "^11.0.0",
+    "openai": "^6.25.0",
     "ora": "8.2.0",
     "pino": "9.6.0",
     "pino-pretty": "13.0.0",
     "tldts": "6.1.77",
-    "zod": "3.24.2"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",

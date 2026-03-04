@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, writeFileSync, readFileSync, mkdirSync, mkdtempSync, unlinkSync } from "node:fs";
+import { existsSync, writeFileSync, readFileSync, mkdirSync, mkdtempSync, unlinkSync, rmdirSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
 
@@ -117,13 +117,15 @@ export function installSchedule(binaryPath: string, configPath: string): void {
     const tmpFile = join(tmpDir, "crontab.tmp");
     writeFileSync(tmpFile, updated, "utf-8");
     run("crontab", [tmpFile]);
+    unlinkSync(tmpFile);
+    rmdirSync(tmpDir);
     return;
   }
 
   if (platform === "windows") {
     run("schtasks", [
       "/create", "/tn", "BrokerBaneQuarterly",
-      "/tr", `${binaryPath} remove --config ${configPath}`,
+      "/tr", `"${binaryPath.replace(/"/g, '""')}" remove --config "${configPath.replace(/"/g, '""')}"`,
       "/sc", "MONTHLY", "/mo", "3", "/d", "1", "/st", "09:00", "/f",
     ]);
   }
@@ -149,6 +151,8 @@ export function uninstallSchedule(): void {
       const tmpFile = join(tmpDir, "crontab.tmp");
       writeFileSync(tmpFile, updated + "\n", "utf-8");
       run("crontab", [tmpFile]);
+      unlinkSync(tmpFile);
+      rmdirSync(tmpDir);
     } else {
       spawnSync("crontab", ["-r"], { stdio: "pipe" });
     }
