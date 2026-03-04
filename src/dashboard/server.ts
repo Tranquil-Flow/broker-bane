@@ -9,6 +9,11 @@ import { runMigrations } from "../db/migrations.js";
 import type { AppConfig } from "../types/config.js";
 import { registerDashboardRoutes } from "./routes/dashboard.js";
 import { registerApiRoutes } from "./routes/api.js";
+import { registerBrokerRoutes } from "./routes/brokers.js";
+import { registerTaskRoutes } from "./routes/tasks.js";
+import { registerAboutRoutes } from "./routes/about.js";
+import { registerCompareRoutes } from "./routes/compare.js";
+import { registerSetupRoutes } from "./routes/setup.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -26,6 +31,11 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database): { 
   // Register routes
   registerDashboardRoutes(app, db);
   registerApiRoutes(app, db);
+  registerBrokerRoutes(app, db);
+  registerTaskRoutes(app, db);
+  registerAboutRoutes(app, db);
+  registerCompareRoutes(app, db);
+  registerSetupRoutes(app, db);
 
   return { app, db };
 }
