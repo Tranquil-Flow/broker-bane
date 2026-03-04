@@ -12,7 +12,7 @@ export function registerAboutRoutes(_app: Hono, _db: Database): void {
 
 <div class="content-section">
   <h2>What does BrokerBane do?</h2>
-  <p>BrokerBane automates the tedious process of requesting data removal from these brokers. It sends GDPR Article 17 and CCPA Section 1798.105 erasure requests via email and web forms, monitors your inbox for confirmation emails, and automatically clicks verification links.</p>
+  <p>BrokerBane automates the tedious process of requesting data removal from these brokers. It sends GDPR Article 17 and CCPA Section 1798.105 erasure requests via email, monitors your inbox for confirmation emails, and automatically clicks verification links. For brokers that require web forms, BrokerBane uses preconfigured playbooks for each broker, with AI-powered repair when forms change.</p>
 </div>
 
 <div class="content-section">
@@ -22,7 +22,7 @@ export function registerAboutRoutes(_app: Hono, _db: Database): void {
    │         │         │           │          └─ Removal verified
    │         │         │           └─ Auto-click confirmation links
    │         │         └─ IMAP IDLE inbox monitoring
-   │         └─ Email (SMTP) or web form (AI browser)
+   │         └─ Email (SMTP) or web form (playbook + AI repair)
    └─ Check if profile exists on broker</div>
 </div>
 
