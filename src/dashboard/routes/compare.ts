@@ -52,14 +52,14 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       <tr>
         <td class="feature">Email removals</td>
         <td class="yes">YES</td>
-        <td class="yes">YES</td>
-        <td class="yes">YES</td>
-        <td class="yes">YES</td>
-        <td class="yes">YES</td>
+        <td>YES</td>
+        <td>YES</td>
+        <td>YES</td>
+        <td>YES</td>
       </tr>
       <tr>
         <td class="feature">Web form removals</td>
-        <td class="yes">AI-driven</td>
+        <td class="yes">Scripted + AI fallback</td>
         <td>Scripted</td>
         <td>Scripted</td>
         <td class="no">Manual</td>
@@ -107,7 +107,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Before/after proof</td>
-        <td class="yes">Evidence chain</td>
+        <td class="yes">SHA-256 cryptographic chain</td>
         <td class="no">NO</td>
         <td class="no">NO</td>
         <td class="no">NO</td>
