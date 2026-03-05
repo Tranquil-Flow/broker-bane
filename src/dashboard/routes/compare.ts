@@ -51,19 +51,19 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Email removals</td>
-        <td class="yes">1,169 brokers</td>
-        <td>Included</td>
-        <td>Included</td>
-        <td>Included</td>
-        <td>Included</td>
+        <td class="yes">YES</td>
+        <td class="yes">YES</td>
+        <td class="yes">YES</td>
+        <td class="yes">YES</td>
+        <td class="yes">YES</td>
       </tr>
       <tr>
         <td class="feature">Web form removals</td>
-        <td class="yes">YES</td>
-        <td>YES</td>
-        <td>YES</td>
+        <td class="yes">AI-driven</td>
+        <td>Scripted</td>
+        <td>Scripted</td>
         <td class="no">Manual</td>
-        <td>YES</td>
+        <td>Scripted</td>
       </tr>
       <tr>
         <td class="feature">Data stays local</td>
