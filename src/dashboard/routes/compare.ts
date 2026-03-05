@@ -43,7 +43,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Total brokers in scope</td>
-        <td>1,103</td>
+        <td>1,169</td>
         <td>420+</td>
         <td>313</td>
         <td>750+</td>
@@ -51,7 +51,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Email removals</td>
-        <td class="yes">1,103 brokers</td>
+        <td class="yes">1,169 brokers</td>
         <td>Included</td>
         <td>Included</td>
         <td>Included</td>
@@ -122,7 +122,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
     Competitor data sourced from their official websites as of March 2026.
     Incogni: incogni.com | OneRep: onerep.com | DeleteMe: joindeleteme.com | Optery: optery.com.
     Incogni claims 2,420+ "sites" but counts multiple domains per broker &mdash; their verified
-    unique broker count is 420+. BrokerBane's 1,103 includes email-based legal requests and
+    unique broker count is 420+. BrokerBane's 1,169 includes email-based legal requests and
     automated web form submissions &mdash; not all have been individually verified.
   </p>
 </div>`;
