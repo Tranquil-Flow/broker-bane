@@ -44,7 +44,7 @@ export function progressBar(
     <span><span class="g">${completed}</span> completed</span>
     <span><span class="a">${inProgress}</span> in progress</span>
     <span><span class="r">${failed}</span> failed</span>
-    <span>${queued} queued</span>
+    <span>${queued} remaining</span>
   </div>
 </div>`;
 }
@@ -300,6 +300,44 @@ export function beforeAfterScreenshots(
         ? `<div style="font-size:0.7rem;color:var(--text-dim);word-break:break-all">${escapeHtml(afterPath)}</div>`
         : `<div class="dim">No screenshot</div>`}
     </div>
+  </div>
+</div>`;
+}
+
+// ─── Category Breakdown ───────────────────────────────────────────
+
+export function categoryBreakdownBar(
+  categories: { name: string; count: number }[],
+  total: number,
+): string {
+  const colorMap: Record<string, string> = {
+    people_search: "var(--red)",
+    data_broker: "var(--amber)",
+    marketing_data: "var(--cyan)",
+    background_check: "var(--magenta, #b48ead)",
+    credit_bureau: "var(--yellow, #ebcb8b)",
+  };
+
+  const bars = categories
+    .sort((a, b) => b.count - a.count)
+    .map((cat) => {
+      const pct = total > 0 ? Math.round((cat.count / total) * 100) : 0;
+      const color = colorMap[cat.name] ?? "var(--text-dim)";
+      const label = cat.name.replace(/_/g, " ").toUpperCase();
+      return `<div style="display:flex;align-items:center;gap:0.5rem;font-size:0.7rem">
+  <span style="min-width:120px;letter-spacing:0.05em;color:${color}">${label}</span>
+  <div style="flex:1;background:var(--bg-card);height:12px;border:1px solid var(--border);position:relative">
+    <div style="width:${pct}%;height:100%;background:${color};opacity:0.7"></div>
+  </div>
+  <span style="min-width:50px;text-align:right;color:var(--text-dim)">${cat.count} <span style="font-size:0.6rem">(${pct}%)</span></span>
+</div>`;
+    })
+    .join("\n");
+
+  return `<div style="background:var(--bg-card);border:1px solid var(--border);padding:1rem 1.25rem;margin-bottom:1rem">
+  <div style="font-size:0.7rem;letter-spacing:0.1em;color:var(--white);margin-bottom:0.75rem">BROKER CATEGORIES</div>
+  <div style="display:flex;flex-direction:column;gap:0.4rem">
+    ${bars}
   </div>
 </div>`;
 }

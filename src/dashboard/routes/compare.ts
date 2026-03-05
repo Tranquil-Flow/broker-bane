@@ -99,7 +99,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Scheduled re-scan</td>
-        <td class="yes">YES</td>
+        <td class="yes">Custom (daily&ndash;yearly)</td>
         <td>Every 60&ndash;90 days</td>
         <td>Monthly</td>
         <td>Quarterly</td>

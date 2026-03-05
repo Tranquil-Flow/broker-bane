@@ -1,23 +1,39 @@
 import type { Hono } from "hono";
 import type { Database } from "better-sqlite3";
 import { layout } from "../views/layout.js";
-import { statCard, progressBar, logEntry, circuitBreakerCard, taskCard, evidenceStatusBadge } from "../views/components.js";
+import { statCard, progressBar, logEntry, circuitBreakerCard, taskCard, evidenceStatusBadge, categoryBreakdownBar } from "../views/components.js";
 import { RemovalRequestRepo } from "../../db/repositories/removal-request.repo.js";
 import { CircuitBreakerRepo } from "../../db/repositories/circuit-breaker.repo.js";
 import { PendingTaskRepo } from "../../db/repositories/pending-task.repo.js";
 import { EvidenceChainRepo } from "../../db/repositories/evidence-chain.repo.js";
 import { EvidenceChainService } from "../../pipeline/evidence-chain.js";
 import { loadBrokerDatabase } from "../../data/broker-loader.js";
+import { BrokerStore } from "../../data/broker-store.js";
 import { renderScanSummaryHtml } from "./scan.js";
 
-let cachedBrokerCount: number | null = null;
+let cachedBrokerStore: BrokerStore | null = null;
+
+function getBrokerStore(): BrokerStore {
+  if (!cachedBrokerStore) {
+    const { brokers } = loadBrokerDatabase();
+    cachedBrokerStore = new BrokerStore(brokers);
+  }
+  return cachedBrokerStore;
+}
 
 function getBrokerCount(): number {
-  if (cachedBrokerCount === null) {
-    const { brokers } = loadBrokerDatabase();
-    cachedBrokerCount = brokers.length;
+  return getBrokerStore().size;
+}
+
+export function renderCategoryBreakdownHtml(): string {
+  const store = getBrokerStore();
+  const brokers = store.getAll();
+  const counts = new Map<string, number>();
+  for (const b of brokers) {
+    counts.set(b.category, (counts.get(b.category) ?? 0) + 1);
   }
-  return cachedBrokerCount;
+  const categories = Array.from(counts.entries()).map(([name, count]) => ({ name, count }));
+  return categoryBreakdownBar(categories, brokers.length);
 }
 
 export function renderStatsHtml(db: Database): string {

@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import yaml from "js-yaml";
@@ -66,6 +66,29 @@ export function loadConfig(overridePath?: string): AppConfig {
   config.database.path = expandHome(config.database.path);
 
   return config;
+}
+
+export function updateConfigField(configPath: string, field: string, value: unknown): void {
+  if (!existsSync(configPath)) {
+    throw new ConfigError(`Config file not found: ${configPath}`);
+  }
+
+  const content = readFileSync(configPath, "utf-8");
+  const raw = yaml.load(content) as Record<string, unknown>;
+
+  // Navigate to the nested field and set the value
+  const parts = field.split(".");
+  let obj: Record<string, unknown> = raw;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (obj[parts[i]] == null || typeof obj[parts[i]] !== "object") {
+      obj[parts[i]] = {};
+    }
+    obj = obj[parts[i]] as Record<string, unknown>;
+  }
+  obj[parts[parts.length - 1]] = value;
+
+  const newContent = yaml.dump(raw, { lineWidth: -1, quotingType: '"', forceQuotes: false });
+  writeFileSync(configPath, newContent, { encoding: "utf-8", mode: 0o600 });
 }
 
 export { expandHome };

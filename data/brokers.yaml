@@ -1,5 +1,5 @@
 version: 1.1.0
-updated: '2026-03-05'
+updated: "2026-03-05"
 brokers:
   - id: spokeo
     name: Spokeo
@@ -18,9 +18,7 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: >-
-      Navigate to spokeo.com/optout. Enter the profile URL, then email address. Click 'Remove this listing'. Confirm via
-      email link.
+    form_hints: Navigate to spokeo.com/optout. Enter the profile URL, then email address. Click 'Remove this listing'. Confirm via email link.
     opt_out_url: https://www.spokeo.com/optout
   - id: beenverified
     name: BeenVerified
@@ -40,8 +38,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your
-      email and submit the opt-out. Confirm via the email link sent to your inbox.
+      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the
+      opt-out. Confirm via the email link sent to your inbox.
     opt_out_url: https://www.beenverified.com/app/optout/search
   - id: whitepages
     name: Whitepages
@@ -60,8 +58,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct
-      profile. Click 'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
+      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click
+      'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
     opt_out_url: https://www.whitepages.com/suppression-requests
   - id: intelius
     name: Intelius
@@ -81,8 +79,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter
-      your email address and submit. Confirm via the email link. May take several days to process.
+      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address
+      and submit. Confirm via the email link. May take several days to process.
     opt_out_url: https://www.intelius.com/optout
   - id: peoplefinder
     name: PeopleFinder
@@ -101,8 +99,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address
-      for confirmation. Submit the form and confirm via the email link.
+      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation.
+      Submit the form and confirm via the email link.
     opt_out_url: https://www.peoplefinder.com/optout
   - id: truepeoplesearch
     name: TruePeopleSearch
@@ -120,8 +118,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the
-      'Remove This Record' button. Confirm the removal on the next page. The record is removed immediately.
+      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record'
+      button. Confirm the removal on the next page. The record is removed immediately.
     opt_out_url: https://www.truepeoplesearch.com/removal
   - id: fastpeoplesearch
     name: FastPeopleSearch
@@ -139,8 +137,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click
-      'Remove This Record'. Confirm the removal. Removal takes effect within 72 hours.
+      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This
+      Record'. Confirm the removal. Removal takes effect within 72 hours.
     opt_out_url: https://www.fastpeoplesearch.com/removal
   - id: thatsthem
     name: ThatsThem
@@ -158,8 +156,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out'
-      button on the listing page. Confirm the removal request.
+      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing
+      page. Confirm the removal request.
     opt_out_url: https://thatsthem.com/optout
   - id: radaris
     name: Radaris
@@ -179,9 +177,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile.
-      Click 'Control Information' then select 'Remove all information'. Confirm your identity via email. May require
-      follow-up if records reappear.
+      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control
+      Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
     opt_out_url: https://radaris.com/control/privacy
   - id: mylife
     name: MyLife
@@ -201,9 +198,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy.
-      Request profile removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the
-      self-service option is blocked. Removal can take 7-10 business days.
+      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile
+      removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal
+      can take 7-10 business days.
     opt_out_url: https://www.mylife.com/privacy-policy#remove
   - id: truthfinder
     name: Truthfinder
@@ -223,8 +220,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your
-      email address and submit the opt-out. Confirm by clicking the link in the email you receive.
+      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and
+      submit the opt-out. Confirm by clicking the link in the email you receive.
     opt_out_url: https://www.truthfinder.com/optout
   - id: instantcheckmate
     name: InstantCheckmate
@@ -244,9 +241,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the
-      results. Provide your email address and submit the removal request. Confirm via the email link. Processing may
-      take a few days.
+      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your
+      email address and submit the removal request. Confirm via the email link. Processing may take a few days.
     opt_out_url: https://www.instantcheckmate.com/optout
   - id: ussearch
     name: USSearch
@@ -265,8 +261,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click
-      'Remove'. Provide your email and confirm via the verification link.
+      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your
+      email and confirm via the verification link.
     opt_out_url: https://www.ussearch.com/opt-out/submit
   - id: peoplelooker
     name: PeopleLooker
@@ -286,8 +282,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter
-      your email address and submit. Confirm the opt-out via the email link.
+      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address
+      and submit. Confirm the opt-out via the email link.
     opt_out_url: https://www.peoplelooker.com/app/optout/search
   - id: pipl
     name: Pipl
@@ -480,9 +476,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and
-      submit.
+    form_hints: Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and submit.
     opt_out_url: https://www.peekyou.com/about/contact/optout/
   - id: usatrace
     name: USA Trace
@@ -500,7 +494,7 @@ brokers:
     verify_before_send: false
     form_hints: Go to usatrace.com/optout. Search for your name. Find your listing and click Remove.
     opt_out_url: https://www.usatrace.com/optout
-  - id: '411'
+  - id: "411"
     name: 411.com
     domain: 411.com
     region: us
@@ -515,8 +509,8 @@ brokers:
     public_directory: true
     verify_before_send: false
     form_hints: >-
-      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this
-      listing'. Enter your email and confirm via the link.
+      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your
+      email and confirm via the link.
     opt_out_url: https://www.411.com/privacy
   - id: addresses
     name: Addresses.com
@@ -532,9 +526,7 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to addresses.com/optout.php. Search your name. Select your listing and click the Remove link. Fill in the form
-      and submit.
+    form_hints: Go to addresses.com/optout.php. Search your name. Select your listing and click the Remove link. Fill in the form and submit.
     opt_out_url: https://www.addresses.com/optout.php
   - id: usphonebook
     name: US Phone Book
@@ -550,9 +542,7 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to usphonebook.com/opt-out. Enter your name and state. Find and select your record. Fill out the removal form
-      and submit.
+    form_hints: Go to usphonebook.com/opt-out. Enter your name and state. Find and select your record. Fill out the removal form and submit.
     opt_out_url: https://www.usphonebook.com/opt-out
   - id: socialcatfish
     name: Social Catfish
@@ -569,9 +559,7 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email
-      link.
+    form_hints: Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email link.
     opt_out_url: https://socialcatfish.com/opt-out/
   - id: clustrmaps
     name: ClustrMaps
@@ -588,9 +576,7 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: >-
-      Go to clustrmaps.com/bl/opt-out. Search your name. Select the profile. Enter your email and submit. Confirm via
-      the email link.
+    form_hints: Go to clustrmaps.com/bl/opt-out. Search your name. Select the profile. Enter your email and submit. Confirm via the email link.
     opt_out_url: https://clustrmaps.com/bl/opt-out
   - id: liveramp
     name: LiveRamp
@@ -8868,8 +8854,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://privacyportal-eu-cdn.onetrust.com/dsarwebform/942fbf02-bbfe-4a5d-808d-080b06c5651c/3fdf8f1d-7ab3-4a99-bb4e-24965500290d.html
+    opt_out_url: https://privacyportal-eu-cdn.onetrust.com/dsarwebform/942fbf02-bbfe-4a5d-808d-080b06c5651c/3fdf8f1d-7ab3-4a99-bb4e-24965500290d.html
   - id: dojomojo
     name: DojoMojo
     domain: proxima.ai
@@ -8949,8 +8934,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://privacyportal.onetrust.com/webform/5cb57702-8ef7-437e-a62b-408fe78cd310/93391c3d-d6c8-45b1-a169-39a0b7f9fb74
+    opt_out_url: https://privacyportal.onetrust.com/webform/5cb57702-8ef7-437e-a62b-408fe78cd310/93391c3d-d6c8-45b1-a169-39a0b7f9fb74
   - id: zabasearch
     name: ZabaSearch
     domain: zabasearch.com
@@ -9140,8 +9124,7 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: >-
-      https://privacyportal.onetrust.com/webform/e32c5e49-85c5-4969-bfa8-8cde49952e1f/6034339d-69de-41fc-829f-7b8b51d9fabe
+    opt_out_url: https://privacyportal.onetrust.com/webform/e32c5e49-85c5-4969-bfa8-8cde49952e1f/6034339d-69de-41fc-829f-7b8b51d9fabe
   - id: 4legalleads
     name: 4Legalleads
     domain: 4legalleads.com
@@ -9622,8 +9605,7 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: >-
-      https://privacyportal.onetrust.com/webform/82a6a736-b3a7-4e87-a2fd-04a39b7d2b19/2f5dc7b8-7698-4623-82d2-b2b969ef901e
+    opt_out_url: https://privacyportal.onetrust.com/webform/82a6a736-b3a7-4e87-a2fd-04a39b7d2b19/2f5dc7b8-7698-4623-82d2-b2b969ef901e
   - id: businesscom
     name: Business.Com
     domain: business.com
@@ -13097,8 +13079,7 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: >-
-      https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
+    opt_out_url: https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
   - id: abalta_technologies_inc
     name: Abalta Technologies Inc.
     domain: abaltatech.com
@@ -14960,7 +14941,7 @@ brokers:
     verify_before_send: false
     status: unverified
   - id: people_finder_instant_online_records_retrieval
-    name: 'People Finder: Instant Online Records Retrieval'
+    name: "People Finder: Instant Online Records Retrieval"
     domain: peoplefinderonline.net
     email: support@infotracer.com
     region: us
@@ -16055,8 +16036,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
+    opt_out_url: https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
   - id: realeflow_llc_2
     name: Realeflow LLC
     domain: cdn.realeflow.com
@@ -16162,8 +16142,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
+    opt_out_url: https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
   - id: seamless_contacts_inc
     name: Seamless Contacts, Inc.
     domain: login.seamless.ai
@@ -16479,8 +16458,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
+    opt_out_url: https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
   - id: tapad_inc_2
     name: Tapad, Inc.
     domain: crportal.tapad.com
@@ -16555,8 +16533,7 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: >-
-      https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
+    opt_out_url: https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
   - id: cengage_learning_inc_2
     name: Cengage Learning, Inc.
     domain: cengagegroup.com
@@ -16698,3 +16675,1474 @@ brokers:
     public_directory: false
     verify_before_send: false
     opt_out_url: https://www.optoutprescreen.com/
+  - id: classmates
+    name: Classmates
+    domain: classmates.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleConnect Inc
+    search_url: https://www.classmates.com
+    opt_out_url: https://www.classmates.com/opt-out
+  - id: datecheck
+    name: DateCheck
+    domain: datecheck.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleConnect Inc
+    subsidiary_of: classmates
+    search_url: https://www.datecheck.com
+  - id: spock
+    name: Spock
+    domain: spock.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleConnect Inc
+    subsidiary_of: classmates
+  - id: isearch
+    name: iSearch
+    domain: isearch.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleConnect Inc
+    subsidiary_of: classmates
+  - id: numberguru
+    name: NumberGuru
+    domain: numberguru.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: BeenVerified Inc
+    search_url: https://www.numberguru.com
+    opt_out_url: https://www.beenverified.com/f/optout/search
+  - id: whitepages-premium
+    name: Whitepages Premium
+    domain: whitepagespremium.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Whitepages Inc
+  - id: infotracer-2
+    name: InfoTracer
+    domain: infotracer.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: InfoTracer Inc
+    search_url: https://infotracer.com/people-search
+    opt_out_url: https://infotracer.com/optout
+  - id: cocofinder
+    name: CocoFinder
+    domain: cocofinder.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: InfoTracer Inc
+    subsidiary_of: infotracer-2
+    search_url: https://www.cocofinder.com
+    opt_out_url: https://cocofinder.com/remove-my-info
+  - id: accurint
+    name: Accurint
+    domain: accurint.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: RELX Group
+  - id: publicrecords-com
+    name: PublicRecords.com
+    domain: publicrecords.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleFinders Inc
+    search_url: https://www.publicrecords.com
+  - id: cyberbackgroundchecks
+    name: CyberBackgroundChecks
+    domain: cyberbackgroundchecks.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: CyberBackgroundChecks
+    search_url: https://www.cyberbackgroundchecks.com
+    opt_out_url: https://www.cyberbackgroundchecks.com/removal
+  - id: anywho
+    name: AnyWho
+    domain: anywho.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: AnyWho
+    search_url: https://www.anywho.com
+    opt_out_url: https://www.intelius.com/opt-out
+  - id: addresssearch
+    name: AddressSearch
+    domain: addresssearch.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: AddressSearch
+    search_url: https://www.addresssearch.com
+  - id: peoplesearchnow
+    name: PeopleSearchNow
+    domain: peoplesearchnow.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleSearchNow
+    search_url: https://www.peoplesearchnow.com
+    opt_out_url: https://www.peoplesearchnow.com/opt-out
+  - id: verecor
+    name: Verecor
+    domain: verecor.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Verecor
+    search_url: https://verecor.com
+    opt_out_url: https://verecor.com/ng/control/privacy
+  - id: voterrecords
+    name: VoterRecords
+    domain: voterrecords.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: VoterRecords
+    search_url: https://voterrecords.com
+    opt_out_url: https://voterrecords.com/optout
+  - id: truthrecord-2
+    name: TruthRecord
+    domain: truthrecord.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: TruthRecord
+    search_url: https://truthrecord.com
+  - id: smartbackgroundchecks
+    name: SmartBackgroundChecks
+    domain: smartbackgroundchecks.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: SmartBackgroundChecks
+    search_url: https://www.smartbackgroundchecks.com
+    opt_out_url: https://www.smartbackgroundchecks.com/optout
+  - id: oldfriends
+    name: OldFriends
+    domain: oldfriends.co
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: OldFriends
+  - id: whocalledme
+    name: WhoCalledMe
+    domain: whocalledme.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: WhoCalledMe
+    search_url: https://whocalledme.com
+  - id: callersmart
+    name: CallerSmart
+    domain: callersmart.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: CallerSmart
+    search_url: https://www.callersmart.com
+  - id: reversephonelookup
+    name: ReversePhoneLookup
+    domain: reversephonelookup.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: ReversePhoneLookup
+    search_url: https://www.reversephonelookup.com
+  - id: phonenumberlookupfree
+    name: PhoneNumberLookupFree
+    domain: phonenumberlookupfree.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PhoneNumberLookupFree
+    search_url: https://www.phonenumberlookupfree.com
+  - id: usa-people-search
+    name: USA People Search
+    domain: usa-people-search.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: USA People Search
+    search_url: https://www.usa-people-search.com
+    opt_out_url: https://www.usa-people-search.com/manage
+  - id: xlek
+    name: Xlek
+    domain: xlek.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Xlek
+    search_url: https://www.xlek.com
+  - id: recordsfinder
+    name: RecordsFinder
+    domain: recordsfinder.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: RecordsFinder
+    search_url: https://recordsfinder.com
+    opt_out_url: https://recordsfinder.com/optout.php
+  - id: backgroundalert
+    name: BackgroundAlert
+    domain: backgroundalert.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: BackgroundAlert
+    search_url: https://www.backgroundalert.com
+  - id: kiwi-searches
+    name: Kiwi Searches
+    domain: kiwisearches.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Kiwi Searches
+    search_url: https://kiwisearches.com
+    opt_out_url: https://kiwisearches.com/optout
+  - id: mugshotlook
+    name: MugshotLook
+    domain: mugshotlook.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: MugshotLook
+    search_url: https://mugshotlook.com
+  - id: freebackgroundcheck
+    name: FreeBackgroundCheck
+    domain: freebackgroundcheck.org
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: FreeBackgroundCheck
+    search_url: https://www.freebackgroundcheck.org
+  - id: peoplesearch123
+    name: PeopleSearch123
+    domain: peoplesearch123.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleSearch123
+    search_url: https://www.peoplesearch123.com
+  - id: peoplefindthor
+    name: PeopleFindThor
+    domain: peoplefindthor.dk
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleFindThor
+    search_url: https://peoplefindthor.dk
+  - id: myheritage
+    name: MyHeritage
+    domain: myheritage.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: MyHeritage
+    search_url: https://www.myheritage.com
+    opt_out_url: https://www.myheritage.com/privacy-policy
+  - id: cubib
+    name: Cubib
+    domain: cubib.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Cubib
+    search_url: https://cubib.com
+  - id: newenglandfacts
+    name: NewEnglandFacts
+    domain: newenglandfacts.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: NewEnglandFacts
+    search_url: https://newenglandfacts.com
+  - id: officialusa
+    name: OfficialUSA
+    domain: officialusa.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: OfficialUSA
+    search_url: https://www.officialusa.com
+  - id: anywhois
+    name: AnyWhoIs
+    domain: anywhois.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: WhoIs
+    search_url: https://anywhois.com
+  - id: freepeopledirectory
+    name: FreePeopleDirectory
+    domain: freepeopledirectory.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Free People Directory
+    search_url: https://www.freepeopledirectory.com
+  - id: neighbor-report
+    name: Neighbor Report
+    domain: neighbor.report
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Neighbor Report
+    search_url: https://neighbor.report
+    opt_out_url: https://neighbor.report/remove
+  - id: open-public-records
+    name: Open Public Records
+    domain: openpublicrecords.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Open Public Records
+    search_url: https://openpublicrecords.com
+  - id: virtory
+    name: Virtory
+    domain: virtory.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Virtory
+    search_url: https://virtory.com
+  - id: quick-people-trace
+    name: Quick People Trace
+    domain: quickpeopletrace.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Quick People Trace
+    search_url: https://www.quickpeopletrace.com
+  - id: dataveria
+    name: DataVeria
+    domain: dataveria.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: DataVeria
+    search_url: https://dataveria.com
+    opt_out_url: https://dataveria.com/ng/control/privacy
+  - id: golookup
+    name: GoLookUp
+    domain: golookup.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: GoLookUp
+    search_url: https://golookup.com
+    opt_out_url: https://golookup.com/support/optout
+  - id: infopublica
+    name: InfoPublica
+    domain: infopublica.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: InfoPublica
+    search_url: https://infopublica.com
+  - id: pub360
+    name: Pub360
+    domain: pub360.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Pub360
+    search_url: https://pub360.com
+  - id: zosearch
+    name: ZoSearch
+    domain: zosearch.com
+    region: us
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: ZoSearch
+    search_url: https://www.zosearch.com
+  - id: 192-com
+    name: 192.com
+    domain: 192.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: 192.com Ltd
+    search_url: https://www.192.com
+    opt_out_url: https://www.192.com/optout/
+  - id: 192-business
+    name: 192 Business
+    domain: 192business.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: 192.com Ltd
+    subsidiary_of: 192-com
+  - id: infobel
+    name: InfoBel
+    domain: infobel.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: InfoBel
+    search_url: https://www.infobel.com
+  - id: dastelefonbuch
+    name: DasTelefonbuch
+    domain: dastelefonbuch.de
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: DasTelefonbuch
+    search_url: https://www.dastelefonbuch.de
+  - id: gelbeseiten
+    name: GelbeSeiten
+    domain: gelbeseiten.de
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: DasTelefonbuch
+    subsidiary_of: dastelefonbuch
+    search_url: https://www.gelbeseiten.de
+  - id: pagesjaunes
+    name: PagesJaunes
+    domain: pagesjaunes.fr
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: SoLocal Group
+    search_url: https://www.pagesjaunes.fr
+  - id: pagesblanches
+    name: PagesBlanches
+    domain: pagesblanches.fr
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: SoLocal Group
+    subsidiary_of: pagesjaunes
+    search_url: https://www.pagesblanches.fr
+  - id: 118218-fr
+    name: 118218.fr
+    domain: 118218.fr
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: SoLocal Group
+    subsidiary_of: pagesjaunes
+    search_url: https://www.118218.fr
+  - id: 118000-fr
+    name: 118000.fr
+    domain: 118000.fr
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: SoLocal Group
+    subsidiary_of: pagesjaunes
+    search_url: https://www.118000.fr
+  - id: paginebianche
+    name: PagineBianche
+    domain: paginebianche.it
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Italiaonline
+    search_url: https://www.paginebianche.it
+  - id: paginegialle
+    name: PagineGialle
+    domain: paginegialle.it
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Italiaonline
+    subsidiary_of: paginebianche
+    search_url: https://www.paginegialle.it
+  - id: annuario
+    name: Annuario
+    domain: annuario.it
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Italiaonline
+    subsidiary_of: paginebianche
+  - id: herold
+    name: Herold
+    domain: herold.at
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Herold Business Data
+    search_url: https://www.herold.at
+  - id: eniro
+    name: Eniro
+    domain: eniro.se
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Eniro Group
+    search_url: https://www.eniro.se
+  - id: eniro-denmark
+    name: Eniro Denmark
+    domain: eniro.dk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Eniro Group
+    subsidiary_of: eniro
+    search_url: https://www.eniro.dk
+  - id: krak
+    name: Krak
+    domain: krak.dk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Eniro Group
+    subsidiary_of: eniro
+    search_url: https://www.krak.dk
+  - id: gulesider
+    name: Gulesider
+    domain: gulesider.no
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Eniro Group
+    subsidiary_of: eniro
+    search_url: https://www.gulesider.no
+  - id: hitta
+    name: Hitta
+    domain: hitta.se
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Hitta.se
+    search_url: https://www.hitta.se
+  - id: de-telefoongids
+    name: De Telefoongids
+    domain: detelefoongids.nl
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: De Telefoongids
+    search_url: https://www.detelefoongids.nl
+  - id: nummerzoeker
+    name: Nummerzoeker
+    domain: nummerzoeker.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: De Telefoongids
+    subsidiary_of: de-telefoongids
+    search_url: https://www.nummerzoeker.com
+  - id: "1881"
+    name: "1881"
+    domain: 1881.no
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: 1881 Group
+    search_url: https://www.1881.no
+  - id: fonecta
+    name: Fonecta
+    domain: fonecta.fi
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Fonecta
+    search_url: https://www.fonecta.fi
+  - id: yasni-2
+    name: Yasni
+    domain: yasni.de
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Yasni
+    search_url: https://www.yasni.de
+  - id: yasni-uk
+    name: Yasni UK
+    domain: yasni.co.uk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Yasni
+    subsidiary_of: yasni-2
+    search_url: https://www.yasni.co.uk
+  - id: webmii
+    name: WebMii
+    domain: webmii.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: WebMii
+    search_url: https://webmii.com
+  - id: bt-phone-book
+    name: BT Phone Book
+    domain: thephonebook.bt.com
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: BT Phone Book
+    search_url: https://www.thephonebook.bt.com
+  - id: electoralroll
+    name: ElectoralRoll
+    domain: electoralroll.co.uk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Electoral Roll
+    search_url: https://www.electoralroll.co.uk
+  - id: europages
+    name: Europages
+    domain: europages.co.uk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Europages
+    search_url: https://www.europages.co.uk
+  - id: cylex
+    name: Cylex
+    domain: cylex.co.uk
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Cylex
+    search_url: https://www.cylex.co.uk
+  - id: cylex-de
+    name: Cylex DE
+    domain: cylex.de
+    region: eu
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Cylex
+    subsidiary_of: cylex
+    search_url: https://www.cylex.de
+  - id: white-pages-au
+    name: White Pages AU
+    domain: whitepages.com.au
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Sensis (Telstra)
+    search_url: https://www.whitepages.com.au
+    opt_out_url: https://www.whitepages.com.au/opt-out
+  - id: yellow-pages-au
+    name: Yellow Pages AU
+    domain: yellow.com.au
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Sensis (Telstra)
+    subsidiary_of: white-pages-au
+    search_url: https://www.yellow.com.au
+  - id: reverseaustralia
+    name: ReverseAustralia
+    domain: reverseaustralia.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: ReverseAustralia
+    search_url: https://www.reverseaustralia.com
+  - id: peoplefinder-au
+    name: PeopleFinder AU
+    domain: peoplefinder.com.au
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: PeopleFinder AU
+    search_url: https://www.peoplefinder.com.au
+  - id: australiawhitepages
+    name: AustraliaWhitePages
+    domain: australiawhitepages.net
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: AustraliaWhitePages
+  - id: yellow-nz
+    name: Yellow NZ
+    domain: yellow.co.nz
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Yellow NZ
+    search_url: https://www.yellow.co.nz
+  - id: white-pages-nz
+    name: White Pages NZ
+    domain: whitepages.co.nz
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Yellow NZ
+    subsidiary_of: yellow-nz
+    search_url: https://www.whitepages.co.nz
+  - id: truecaller
+    name: Truecaller
+    domain: truecaller.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: True Software Scandinavia
+    search_url: https://www.truecaller.com
+    opt_out_url: https://www.truecaller.com/unlisting
+  - id: justdial
+    name: JustDial
+    domain: justdial.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Just Dial Ltd
+    search_url: https://www.justdial.com
+  - id: sulekha
+    name: Sulekha
+    domain: sulekha.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Sulekha
+    search_url: https://www.sulekha.com
+  - id: indiamart
+    name: IndiaMART
+    domain: indiamart.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: IndiaMART
+    search_url: https://www.indiamart.com
+  - id: zauba-corp
+    name: Zauba Corp
+    domain: zaubacorp.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Zauba Corp
+    search_url: https://www.zaubacorp.com
+  - id: eycon
+    name: Eycon
+    domain: eycon.com
+    region: global
+    category: people_search
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    opt_out_validity_days: 180
+    tier: 3
+    public_directory: true
+    verify_before_send: true
+    parent_company: Eycon
+    search_url: https://www.eycon.com

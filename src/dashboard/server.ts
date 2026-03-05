@@ -38,7 +38,7 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database): { 
   registerAboutRoutes(app, db);
   registerCompareRoutes(app, db);
   registerSetupRoutes(app, db);
-  registerScanRoutes(app, db);
+  registerScanRoutes(app, db, config);
   registerEvidenceRoutes(app, db);
 
   return { app, db };
