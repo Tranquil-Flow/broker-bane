@@ -43,7 +43,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Total brokers in scope</td>
-        <td>1,169</td>
+        <td class="yes">1,169</td>
         <td>420+</td>
         <td>313</td>
         <td>750+</td>
