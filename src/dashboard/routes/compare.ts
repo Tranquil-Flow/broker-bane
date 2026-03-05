@@ -107,7 +107,7 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
       </tr>
       <tr>
         <td class="feature">Before/after proof</td>
-        <td class="yes">Screenshots</td>
+        <td class="yes">Evidence chain</td>
         <td class="no">NO</td>
         <td class="no">NO</td>
         <td class="no">NO</td>
