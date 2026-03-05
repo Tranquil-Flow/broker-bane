@@ -75,7 +75,7 @@ export async function testConfigCommand(options: {
         host: config.inbox.host,
         port: config.inbox.port,
         secure: config.inbox.secure,
-        auth: imapAuth,
+        auth: imapAuth as { user: string; pass: string },
         logger: false,
       });
       await client.connect();

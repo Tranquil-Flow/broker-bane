@@ -65,7 +65,7 @@ export class InboxMonitor {
         host: this.config.host,
         port: this.config.port,
         secure: this.config.secure,
-        auth: imapAuth,
+        auth: imapAuth as { user: string; pass: string },
         logger: false,
       });
 
