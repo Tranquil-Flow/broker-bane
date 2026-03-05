@@ -233,8 +233,10 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "DASHBOARD" },
+  { href: "/scan", label: "SCAN" },
   { href: "/brokers", label: "BROKERS" },
   { href: "/tasks", label: "TASKS" },
+  { href: "/evidence", label: "EVIDENCE" },
   { href: "/about", label: "INTEL" },
   { href: "/compare", label: "COMPARE" },
   { href: "/setup", label: "SETUP" },

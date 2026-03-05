@@ -10,6 +10,7 @@ export interface BrokerFilter {
   hasSearchUrl?: boolean;
   difficulty?: readonly string[];
   publicDirectoryOnly?: boolean;
+  parentCompany?: string;
 }
 
 export class BrokerStore {
@@ -62,6 +63,9 @@ export class BrokerStore {
       if (criteria.publicDirectoryOnly === true && !broker.public_directory) {
         return false;
       }
+      if (criteria.parentCompany && broker.parent_company !== criteria.parentCompany) {
+        return false;
+      }
       return true;
     });
   }
@@ -87,5 +91,23 @@ export class BrokerStore {
 
   getByTier(tier: BrokerTier): readonly Broker[] {
     return this.brokers.filter((b) => b.tier === tier);
+  }
+
+  getByParentCompany(name: string): readonly Broker[] {
+    return this.brokers.filter((b) => b.parent_company === name);
+  }
+
+  getParentCompanyGroups(): ReadonlyMap<string, readonly Broker[]> {
+    const groups = new Map<string, Broker[]>();
+    for (const broker of this.brokers) {
+      if (!broker.parent_company) continue;
+      const list = groups.get(broker.parent_company);
+      if (list) {
+        list.push(broker);
+      } else {
+        groups.set(broker.parent_company, [broker]);
+      }
+    }
+    return groups;
   }
 }

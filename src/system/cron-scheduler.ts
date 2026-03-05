@@ -113,7 +113,15 @@ export interface ScheduleStatus {
   configPath: string | null;
 }
 
+export function installScanSchedule(binaryPath: string, configPath: string, intervalDays = 30): void {
+  installScheduleForCommand(binaryPath, configPath, "scan", intervalDays);
+}
+
 export function installSchedule(binaryPath: string, configPath: string, intervalDays = 90): void {
+  installScheduleForCommand(binaryPath, configPath, "remove", intervalDays);
+}
+
+function installScheduleForCommand(binaryPath: string, configPath: string, command: string, intervalDays: number): void {
   const platform = detectPlatform();
   const monthInterval = daysToMonthInterval(intervalDays);
   mkdirSync(join(homedir(), ".brokerbane"), { recursive: true });
@@ -147,7 +155,7 @@ export function installSchedule(binaryPath: string, configPath: string, interval
   if (platform === "windows") {
     run("schtasks", [
       "/create", "/tn", "BrokerBaneQuarterly",
-      "/tr", `"${binaryPath.replace(/"/g, '""')}" remove --config "${configPath.replace(/"/g, '""')}"`,
+      "/tr", `"${binaryPath.replace(/"/g, '""')}" ${command} --config "${configPath.replace(/"/g, '""')}"`,
       "/sc", "MONTHLY", "/mo", String(monthInterval), "/d", "1", "/st", "09:00", "/f",
     ]);
   }

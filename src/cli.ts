@@ -11,6 +11,8 @@ import { testConfigCommand } from "./commands/test-config.cmd.js";
 import { menuCommand } from "./commands/menu.cmd.js";
 import { scheduleCommand } from "./commands/schedule.cmd.js";
 import { dashboardCommand } from "./commands/dashboard.cmd.js";
+import { scanCommand } from "./commands/scan.cmd.js";
+import { verifyEvidenceCommand } from "./commands/verify-evidence.cmd.js";
 
 const program = new Command();
 
@@ -115,6 +117,27 @@ program
       port: opts.port ? Number(opts.port) : undefined,
       config: opts.config,
     });
+  });
+
+program
+  .command("scan")
+  .description("Scan people search brokers for your profile")
+  .option("-d, --dry-run", "Preview which brokers would be scanned")
+  .option("-a, --auto-remove", "Automatically trigger removal for found listings")
+  .option("--category <category>", "Broker category to scan (default: people_search)")
+  .option("-b, --brokers <ids>", "Comma-separated broker IDs to scan")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await scanCommand(opts);
+  });
+
+program
+  .command("verify-evidence")
+  .description("Verify the cryptographic evidence chain integrity")
+  .option("--broker <id>", "Verify chain for a specific broker and show text diff")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await verifyEvidenceCommand(opts);
   });
 
 // Global error handler

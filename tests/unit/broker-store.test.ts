@@ -18,6 +18,7 @@ const mockBrokers: Broker[] = [
     public_directory: true,
     verify_before_send: true,
     search_url: "https://spokeo.com/search",
+    parent_company: "Spokeo Inc",
   },
   {
     id: "acxiom",
@@ -34,6 +35,7 @@ const mockBrokers: Broker[] = [
     tier: 1,
     public_directory: false,
     verify_before_send: false,
+    parent_company: "Acxiom LLC",
   },
   {
     id: "gdpr_broker",
@@ -51,6 +53,23 @@ const mockBrokers: Broker[] = [
     public_directory: false,
     verify_before_send: false,
   },
+  {
+    id: "liveramp",
+    name: "LiveRamp",
+    domain: "liveramp.com",
+    region: "us",
+    category: "data_broker",
+    removal_method: "web_form",
+    requires_captcha: false,
+    requires_email_confirm: false,
+    requires_id_upload: false,
+    difficulty: "medium",
+    tier: 2,
+    public_directory: false,
+    verify_before_send: false,
+    parent_company: "Acxiom LLC",
+    subsidiary_of: "acxiom",
+  },
 ];
 
 describe("BrokerStore", () => {
@@ -61,7 +80,7 @@ describe("BrokerStore", () => {
   });
 
   it("returns correct size", () => {
-    expect(store.size).toBe(3);
+    expect(store.size).toBe(4);
   });
 
   it("gets broker by id", () => {
@@ -75,7 +94,7 @@ describe("BrokerStore", () => {
 
   it("filters by region", () => {
     const us = store.filter({ regions: ["us"] });
-    expect(us).toHaveLength(2);
+    expect(us).toHaveLength(3);
     const eu = store.filter({ regions: ["eu"] });
     expect(eu).toHaveLength(1);
   });
@@ -89,7 +108,7 @@ describe("BrokerStore", () => {
     const email = store.filter({ methods: ["email"] });
     expect(email).toHaveLength(2);
     const web = store.filter({ methods: ["web_form"] });
-    expect(web).toHaveLength(1);
+    expect(web).toHaveLength(2);
   });
 
   it("filters by category", () => {
@@ -99,7 +118,7 @@ describe("BrokerStore", () => {
 
   it("excludes brokers by id", () => {
     const filtered = store.filter({ excludeIds: ["spokeo"] });
-    expect(filtered).toHaveLength(2);
+    expect(filtered).toHaveLength(3);
     expect(filtered.find((b) => b.id === "spokeo")).toBeUndefined();
   });
 
@@ -143,7 +162,30 @@ describe("BrokerStore", () => {
 
   it("gets brokers by tier", () => {
     const tier2 = store.getByTier(2);
-    expect(tier2).toHaveLength(1);
-    expect(tier2[0]!.id).toBe("gdpr_broker");
+    expect(tier2).toHaveLength(2);
+  });
+
+  it("filters by parent company", () => {
+    const acxiomGroup = store.filter({ parentCompany: "Acxiom LLC" });
+    expect(acxiomGroup).toHaveLength(2);
+    expect(acxiomGroup.map((b) => b.id).sort()).toEqual(["acxiom", "liveramp"]);
+  });
+
+  it("gets brokers by parent company", () => {
+    const acxiomGroup = store.getByParentCompany("Acxiom LLC");
+    expect(acxiomGroup).toHaveLength(2);
+  });
+
+  it("returns empty for unknown parent company", () => {
+    const unknown = store.getByParentCompany("Nonexistent Corp");
+    expect(unknown).toHaveLength(0);
+  });
+
+  it("groups brokers by parent company", () => {
+    const groups = store.getParentCompanyGroups();
+    expect(groups.size).toBe(2); // "Spokeo Inc" and "Acxiom LLC"
+    expect(groups.get("Acxiom LLC")).toHaveLength(2);
+    expect(groups.get("Spokeo Inc")).toHaveLength(1);
+    // gdpr_broker has no parent_company, so it's not in any group
   });
 });

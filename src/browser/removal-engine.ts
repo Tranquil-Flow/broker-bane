@@ -16,13 +16,15 @@ export interface RemovalResult {
 
 export interface VerifyResult {
   found: boolean;
+  pageText?: string;
+  screenshotPath?: string;
 }
 
 export async function verifyProfileListing(
   browser: StagehandInstance,
   broker: Broker,
   profile: Profile,
-  options: { timeoutMs?: number } = {}
+  options: { timeoutMs?: number; screenshotDir?: string } = {}
 ): Promise<VerifyResult> {
   const { timeoutMs = 20_000 } = options;
   const searchUrl = broker.search_url ?? `https://${broker.domain}`;
@@ -48,8 +50,29 @@ export async function verifyProfileListing(
     );
 
     const found = Boolean((result as { found?: boolean })?.found);
+
+    // Capture page text and screenshot for evidence chain
+    let pageText: string | undefined;
+    let screenshotPath: string | undefined;
+    try {
+      const extracted = await withTimeout(
+        browser.page.extract(
+          "Return all visible text content on the page, especially any names, addresses, phone numbers, and ages shown."
+        ) as Promise<string>,
+        timeoutMs
+      );
+      pageText = typeof extracted === "string" ? extracted : JSON.stringify(extracted);
+    } catch {
+      // Non-critical: evidence capture is best-effort
+    }
+    try {
+      screenshotPath = await captureScreenshot(browser, broker.id, "verify", options.screenshotDir);
+    } catch {
+      // Non-critical
+    }
+
     logger.info({ brokerId: broker.id, found }, "Profile verification complete");
-    return { found };
+    return { found, pageText, screenshotPath };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     logger.warn({ brokerId: broker.id, err: message }, "Profile verification error — proceeding with removal");

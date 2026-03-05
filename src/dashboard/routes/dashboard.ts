@@ -1,11 +1,14 @@
 import type { Hono } from "hono";
 import type { Database } from "better-sqlite3";
 import { layout } from "../views/layout.js";
-import { statCard, progressBar, logEntry, circuitBreakerCard, taskCard } from "../views/components.js";
+import { statCard, progressBar, logEntry, circuitBreakerCard, taskCard, evidenceStatusBadge } from "../views/components.js";
 import { RemovalRequestRepo } from "../../db/repositories/removal-request.repo.js";
 import { CircuitBreakerRepo } from "../../db/repositories/circuit-breaker.repo.js";
 import { PendingTaskRepo } from "../../db/repositories/pending-task.repo.js";
+import { EvidenceChainRepo } from "../../db/repositories/evidence-chain.repo.js";
+import { EvidenceChainService } from "../../pipeline/evidence-chain.js";
 import { loadBrokerDatabase } from "../../data/broker-loader.js";
+import { renderScanSummaryHtml } from "./scan.js";
 
 let cachedBrokerCount: number | null = null;
 
@@ -106,7 +109,16 @@ export function registerDashboardRoutes(app: Hono, db: Database): void {
     const failed = statusCounts["failed"] ?? 0;
     const queued = totalBrokers - completed - inProgress - failed;
 
+    // Scan summary + evidence badge
+    const evidenceRepo = new EvidenceChainRepo(db);
+    const evidenceService = new EvidenceChainService(evidenceRepo);
+    const chainResult = evidenceService.verifyChain();
+
     const bodyHtml = `
+<div id="scan-summary" hx-get="/api/scan-summary" hx-trigger="every 60s" hx-swap="innerHTML">
+  ${renderScanSummaryHtml(db)}
+</div>
+
 <div id="stats-panel" hx-get="/api/stats" hx-trigger="every 60s" hx-swap="innerHTML">
   ${renderStatsHtml(db)}
 </div>
@@ -142,6 +154,15 @@ ${progressBar(completed, totalBrokers, inProgress, failed, queued > 0 ? queued :
     </div>
     <div class="panel-body" id="tasks-panel" hx-get="/api/tasks" hx-trigger="every 60s" hx-swap="innerHTML">
       ${renderTasksHtml(db)}
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Evidence Chain</span>
+      <a href="/evidence" class="panel-badge" style="text-decoration:none;color:var(--cyan)">VIEW</a>
+    </div>
+    <div class="panel-body" style="padding:0.75rem">
+      ${evidenceStatusBadge(chainResult.valid, chainResult.totalEntries, chainResult.brokenAt)}
     </div>
   </div>
 </div>`;

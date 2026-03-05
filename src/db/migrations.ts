@@ -106,6 +106,67 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (1);
     `,
   },
+  {
+    version: 2,
+    sql: `
+      CREATE TABLE IF NOT EXISTS scan_runs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        started_at TEXT NOT NULL DEFAULT (datetime('now')),
+        finished_at TEXT,
+        status TEXT NOT NULL DEFAULT 'running'
+          CHECK (status IN ('running','completed','failed','interrupted')),
+        total_brokers INTEGER NOT NULL DEFAULT 0,
+        found_count INTEGER NOT NULL DEFAULT 0,
+        not_found_count INTEGER NOT NULL DEFAULT 0,
+        error_count INTEGER NOT NULL DEFAULT 0
+      );
+
+      CREATE TABLE IF NOT EXISTS scan_results (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        scan_run_id INTEGER NOT NULL REFERENCES scan_runs(id),
+        broker_id TEXT NOT NULL,
+        found INTEGER NOT NULL DEFAULT 0,
+        confidence REAL,
+        profile_data TEXT,
+        screenshot_path TEXT,
+        page_text TEXT,
+        error TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_scan_results_run_id ON scan_results(scan_run_id);
+      CREATE INDEX IF NOT EXISTS idx_scan_results_broker_id ON scan_results(broker_id);
+
+      INSERT INTO schema_version (version) VALUES (2);
+    `,
+  },
+  {
+    version: 3,
+    sql: `
+      CREATE TABLE IF NOT EXISTS evidence_chain (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        request_id INTEGER REFERENCES removal_requests(id),
+        scan_result_id INTEGER REFERENCES scan_results(id),
+        entry_type TEXT NOT NULL
+          CHECK (entry_type IN ('before_scan','after_removal','re_verification','confirmation_email')),
+        content_hash TEXT NOT NULL,
+        prev_hash TEXT NOT NULL,
+        screenshot_path TEXT,
+        page_text TEXT,
+        page_text_hash TEXT,
+        broker_url TEXT,
+        broker_id TEXT NOT NULL,
+        metadata TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_evidence_chain_broker_id ON evidence_chain(broker_id);
+      CREATE INDEX IF NOT EXISTS idx_evidence_chain_request_id ON evidence_chain(request_id);
+      CREATE INDEX IF NOT EXISTS idx_evidence_chain_scan_result_id ON evidence_chain(scan_result_id);
+
+      INSERT INTO schema_version (version) VALUES (3);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

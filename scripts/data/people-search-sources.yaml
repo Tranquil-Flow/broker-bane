@@ -1,0 +1,1004 @@
+# People Search Sites — curated for BrokerBane ingestion
+# Grouped by parent company to avoid redundant removal requests
+# Sources: CPPA registry, JustVanish, manual research
+version: "1.0.0"
+updated: "2026-03-05"
+
+parent_companies:
+  # ──── US People Search ────────────────────────────────────────────
+
+  - name: "PeopleConnect Inc"
+    subsidiaries:
+      - name: "Intelius"
+        domain: "intelius.com"
+        search_url: "https://www.intelius.com/people-search"
+        opt_out_url: "https://www.intelius.com/opt-out"
+        region: "us"
+      - name: "ZabaSearch"
+        domain: "zabasearch.com"
+        search_url: "https://www.zabasearch.com"
+        opt_out_url: "https://www.zabasearch.com/block_records"
+        region: "us"
+      - name: "US Search"
+        domain: "ussearch.com"
+        search_url: "https://www.ussearch.com"
+        opt_out_url: "https://www.ussearch.com/opt-out"
+        region: "us"
+      - name: "Classmates"
+        domain: "classmates.com"
+        search_url: "https://www.classmates.com"
+        opt_out_url: "https://www.classmates.com/opt-out"
+        region: "us"
+      - name: "Addresses.com"
+        domain: "addresses.com"
+        search_url: "https://www.addresses.com"
+        opt_out_url: "https://www.intelius.com/opt-out"
+        region: "us"
+      - name: "DateCheck"
+        domain: "datecheck.com"
+        search_url: "https://www.datecheck.com"
+        region: "us"
+      - name: "Spock"
+        domain: "spock.com"
+        region: "us"
+      - name: "iSearch"
+        domain: "isearch.com"
+        region: "us"
+
+  - name: "BeenVerified Inc"
+    subsidiaries:
+      - name: "BeenVerified"
+        domain: "beenverified.com"
+        search_url: "https://www.beenverified.com/people"
+        opt_out_url: "https://www.beenverified.com/f/optout/search"
+        region: "us"
+      - name: "NumberGuru"
+        domain: "numberguru.com"
+        search_url: "https://www.numberguru.com"
+        opt_out_url: "https://www.beenverified.com/f/optout/search"
+        region: "us"
+      - name: "NeighborWho"
+        domain: "neighborwho.com"
+        search_url: "https://www.neighborwho.com"
+        opt_out_url: "https://www.beenverified.com/f/optout/search"
+        region: "us"
+      - name: "PeopleLooker"
+        domain: "peoplelooker.com"
+        search_url: "https://www.peoplelooker.com"
+        opt_out_url: "https://www.peoplelooker.com/f/optout/search"
+        region: "us"
+      - name: "PeopleSmart"
+        domain: "peoplesmart.com"
+        search_url: "https://www.peoplesmart.com"
+        opt_out_url: "https://www.beenverified.com/f/optout/search"
+        region: "us"
+
+  - name: "Spokeo Inc"
+    subsidiaries:
+      - name: "Spokeo"
+        domain: "spokeo.com"
+        search_url: "https://www.spokeo.com"
+        opt_out_url: "https://www.spokeo.com/optout"
+        region: "us"
+
+  - name: "Whitepages Inc"
+    subsidiaries:
+      - name: "Whitepages"
+        domain: "whitepages.com"
+        search_url: "https://www.whitepages.com"
+        opt_out_url: "https://www.whitepages.com/suppression-requests"
+        region: "us"
+      - name: "Whitepages Premium"
+        domain: "whitepagespremium.com"
+        region: "us"
+
+  - name: "System1 LLC"
+    subsidiaries:
+      - name: "TruthFinder"
+        domain: "truthfinder.com"
+        search_url: "https://www.truthfinder.com"
+        opt_out_url: "https://www.truthfinder.com/opt-out"
+        region: "us"
+      - name: "Instant Checkmate"
+        domain: "instantcheckmate.com"
+        search_url: "https://www.instantcheckmate.com"
+        opt_out_url: "https://www.instantcheckmate.com/opt-out"
+        region: "us"
+
+  - name: "InfoTracer Inc"
+    subsidiaries:
+      - name: "InfoTracer"
+        domain: "infotracer.com"
+        search_url: "https://infotracer.com/people-search"
+        opt_out_url: "https://infotracer.com/optout"
+        region: "us"
+      - name: "USPhoneBook"
+        domain: "usphonebook.com"
+        search_url: "https://www.usphonebook.com"
+        opt_out_url: "https://www.usphonebook.com/opt-out"
+        region: "us"
+      - name: "CocoFinder"
+        domain: "cocofinder.com"
+        search_url: "https://www.cocofinder.com"
+        opt_out_url: "https://cocofinder.com/remove-my-info"
+        region: "us"
+
+  - name: "Radaris LLC"
+    subsidiaries:
+      - name: "Radaris"
+        domain: "radaris.com"
+        search_url: "https://radaris.com"
+        opt_out_url: "https://radaris.com/control/privacy"
+        region: "us"
+      - name: "Centeda"
+        domain: "centeda.com"
+        region: "us"
+
+  - name: "FastPeopleSearch"
+    subsidiaries:
+      - name: "FastPeopleSearch"
+        domain: "fastpeoplesearch.com"
+        search_url: "https://www.fastpeoplesearch.com"
+        opt_out_url: "https://www.fastpeoplesearch.com/removal"
+        region: "us"
+
+  - name: "ThatsThem LLC"
+    subsidiaries:
+      - name: "ThatsThem"
+        domain: "thatsthem.com"
+        search_url: "https://thatsthem.com"
+        opt_out_url: "https://thatsthem.com/optout"
+        region: "us"
+
+  - name: "Pipl Inc"
+    subsidiaries:
+      - name: "Pipl"
+        domain: "pipl.com"
+        search_url: "https://pipl.com"
+        opt_out_url: "https://pipl.com/personal-information-removal-request"
+        region: "us"
+
+  - name: "Acxiom LLC"
+    subsidiaries:
+      - name: "Acxiom"
+        domain: "acxiom.com"
+        opt_out_url: "https://isapps.acxiom.com/optout/optout.aspx"
+        region: "us"
+      - name: "LiveRamp"
+        domain: "liveramp.com"
+        opt_out_url: "https://liveramp.com/opt_out"
+        region: "us"
+
+  - name: "RELX Group"
+    subsidiaries:
+      - name: "LexisNexis"
+        domain: "lexisnexis.com"
+        opt_out_url: "https://optout.lexisnexis.com"
+        region: "us"
+      - name: "Accurint"
+        domain: "accurint.com"
+        region: "us"
+
+  - name: "PublicRecordsNow"
+    subsidiaries:
+      - name: "PublicRecordsNow"
+        domain: "publicrecordsnow.com"
+        search_url: "https://www.publicrecordsnow.com"
+        opt_out_url: "https://www.publicrecordsnow.com/opt-out"
+        region: "us"
+
+  - name: "FamilyTreeNow"
+    subsidiaries:
+      - name: "FamilyTreeNow"
+        domain: "familytreenow.com"
+        search_url: "https://www.familytreenow.com"
+        opt_out_url: "https://www.familytreenow.com/optout"
+        region: "us"
+
+  - name: "MyLife Inc"
+    subsidiaries:
+      - name: "MyLife"
+        domain: "mylife.com"
+        search_url: "https://www.mylife.com"
+        opt_out_url: "https://www.mylife.com/ccpa/index"
+        region: "us"
+
+  - name: "PeopleFinders Inc"
+    subsidiaries:
+      - name: "PeopleFinders"
+        domain: "peoplefinders.com"
+        search_url: "https://www.peoplefinders.com"
+        opt_out_url: "https://www.peoplefinders.com/opt-out"
+        region: "us"
+      - name: "PublicRecords.com"
+        domain: "publicrecords.com"
+        search_url: "https://www.publicrecords.com"
+        region: "us"
+
+  - name: "SearchPeopleFree"
+    subsidiaries:
+      - name: "SearchPeopleFree"
+        domain: "searchpeoplefree.com"
+        search_url: "https://www.searchpeoplefree.com"
+        opt_out_url: "https://www.searchpeoplefree.com/opt-out"
+        region: "us"
+
+  - name: "TruePeopleSearch"
+    subsidiaries:
+      - name: "TruePeopleSearch"
+        domain: "truepeoplesearch.com"
+        search_url: "https://www.truepeoplesearch.com"
+        opt_out_url: "https://www.truepeoplesearch.com/removal"
+        region: "us"
+
+  - name: "Nuwber LLC"
+    subsidiaries:
+      - name: "Nuwber"
+        domain: "nuwber.com"
+        search_url: "https://nuwber.com"
+        opt_out_url: "https://nuwber.com/removal"
+        region: "us"
+
+  - name: "ClustrMaps"
+    subsidiaries:
+      - name: "ClustrMaps"
+        domain: "clustrmaps.com"
+        search_url: "https://clustrmaps.com"
+        opt_out_url: "https://clustrmaps.com/bl/opt-out"
+        region: "us"
+
+  - name: "CyberBackgroundChecks"
+    subsidiaries:
+      - name: "CyberBackgroundChecks"
+        domain: "cyberbackgroundchecks.com"
+        search_url: "https://www.cyberbackgroundchecks.com"
+        opt_out_url: "https://www.cyberbackgroundchecks.com/removal"
+        region: "us"
+
+  - name: "AnyWho"
+    subsidiaries:
+      - name: "AnyWho"
+        domain: "anywho.com"
+        search_url: "https://www.anywho.com"
+        opt_out_url: "https://www.intelius.com/opt-out"
+        region: "us"
+
+  - name: "411.com"
+    subsidiaries:
+      - name: "411.com"
+        domain: "411.com"
+        search_url: "https://www.411.com"
+        opt_out_url: "https://www.whitepages.com/suppression-requests"
+        region: "us"
+
+  - name: "AddressSearch"
+    subsidiaries:
+      - name: "AddressSearch"
+        domain: "addresssearch.com"
+        search_url: "https://www.addresssearch.com"
+        region: "us"
+
+  - name: "AdvancedBackgroundChecks"
+    subsidiaries:
+      - name: "AdvancedBackgroundChecks"
+        domain: "advancedbackgroundchecks.com"
+        search_url: "https://www.advancedbackgroundchecks.com"
+        opt_out_url: "https://www.advancedbackgroundchecks.com/removal"
+        region: "us"
+
+  - name: "PeopleSearchNow"
+    subsidiaries:
+      - name: "PeopleSearchNow"
+        domain: "peoplesearchnow.com"
+        search_url: "https://www.peoplesearchnow.com"
+        opt_out_url: "https://www.peoplesearchnow.com/opt-out"
+        region: "us"
+
+  - name: "Verecor"
+    subsidiaries:
+      - name: "Verecor"
+        domain: "verecor.com"
+        search_url: "https://verecor.com"
+        opt_out_url: "https://verecor.com/ng/control/privacy"
+        region: "us"
+
+  - name: "VoterRecords"
+    subsidiaries:
+      - name: "VoterRecords"
+        domain: "voterrecords.com"
+        search_url: "https://voterrecords.com"
+        opt_out_url: "https://voterrecords.com/optout"
+        region: "us"
+
+  - name: "CheckPeople"
+    subsidiaries:
+      - name: "CheckPeople"
+        domain: "checkpeople.com"
+        search_url: "https://checkpeople.com"
+        opt_out_url: "https://checkpeople.com/opt-out"
+        region: "us"
+
+  - name: "TruthRecord"
+    subsidiaries:
+      - name: "TruthRecord"
+        domain: "truthrecord.com"
+        search_url: "https://truthrecord.com"
+        region: "us"
+
+  - name: "SmartBackgroundChecks"
+    subsidiaries:
+      - name: "SmartBackgroundChecks"
+        domain: "smartbackgroundchecks.com"
+        search_url: "https://www.smartbackgroundchecks.com"
+        opt_out_url: "https://www.smartbackgroundchecks.com/optout"
+        region: "us"
+
+  - name: "OldFriends"
+    subsidiaries:
+      - name: "OldFriends"
+        domain: "oldfriends.co"
+        region: "us"
+
+  - name: "NumLookup"
+    subsidiaries:
+      - name: "NumLookup"
+        domain: "numlookup.com"
+        search_url: "https://www.numlookup.com"
+        region: "us"
+
+  - name: "WhoCalledMe"
+    subsidiaries:
+      - name: "WhoCalledMe"
+        domain: "whocalledme.com"
+        search_url: "https://whocalledme.com"
+        region: "us"
+
+  - name: "CallerSmart"
+    subsidiaries:
+      - name: "CallerSmart"
+        domain: "callersmart.com"
+        search_url: "https://www.callersmart.com"
+        region: "us"
+
+  - name: "Spy Dialer"
+    subsidiaries:
+      - name: "Spy Dialer"
+        domain: "spydialer.com"
+        search_url: "https://www.spydialer.com"
+        region: "us"
+
+  - name: "ReversePhoneLookup"
+    subsidiaries:
+      - name: "ReversePhoneLookup"
+        domain: "reversephonelookup.com"
+        search_url: "https://www.reversephonelookup.com"
+        region: "us"
+
+  - name: "PhoneNumberLookupFree"
+    subsidiaries:
+      - name: "PhoneNumberLookupFree"
+        domain: "phonenumberlookupfree.com"
+        search_url: "https://www.phonenumberlookupfree.com"
+        region: "us"
+
+  - name: "USA People Search"
+    subsidiaries:
+      - name: "USA People Search"
+        domain: "usa-people-search.com"
+        search_url: "https://www.usa-people-search.com"
+        opt_out_url: "https://www.usa-people-search.com/manage"
+        region: "us"
+
+  - name: "Xlek"
+    subsidiaries:
+      - name: "Xlek"
+        domain: "xlek.com"
+        search_url: "https://www.xlek.com"
+        region: "us"
+
+  - name: "PublicRecords360"
+    subsidiaries:
+      - name: "PublicRecords360"
+        domain: "publicrecords360.com"
+        search_url: "https://www.publicrecords360.com"
+        region: "us"
+
+  - name: "Publicdata"
+    subsidiaries:
+      - name: "PublicDataCheck"
+        domain: "publicdatacheck.com"
+        search_url: "https://www.publicdatacheck.com"
+        region: "us"
+
+  - name: "PeekYou"
+    subsidiaries:
+      - name: "PeekYou"
+        domain: "peekyou.com"
+        search_url: "https://www.peekyou.com"
+        opt_out_url: "https://www.peekyou.com/about/contact/optout"
+        region: "us"
+
+  - name: "Social Catfish"
+    subsidiaries:
+      - name: "Social Catfish"
+        domain: "socialcatfish.com"
+        search_url: "https://socialcatfish.com"
+        opt_out_url: "https://socialcatfish.com/opt-out"
+        region: "us"
+
+  - name: "IDTrue"
+    subsidiaries:
+      - name: "IDTrue"
+        domain: "idtrue.com"
+        search_url: "https://www.idtrue.com"
+        opt_out_url: "https://www.idtrue.com/optout"
+        region: "us"
+
+  - name: "Veromi"
+    subsidiaries:
+      - name: "Veromi"
+        domain: "veromi.net"
+        search_url: "https://www.veromi.net"
+        region: "us"
+
+  - name: "USATrace"
+    subsidiaries:
+      - name: "USATrace"
+        domain: "usatrace.com"
+        search_url: "https://www.usatrace.com"
+        region: "us"
+
+  - name: "RecordsFinder"
+    subsidiaries:
+      - name: "RecordsFinder"
+        domain: "recordsfinder.com"
+        search_url: "https://recordsfinder.com"
+        opt_out_url: "https://recordsfinder.com/optout.php"
+        region: "us"
+
+  - name: "BackgroundAlert"
+    subsidiaries:
+      - name: "BackgroundAlert"
+        domain: "backgroundalert.com"
+        search_url: "https://www.backgroundalert.com"
+        region: "us"
+
+  - name: "Kiwi Searches"
+    subsidiaries:
+      - name: "Kiwi Searches"
+        domain: "kiwisearches.com"
+        search_url: "https://kiwisearches.com"
+        opt_out_url: "https://kiwisearches.com/optout"
+        region: "us"
+
+  - name: "MugshotLook"
+    subsidiaries:
+      - name: "MugshotLook"
+        domain: "mugshotlook.com"
+        search_url: "https://mugshotlook.com"
+        region: "us"
+
+  - name: "FreeBackgroundCheck"
+    subsidiaries:
+      - name: "FreeBackgroundCheck"
+        domain: "freebackgroundcheck.org"
+        search_url: "https://www.freebackgroundcheck.org"
+        region: "us"
+
+  - name: "PeopleSearch123"
+    subsidiaries:
+      - name: "PeopleSearch123"
+        domain: "peoplesearch123.com"
+        search_url: "https://www.peoplesearch123.com"
+        region: "us"
+
+  - name: "PeopleFindThor"
+    subsidiaries:
+      - name: "PeopleFindThor"
+        domain: "peoplefindthor.dk"
+        search_url: "https://peoplefindthor.dk"
+        region: "us"
+
+  - name: "MyHeritage"
+    subsidiaries:
+      - name: "MyHeritage"
+        domain: "myheritage.com"
+        search_url: "https://www.myheritage.com"
+        opt_out_url: "https://www.myheritage.com/privacy-policy"
+        region: "global"
+
+  - name: "Cubib"
+    subsidiaries:
+      - name: "Cubib"
+        domain: "cubib.com"
+        search_url: "https://cubib.com"
+        region: "us"
+
+  - name: "NewEnglandFacts"
+    subsidiaries:
+      - name: "NewEnglandFacts"
+        domain: "newenglandfacts.com"
+        search_url: "https://newenglandfacts.com"
+        region: "us"
+
+  - name: "OfficialUSA"
+    subsidiaries:
+      - name: "OfficialUSA"
+        domain: "officialusa.com"
+        search_url: "https://www.officialusa.com"
+        region: "us"
+
+  - name: "SortedByName"
+    subsidiaries:
+      - name: "SortedByName"
+        domain: "sortedbyname.com"
+        search_url: "https://sortedbyname.com"
+        region: "us"
+
+  - name: "WhoIs"
+    subsidiaries:
+      - name: "AnyWhoIs"
+        domain: "anywhois.com"
+        search_url: "https://anywhois.com"
+        region: "us"
+
+  - name: "Glad I Know"
+    subsidiaries:
+      - name: "Glad I Know"
+        domain: "gladiknow.com"
+        search_url: "https://gladiknow.com"
+        opt_out_url: "https://gladiknow.com/opt-out"
+        region: "us"
+
+  - name: "Unmask"
+    subsidiaries:
+      - name: "Unmask"
+        domain: "unmask.com"
+        search_url: "https://unmask.com"
+        opt_out_url: "https://unmask.com/opt-out"
+        region: "us"
+
+  - name: "Free People Directory"
+    subsidiaries:
+      - name: "FreePeopleDirectory"
+        domain: "freepeopledirectory.com"
+        search_url: "https://www.freepeopledirectory.com"
+        region: "us"
+
+  - name: "Neighbor Report"
+    subsidiaries:
+      - name: "Neighbor Report"
+        domain: "neighbor.report"
+        search_url: "https://neighbor.report"
+        opt_out_url: "https://neighbor.report/remove"
+        region: "us"
+
+  - name: "Open Public Records"
+    subsidiaries:
+      - name: "Open Public Records"
+        domain: "openpublicrecords.com"
+        search_url: "https://openpublicrecords.com"
+        region: "us"
+
+  - name: "SearchBug"
+    subsidiaries:
+      - name: "SearchBug"
+        domain: "searchbug.com"
+        search_url: "https://www.searchbug.com"
+        region: "us"
+
+  - name: "Virtory"
+    subsidiaries:
+      - name: "Virtory"
+        domain: "virtory.com"
+        search_url: "https://virtory.com"
+        region: "us"
+
+  - name: "Quick People Trace"
+    subsidiaries:
+      - name: "Quick People Trace"
+        domain: "quickpeopletrace.com"
+        search_url: "https://www.quickpeopletrace.com"
+        region: "us"
+
+  - name: "DataVeria"
+    subsidiaries:
+      - name: "DataVeria"
+        domain: "dataveria.com"
+        search_url: "https://dataveria.com"
+        opt_out_url: "https://dataveria.com/ng/control/privacy"
+        region: "us"
+
+  - name: "GoLookUp"
+    subsidiaries:
+      - name: "GoLookUp"
+        domain: "golookup.com"
+        search_url: "https://golookup.com"
+        opt_out_url: "https://golookup.com/support/optout"
+        region: "us"
+
+  - name: "InfoPublica"
+    subsidiaries:
+      - name: "InfoPublica"
+        domain: "infopublica.com"
+        search_url: "https://infopublica.com"
+        region: "us"
+
+  - name: "Pub360"
+    subsidiaries:
+      - name: "Pub360"
+        domain: "pub360.com"
+        search_url: "https://pub360.com"
+        region: "us"
+
+  - name: "ZoSearch"
+    subsidiaries:
+      - name: "ZoSearch"
+        domain: "zosearch.com"
+        search_url: "https://www.zosearch.com"
+        region: "us"
+
+  # ──── B2B People Search ───────────────────────────────────────────
+
+  - name: "ZoomInfo Technologies"
+    subsidiaries:
+      - name: "ZoomInfo"
+        domain: "zoominfo.com"
+        search_url: "https://www.zoominfo.com"
+        opt_out_url: "https://www.zoominfo.com/about-zoominfo/privacy/manage-profile"
+        region: "global"
+
+  - name: "Apollo.io Inc"
+    subsidiaries:
+      - name: "Apollo.io"
+        domain: "apollo.io"
+        opt_out_url: "https://www.apollo.io/privacy-policy/remove"
+        region: "global"
+
+  - name: "Lusha Systems"
+    subsidiaries:
+      - name: "Lusha"
+        domain: "lusha.com"
+        opt_out_url: "https://www.lusha.com/opt-out"
+        region: "global"
+
+  - name: "RocketReach"
+    subsidiaries:
+      - name: "RocketReach"
+        domain: "rocketreach.co"
+        opt_out_url: "https://rocketreach.co/person/request_removal"
+        region: "global"
+
+  - name: "Hunter.io"
+    subsidiaries:
+      - name: "Hunter.io"
+        domain: "hunter.io"
+        opt_out_url: "https://hunter.io/privacy"
+        region: "global"
+
+  - name: "Clearbit (HubSpot)"
+    subsidiaries:
+      - name: "Clearbit"
+        domain: "clearbit.com"
+        opt_out_url: "https://dashboard.clearbit.com/claim"
+        region: "global"
+
+  - name: "SalesIntel"
+    subsidiaries:
+      - name: "SalesIntel"
+        domain: "salesintel.io"
+        region: "global"
+
+  - name: "LeadIQ"
+    subsidiaries:
+      - name: "LeadIQ"
+        domain: "leadiq.com"
+        opt_out_url: "https://leadiq.com/opt-out"
+        region: "global"
+
+  - name: "Seamless.AI"
+    subsidiaries:
+      - name: "Seamless.AI"
+        domain: "seamless.ai"
+        region: "global"
+
+  - name: "Cognism"
+    subsidiaries:
+      - name: "Cognism"
+        domain: "cognism.com"
+        opt_out_url: "https://www.cognism.com/do-not-sell-my-info"
+        region: "global"
+
+  - name: "People Data Labs"
+    subsidiaries:
+      - name: "People Data Labs"
+        domain: "peopledatalabs.com"
+        opt_out_url: "https://www.peopledatalabs.com/opt-out-form"
+        region: "global"
+
+  - name: "Datanyze"
+    subsidiaries:
+      - name: "Datanyze"
+        domain: "datanyze.com"
+        region: "global"
+
+  - name: "Swordfish AI"
+    subsidiaries:
+      - name: "Swordfish AI"
+        domain: "swordfish.ai"
+        region: "global"
+
+  - name: "ContactOut"
+    subsidiaries:
+      - name: "ContactOut"
+        domain: "contactout.com"
+        opt_out_url: "https://contactout.com/optout"
+        region: "global"
+
+  - name: "Snov.io"
+    subsidiaries:
+      - name: "Snov.io"
+        domain: "snov.io"
+        region: "global"
+
+  # ──── EU / UK People Search ──────────────────────────────────────
+
+  - name: "192.com Ltd"
+    subsidiaries:
+      - name: "192.com"
+        domain: "192.com"
+        search_url: "https://www.192.com"
+        opt_out_url: "https://www.192.com/optout/"
+        region: "eu"
+      - name: "192 Business"
+        domain: "192business.com"
+        region: "eu"
+
+  - name: "InfoBel"
+    subsidiaries:
+      - name: "InfoBel"
+        domain: "infobel.com"
+        search_url: "https://www.infobel.com"
+        region: "eu"
+
+  - name: "DasTelefonbuch"
+    subsidiaries:
+      - name: "DasTelefonbuch"
+        domain: "dastelefonbuch.de"
+        search_url: "https://www.dastelefonbuch.de"
+        region: "eu"
+      - name: "GelbeSeiten"
+        domain: "gelbeseiten.de"
+        search_url: "https://www.gelbeseiten.de"
+        region: "eu"
+
+  - name: "SoLocal Group"
+    subsidiaries:
+      - name: "PagesJaunes"
+        domain: "pagesjaunes.fr"
+        search_url: "https://www.pagesjaunes.fr"
+        region: "eu"
+      - name: "PagesBlanches"
+        domain: "pagesblanches.fr"
+        search_url: "https://www.pagesblanches.fr"
+        region: "eu"
+      - name: "118218.fr"
+        domain: "118218.fr"
+        search_url: "https://www.118218.fr"
+        region: "eu"
+      - name: "118000.fr"
+        domain: "118000.fr"
+        search_url: "https://www.118000.fr"
+        region: "eu"
+
+  - name: "Italiaonline"
+    subsidiaries:
+      - name: "PagineBianche"
+        domain: "paginebianche.it"
+        search_url: "https://www.paginebianche.it"
+        region: "eu"
+      - name: "PagineGialle"
+        domain: "paginegialle.it"
+        search_url: "https://www.paginegialle.it"
+        region: "eu"
+      - name: "Annuario"
+        domain: "annuario.it"
+        region: "eu"
+
+  - name: "Herold Business Data"
+    subsidiaries:
+      - name: "Herold"
+        domain: "herold.at"
+        search_url: "https://www.herold.at"
+        region: "eu"
+
+  - name: "Eniro Group"
+    subsidiaries:
+      - name: "Eniro"
+        domain: "eniro.se"
+        search_url: "https://www.eniro.se"
+        region: "eu"
+      - name: "Eniro Denmark"
+        domain: "eniro.dk"
+        search_url: "https://www.eniro.dk"
+        region: "eu"
+      - name: "Krak"
+        domain: "krak.dk"
+        search_url: "https://www.krak.dk"
+        region: "eu"
+      - name: "Gulesider"
+        domain: "gulesider.no"
+        search_url: "https://www.gulesider.no"
+        region: "eu"
+
+  - name: "Hitta.se"
+    subsidiaries:
+      - name: "Hitta"
+        domain: "hitta.se"
+        search_url: "https://www.hitta.se"
+        region: "eu"
+
+  - name: "De Telefoongids"
+    subsidiaries:
+      - name: "De Telefoongids"
+        domain: "detelefoongids.nl"
+        search_url: "https://www.detelefoongids.nl"
+        region: "eu"
+      - name: "Nummerzoeker"
+        domain: "nummerzoeker.com"
+        search_url: "https://www.nummerzoeker.com"
+        region: "eu"
+
+  - name: "1881 Group"
+    subsidiaries:
+      - name: "1881"
+        domain: "1881.no"
+        search_url: "https://www.1881.no"
+        region: "eu"
+
+  - name: "Fonecta"
+    subsidiaries:
+      - name: "Fonecta"
+        domain: "fonecta.fi"
+        search_url: "https://www.fonecta.fi"
+        region: "eu"
+
+  - name: "Yasni"
+    subsidiaries:
+      - name: "Yasni"
+        domain: "yasni.de"
+        search_url: "https://www.yasni.de"
+        region: "eu"
+      - name: "Yasni UK"
+        domain: "yasni.co.uk"
+        search_url: "https://www.yasni.co.uk"
+        region: "eu"
+
+  - name: "WebMii"
+    subsidiaries:
+      - name: "WebMii"
+        domain: "webmii.com"
+        search_url: "https://webmii.com"
+        region: "eu"
+
+  - name: "BT Phone Book"
+    subsidiaries:
+      - name: "BT Phone Book"
+        domain: "thephonebook.bt.com"
+        search_url: "https://www.thephonebook.bt.com"
+        region: "eu"
+
+  - name: "Electoral Roll"
+    subsidiaries:
+      - name: "ElectoralRoll"
+        domain: "electoralroll.co.uk"
+        search_url: "https://www.electoralroll.co.uk"
+        region: "eu"
+
+  - name: "Europages"
+    subsidiaries:
+      - name: "Europages"
+        domain: "europages.co.uk"
+        search_url: "https://www.europages.co.uk"
+        region: "eu"
+
+  - name: "Cylex"
+    subsidiaries:
+      - name: "Cylex"
+        domain: "cylex.co.uk"
+        search_url: "https://www.cylex.co.uk"
+        region: "eu"
+      - name: "Cylex DE"
+        domain: "cylex.de"
+        search_url: "https://www.cylex.de"
+        region: "eu"
+
+  # ──── Australia / NZ ─────────────────────────────────────────────
+
+  - name: "Sensis (Telstra)"
+    subsidiaries:
+      - name: "White Pages AU"
+        domain: "whitepages.com.au"
+        search_url: "https://www.whitepages.com.au"
+        opt_out_url: "https://www.whitepages.com.au/opt-out"
+        region: "global"
+      - name: "Yellow Pages AU"
+        domain: "yellow.com.au"
+        search_url: "https://www.yellow.com.au"
+        region: "global"
+
+  - name: "ReverseAustralia"
+    subsidiaries:
+      - name: "ReverseAustralia"
+        domain: "reverseaustralia.com"
+        search_url: "https://www.reverseaustralia.com"
+        region: "global"
+
+  - name: "PeopleFinder AU"
+    subsidiaries:
+      - name: "PeopleFinder AU"
+        domain: "peoplefinder.com.au"
+        search_url: "https://www.peoplefinder.com.au"
+        region: "global"
+
+  - name: "AustraliaWhitePages"
+    subsidiaries:
+      - name: "AustraliaWhitePages"
+        domain: "australiawhitepages.net"
+        region: "global"
+
+  - name: "Yellow NZ"
+    subsidiaries:
+      - name: "Yellow NZ"
+        domain: "yellow.co.nz"
+        search_url: "https://www.yellow.co.nz"
+        region: "global"
+      - name: "White Pages NZ"
+        domain: "whitepages.co.nz"
+        search_url: "https://www.whitepages.co.nz"
+        region: "global"
+
+  # ──── India ──────────────────────────────────────────────────────
+
+  - name: "True Software Scandinavia"
+    subsidiaries:
+      - name: "Truecaller"
+        domain: "truecaller.com"
+        search_url: "https://www.truecaller.com"
+        opt_out_url: "https://www.truecaller.com/unlisting"
+        region: "global"
+
+  - name: "Just Dial Ltd"
+    subsidiaries:
+      - name: "JustDial"
+        domain: "justdial.com"
+        search_url: "https://www.justdial.com"
+        region: "global"
+
+  - name: "Sulekha"
+    subsidiaries:
+      - name: "Sulekha"
+        domain: "sulekha.com"
+        search_url: "https://www.sulekha.com"
+        region: "global"
+
+  - name: "IndiaMART"
+    subsidiaries:
+      - name: "IndiaMART"
+        domain: "indiamart.com"
+        search_url: "https://www.indiamart.com"
+        region: "global"
+
+  - name: "Zauba Corp"
+    subsidiaries:
+      - name: "Zauba Corp"
+        domain: "zaubacorp.com"
+        search_url: "https://www.zaubacorp.com"
+        region: "global"
+
+  - name: "Eycon"
+    subsidiaries:
+      - name: "Eycon"
+        domain: "eycon.com"
+        search_url: "https://www.eycon.com"
+        region: "global"

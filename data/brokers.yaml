@@ -1,5 +1,5 @@
 version: 1.1.0
-updated: "2026-03-04"
+updated: '2026-03-05'
 brokers:
   - id: spokeo
     name: Spokeo
@@ -18,7 +18,9 @@ brokers:
     tier: 1
     public_directory: true
     verify_before_send: true
-    form_hints: Navigate to spokeo.com/optout. Enter the profile URL, then email address. Click 'Remove this listing'. Confirm via email link.
+    form_hints: >-
+      Navigate to spokeo.com/optout. Enter the profile URL, then email address. Click 'Remove this listing'. Confirm via
+      email link.
     opt_out_url: https://www.spokeo.com/optout
   - id: beenverified
     name: BeenVerified
@@ -38,8 +40,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your email and submit the
-      opt-out. Confirm via the email link sent to your inbox.
+      Go to beenverified.com/app/optout/search. Search your name and state. Find your listing and click it. Enter your
+      email and submit the opt-out. Confirm via the email link sent to your inbox.
     opt_out_url: https://www.beenverified.com/app/optout/search
   - id: whitepages
     name: Whitepages
@@ -58,8 +60,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct profile. Click
-      'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
+      Navigate to whitepages.com/suppression-requests. Search for your listing by name and location. Select the correct
+      profile. Click 'Remove me' and provide your email or phone for verification. Confirm via the link or code sent.
     opt_out_url: https://www.whitepages.com/suppression-requests
   - id: intelius
     name: Intelius
@@ -79,8 +81,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address
-      and submit. Confirm via the email link. May take several days to process.
+      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter
+      your email address and submit. Confirm via the email link. May take several days to process.
     opt_out_url: https://www.intelius.com/optout
   - id: peoplefinder
     name: PeopleFinder
@@ -99,8 +101,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation.
-      Submit the form and confirm via the email link.
+      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address
+      for confirmation. Submit the form and confirm via the email link.
     opt_out_url: https://www.peoplefinder.com/optout
   - id: truepeoplesearch
     name: TruePeopleSearch
@@ -118,8 +120,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the 'Remove This Record'
-      button. Confirm the removal on the next page. The record is removed immediately.
+      Search for your name at truepeoplesearch.com. Click 'View All Details' on your record. Scroll down and click the
+      'Remove This Record' button. Confirm the removal on the next page. The record is removed immediately.
     opt_out_url: https://www.truepeoplesearch.com/removal
   - id: fastpeoplesearch
     name: FastPeopleSearch
@@ -137,8 +139,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click 'Remove This
-      Record'. Confirm the removal. Removal takes effect within 72 hours.
+      Search for your name at fastpeoplesearch.com. Click on your record to view details. Scroll to the bottom and click
+      'Remove This Record'. Confirm the removal. Removal takes effect within 72 hours.
     opt_out_url: https://www.fastpeoplesearch.com/removal
   - id: thatsthem
     name: ThatsThem
@@ -156,8 +158,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out' button on the listing
-      page. Confirm the removal request.
+      Go to thatsthem.com/optout. Search by your name and location. Click on the matching record. Click the 'Opt-Out'
+      button on the listing page. Confirm the removal request.
     opt_out_url: https://thatsthem.com/optout
   - id: radaris
     name: Radaris
@@ -177,8 +179,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile. Click 'Control
-      Information' then select 'Remove all information'. Confirm your identity via email. May require follow-up if records reappear.
+      Navigate to radaris.com/control/privacy. You must create an account or log in. Search for and locate your profile.
+      Click 'Control Information' then select 'Remove all information'. Confirm your identity via email. May require
+      follow-up if records reappear.
     opt_out_url: https://radaris.com/control/privacy
   - id: mylife
     name: MyLife
@@ -198,9 +201,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile
-      removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal
-      can take 7-10 business days.
+      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy.
+      Request profile removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the
+      self-service option is blocked. Removal can take 7-10 business days.
     opt_out_url: https://www.mylife.com/privacy-policy#remove
   - id: truthfinder
     name: Truthfinder
@@ -220,8 +223,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and
-      submit the opt-out. Confirm by clicking the link in the email you receive.
+      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your
+      email address and submit the opt-out. Confirm by clicking the link in the email you receive.
     opt_out_url: https://www.truthfinder.com/optout
   - id: instantcheckmate
     name: InstantCheckmate
@@ -241,8 +244,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the results. Provide your
-      email address and submit the removal request. Confirm via the email link. Processing may take a few days.
+      Navigate to instantcheckmate.com/optout. Search for your name and select your state. Locate your record in the
+      results. Provide your email address and submit the removal request. Confirm via the email link. Processing may
+      take a few days.
     opt_out_url: https://www.instantcheckmate.com/optout
   - id: ussearch
     name: USSearch
@@ -261,8 +265,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click 'Remove'. Provide your
-      email and confirm via the verification link.
+      Go to ussearch.com/opt-out/submit. Enter your first name, last name, and state. Find your record and click
+      'Remove'. Provide your email and confirm via the verification link.
     opt_out_url: https://www.ussearch.com/opt-out/submit
   - id: peoplelooker
     name: PeopleLooker
@@ -282,8 +286,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter your email address
-      and submit. Confirm the opt-out via the email link.
+      Navigate to peoplelooker.com/app/optout/search. Search for your name and state. Select the matching record. Enter
+      your email address and submit. Confirm the opt-out via the email link.
     opt_out_url: https://www.peoplelooker.com/app/optout/search
   - id: pipl
     name: Pipl
@@ -476,7 +480,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and submit.
+    form_hints: >-
+      Go to peekyou.com/about/contact/optout. Enter your PeekYou URL or name and click 'Opt Out'. Fill in the form and
+      submit.
     opt_out_url: https://www.peekyou.com/about/contact/optout/
   - id: usatrace
     name: USA Trace
@@ -494,7 +500,7 @@ brokers:
     verify_before_send: false
     form_hints: Go to usatrace.com/optout. Search for your name. Find your listing and click Remove.
     opt_out_url: https://www.usatrace.com/optout
-  - id: "411"
+  - id: '411'
     name: 411.com
     domain: 411.com
     region: us
@@ -509,8 +515,8 @@ brokers:
     public_directory: true
     verify_before_send: false
     form_hints: >-
-      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this listing'. Enter your
-      email and confirm via the link.
+      Go to 411.com and search for your profile. Click on your listing. Scroll to the bottom and click 'Remove this
+      listing'. Enter your email and confirm via the link.
     opt_out_url: https://www.411.com/privacy
   - id: addresses
     name: Addresses.com
@@ -526,7 +532,9 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: Go to addresses.com/optout.php. Search your name. Select your listing and click the Remove link. Fill in the form and submit.
+    form_hints: >-
+      Go to addresses.com/optout.php. Search your name. Select your listing and click the Remove link. Fill in the form
+      and submit.
     opt_out_url: https://www.addresses.com/optout.php
   - id: usphonebook
     name: US Phone Book
@@ -542,7 +550,9 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: Go to usphonebook.com/opt-out. Enter your name and state. Find and select your record. Fill out the removal form and submit.
+    form_hints: >-
+      Go to usphonebook.com/opt-out. Enter your name and state. Find and select your record. Fill out the removal form
+      and submit.
     opt_out_url: https://www.usphonebook.com/opt-out
   - id: socialcatfish
     name: Social Catfish
@@ -559,7 +569,9 @@ brokers:
     tier: 2
     public_directory: true
     verify_before_send: false
-    form_hints: Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email link.
+    form_hints: >-
+      Go to socialcatfish.com/opt-out. Enter your name, email, or phone. Submit the opt-out form. Confirm via the email
+      link.
     opt_out_url: https://socialcatfish.com/opt-out/
   - id: clustrmaps
     name: ClustrMaps
@@ -576,7 +588,9 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: false
-    form_hints: Go to clustrmaps.com/bl/opt-out. Search your name. Select the profile. Enter your email and submit. Confirm via the email link.
+    form_hints: >-
+      Go to clustrmaps.com/bl/opt-out. Search your name. Select the profile. Enter your email and submit. Confirm via
+      the email link.
     opt_out_url: https://clustrmaps.com/bl/opt-out
   - id: liveramp
     name: LiveRamp
@@ -8854,7 +8868,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://privacyportal-eu-cdn.onetrust.com/dsarwebform/942fbf02-bbfe-4a5d-808d-080b06c5651c/3fdf8f1d-7ab3-4a99-bb4e-24965500290d.html
+    opt_out_url: >-
+      https://privacyportal-eu-cdn.onetrust.com/dsarwebform/942fbf02-bbfe-4a5d-808d-080b06c5651c/3fdf8f1d-7ab3-4a99-bb4e-24965500290d.html
   - id: dojomojo
     name: DojoMojo
     domain: proxima.ai
@@ -8934,7 +8949,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://privacyportal.onetrust.com/webform/5cb57702-8ef7-437e-a62b-408fe78cd310/93391c3d-d6c8-45b1-a169-39a0b7f9fb74
+    opt_out_url: >-
+      https://privacyportal.onetrust.com/webform/5cb57702-8ef7-437e-a62b-408fe78cd310/93391c3d-d6c8-45b1-a169-39a0b7f9fb74
   - id: zabasearch
     name: ZabaSearch
     domain: zabasearch.com
@@ -9124,7 +9140,8 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://privacyportal.onetrust.com/webform/e32c5e49-85c5-4969-bfa8-8cde49952e1f/6034339d-69de-41fc-829f-7b8b51d9fabe
+    opt_out_url: >-
+      https://privacyportal.onetrust.com/webform/e32c5e49-85c5-4969-bfa8-8cde49952e1f/6034339d-69de-41fc-829f-7b8b51d9fabe
   - id: 4legalleads
     name: 4Legalleads
     domain: 4legalleads.com
@@ -9605,7 +9622,8 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://privacyportal.onetrust.com/webform/82a6a736-b3a7-4e87-a2fd-04a39b7d2b19/2f5dc7b8-7698-4623-82d2-b2b969ef901e
+    opt_out_url: >-
+      https://privacyportal.onetrust.com/webform/82a6a736-b3a7-4e87-a2fd-04a39b7d2b19/2f5dc7b8-7698-4623-82d2-b2b969ef901e
   - id: businesscom
     name: Business.Com
     domain: business.com
@@ -13079,7 +13097,8 @@ brokers:
     tier: 3
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
+    opt_out_url: >-
+      https://privacyportal-de.onetrust.com/webform/bdcc4a2f-2458-4e17-96c3-cf88f7115dfc/2c5e70e5-643a-4c1e-b9c2-1e71584d04ad
   - id: abalta_technologies_inc
     name: Abalta Technologies Inc.
     domain: abaltatech.com
@@ -13144,20 +13163,6 @@ brokers:
     name: Active Intel Investigations LLC
     domain: activeintel.com
     email: daveafx@gmail.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: address_search
-    name: Address Search
-    domain: addresssearch.com
     region: us
     category: data_broker
     removal_method: email
@@ -13379,34 +13384,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: background_check_only_com
-    name: Background-Check-Only.Com
-    domain: background-check-only.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: bcs_background_screening_llc
-    name: Bcs Background Screening, Llc
-    domain: background-checks-systems.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: background_check_international_bci
     name: Background Check International (Bci)
     domain: bcint.com
@@ -13482,20 +13459,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: blockshopper
-    name: Blockshopper
-    domain: blockshopper.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: boardroom_insiders_inc
     name: Boardroom Insiders, Inc.
     domain: boardroominsiders.com
@@ -13515,20 +13478,6 @@ brokers:
     name: Wunderkind Corporation
     domain: bouncex.com
     email: privacy@bouncex.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: business_profiles
-    name: Business Profiles
-    domain: businessprofiles.com
     region: us
     category: data_broker
     removal_method: email
@@ -13604,34 +13553,6 @@ brokers:
     name: Cbcinnovis, Inc.
     domain: cbcinnovis.com
     email: cbcservices@cbcinnovis.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: cell_phone_registry
-    name: Cell Phone Registry
-    domain: cellphoneregistry.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: census_info_us
-    name: Census Info Us
-    domain: census-info.us
     region: us
     category: data_broker
     removal_method: email
@@ -13778,20 +13699,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: corporation_wiki
-    name: Corporation Wiki
-    domain: corporationwiki.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: cortera_inc
     name: Cortera, Inc.
     domain: cortera.com
@@ -13852,38 +13759,10 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: criminal_pages
-    name: Criminal Pages
-    domain: criminalpages.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: criminal_screen
     name: Criminal Screen
     domain: criminalscreen.com
     email: webmaster@criminalscreen.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: criminal_watch_dog
-    name: Criminal Watch Dog
-    domain: criminalwatchdog.com
     region: us
     category: data_broker
     removal_method: email
@@ -14180,20 +14059,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: email_tracer
-    name: Email Tracer
-    domain: emailtracer.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: engagement_media_company_llc
     name: Engagement Media Company, LLC
     domain: engagementmediaco.com
@@ -14284,20 +14149,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: free_background_check
-    name: Free Background Check
-    domain: freebackgroundcheck.us
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: freecellsearch_com
     name: Freecellsearch.Com
     domain: freecellsearch.com
@@ -14347,20 +14198,6 @@ brokers:
     name: Geranium Data
     domain: geraniumdata.com
     email: privacy@geraniumdata.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: govarrestrecords_org
-    name: Govarrestrecords.Org
-    domain: govarrestrecords.org
     region: us
     category: data_broker
     removal_method: email
@@ -14567,38 +14404,10 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: instant_people_finder
-    name: Instant People Finder
-    domain: instantpeoplefinder.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: insurance_marketing_hub_llc
     name: INSURANCE MARKETING HUB LLC
     domain: insurancemarketinghub.com
     email: customerservice@distpc.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: inteligator
-    name: Inteligator
-    domain: inteligator.com
     region: us
     category: data_broker
     removal_method: email
@@ -14809,20 +14618,6 @@ brokers:
     name: Big Brook Media, LLC
     domain: littlebrookmedia.com
     email: info@littlebrookmedia.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: locatefamily_com
-    name: Locatefamily.Com
-    domain: locatefamily.com
     region: us
     category: data_broker
     removal_method: email
@@ -15149,20 +14944,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: peopleaz_org
-    name: Peopleaz.Org
-    domain: peopleaz.org
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: people_by_name
     name: People By Name
     domain: peoplebyname.com
@@ -15179,23 +14960,9 @@ brokers:
     verify_before_send: false
     status: unverified
   - id: people_finder_instant_online_records_retrieval
-    name: "People Finder: Instant Online Records Retrieval"
+    name: 'People Finder: Instant Online Records Retrieval'
     domain: peoplefinderonline.net
     email: support@infotracer.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: peopleg2
-    name: Peopleg2
-    domain: peopleg2.com
     region: us
     category: data_broker
     removal_method: email
@@ -15226,20 +14993,6 @@ brokers:
     name: Phonebooks.Com (Affiliated With Intelius)
     domain: phonebooks.com
     email: help@phonebooks.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: phone_registry
-    name: Phone Registry
-    domain: phoneregistry.com
     region: us
     category: data_broker
     removal_method: email
@@ -15330,20 +15083,6 @@ brokers:
     name: Public Record Site
     domain: public-record-site.com
     email: privacy@1and1.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: public_arrest_records
-    name: Public Arrest Records
-    domain: publicarrestrecords.org
     region: us
     category: data_broker
     removal_method: email
@@ -15509,20 +15248,6 @@ brokers:
     name: Reverse Number Database
     domain: reversenumberdatabase.com
     email: privacy@cisnationwide.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: reverse_phone_lookup
-    name: Reverse Phone Lookup
-    domain: reversephonelookup.com
     region: us
     category: data_broker
     removal_method: email
@@ -15804,20 +15529,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: state_records_united_states_state_records
-    name: State Records (United States State Records)
-    domain: staterecords.org
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: stat_resource_group_llc_dba_statlistics
     name: Stat Resource Group LLC DBA Statlistics
     domain: statlistics.com
@@ -15852,20 +15563,6 @@ brokers:
     name: Sterling Data Company LLC
     domain: sterlingstrategies.co
     email: info@sterlingstrategies.co
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: superpages
-    name: Superpages
-    domain: superpages.com
     region: us
     category: data_broker
     removal_method: email
@@ -15971,20 +15668,6 @@ brokers:
     name: Tlo Online Investigative Systems
     domain: tlo.com
     email: tloxpsupport@transunion.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
-  - id: tracers_information_specialists_inc
-    name: Tracers Information Specialists, Inc.
-    domain: tracersinfoonline.com
     region: us
     category: data_broker
     removal_method: email
@@ -16236,20 +15919,6 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-  - id: ypstate_com
-    name: Ypstate.Com
-    domain: ypstate.com
-    region: us
-    category: data_broker
-    removal_method: email
-    requires_captcha: false
-    requires_email_confirm: false
-    requires_id_upload: false
-    difficulty: medium
-    tier: 3
-    public_directory: false
-    verify_before_send: false
-    status: unverified
   - id: nexxen_inc_2
     name: Nexxen Inc.
     domain: yourdata.nexxen.com
@@ -16386,7 +16055,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
+    opt_out_url: >-
+      https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
   - id: realeflow_llc_2
     name: Realeflow LLC
     domain: cdn.realeflow.com
@@ -16492,7 +16162,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
+    opt_out_url: >-
+      https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
   - id: seamless_contacts_inc
     name: Seamless Contacts, Inc.
     domain: login.seamless.ai
@@ -16808,7 +16479,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
+    opt_out_url: >-
+      https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
   - id: tapad_inc_2
     name: Tapad, Inc.
     domain: crportal.tapad.com
@@ -16883,7 +16555,8 @@ brokers:
     public_directory: false
     verify_before_send: false
     status: unverified
-    opt_out_url: https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
+    opt_out_url: >-
+      https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
   - id: cengage_learning_inc_2
     name: Cengage Learning, Inc.
     domain: cengagegroup.com
@@ -17009,3 +16682,19 @@ brokers:
     verify_before_send: false
     status: unverified
     opt_out_url: https://my.monitorbase.com/privacypolicy
+  - id: neustar_eraser
+    name: Neustar, Inc.
+    domain: neustar.com
+    email: usprivacy@transunion.com
+    region: us
+    category: marketing
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 3
+    status: unverified
+    public_directory: false
+    verify_before_send: false
+    opt_out_url: https://www.optoutprescreen.com/

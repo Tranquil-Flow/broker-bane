@@ -164,6 +164,148 @@ export function taskCard(
 </div>`;
 }
 
+// ─── Scan Components ──────────────────────────────────────────────
+
+export function scanSummaryCard(
+  lastScanDate: string,
+  status: string,
+  foundCount: number,
+  notFoundCount: number,
+  errorCount: number,
+  foundBrokerIds: string[],
+): string {
+  const statusColor = status === "completed" ? "var(--green)" : status === "failed" ? "var(--red)" : "var(--amber)";
+  const total = foundCount + notFoundCount + errorCount;
+
+  let foundListHtml = "";
+  if (foundBrokerIds.length > 0) {
+    foundListHtml = `<div style="margin-top:0.5rem;font-size:0.7rem">
+  <span style="color:var(--red)">Found on:</span>
+  ${foundBrokerIds.map((id) => `<span class="task-type captcha" style="margin:0.1rem">${escapeHtml(id)}</span>`).join(" ")}
+</div>`;
+  }
+
+  return `<div style="background:var(--bg-card);border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem">
+    <span style="font-size:0.75rem;letter-spacing:0.1em;color:var(--white)">SINCE YOU LAST CHECKED IN</span>
+    <span style="font-size:0.65rem;color:var(--text-dim)">${escapeHtml(lastScanDate)}</span>
+  </div>
+  <div style="display:flex;gap:2rem;font-size:0.8rem">
+    <span><span style="color:${statusColor};font-weight:700">${total}</span> scanned</span>
+    <span><span style="color:var(--red);font-weight:700">${foundCount}</span> found</span>
+    <span><span style="color:var(--green);font-weight:700">${notFoundCount}</span> clean</span>
+    ${errorCount > 0 ? `<span><span style="color:var(--amber)">${errorCount}</span> errors</span>` : ""}
+  </div>
+  ${foundListHtml}
+</div>`;
+}
+
+export function exposureListItem(
+  brokerName: string,
+  brokerId: string,
+  found: boolean,
+  error: string | null,
+  timestamp: string,
+): string {
+  const icon = found ? "[!]" : error ? "[?]" : "[+]";
+  const iconColor = found ? "var(--red)" : error ? "var(--amber)" : "var(--green)";
+  const statusText = found ? "FOUND" : error ? escapeHtml(error).slice(0, 60) : "CLEAN";
+
+  return `<div class="log-entry" style="display:flex;gap:0.75rem;align-items:center">
+  <span style="color:${iconColor};flex-shrink:0">${icon}</span>
+  <span class="target" style="min-width:160px">${escapeHtml(brokerName)}</span>
+  <span style="color:var(--text-dim);font-size:0.65rem">${escapeHtml(brokerId)}</span>
+  <span style="color:${iconColor};margin-left:auto;font-size:0.65rem;letter-spacing:0.1em">${statusText}</span>
+  <span class="log-time">${escapeHtml(timestamp)}</span>
+</div>`;
+}
+
+// ─── Evidence Components ──────────────────────────────────────────
+
+export function evidenceStatusBadge(
+  valid: boolean,
+  totalEntries: number,
+  brokenAt?: number,
+): string {
+  if (totalEntries === 0) {
+    return `<div style="background:var(--bg-card);border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:0.75rem">
+  <span style="color:var(--text-dim);font-size:0.8rem">[~]</span>
+  <span style="font-size:0.75rem;color:var(--text-dim)">No evidence chain entries</span>
+</div>`;
+  }
+
+  if (valid) {
+    return `<div style="background:var(--bg-card);border:1px solid var(--green);padding:1rem;display:flex;align-items:center;gap:0.75rem">
+  <span style="color:var(--green);font-size:0.8rem">[+]</span>
+  <span style="font-size:0.75rem;color:var(--green)">CHAIN VALID</span>
+  <span style="font-size:0.65rem;color:var(--text-dim);margin-left:auto">${totalEntries} entries verified</span>
+</div>`;
+  }
+
+  return `<div style="background:var(--bg-card);border:1px solid var(--red);padding:1rem;display:flex;align-items:center;gap:0.75rem">
+  <span style="color:var(--red);font-size:0.8rem">[!]</span>
+  <span style="font-size:0.75rem;color:var(--red)">CHAIN BROKEN</span>
+  <span style="font-size:0.65rem;color:var(--text-dim);margin-left:auto">Break at entry #${brokenAt} of ${totalEntries}</span>
+</div>`;
+}
+
+export function evidenceEntryCard(
+  entryType: string,
+  contentHash: string,
+  prevHash: string,
+  screenshotPath: string | null,
+  createdAt: string,
+): string {
+  const typeLabel = entryType.replace(/_/g, " ").toUpperCase();
+  const typeColor = entryType === "before_scan" ? "var(--amber)"
+    : entryType === "after_removal" ? "var(--green)"
+    : entryType === "re_verification" ? "var(--cyan)"
+    : "var(--text)";
+
+  const hashShort = contentHash.slice(0, 16) + "...";
+  const prevShort = prevHash === "0".repeat(64) ? "GENESIS" : prevHash.slice(0, 16) + "...";
+
+  return `<div class="log-entry" style="display:block;padding:0.75rem 1.25rem">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.25rem">
+    <span style="color:${typeColor};font-size:0.65rem;letter-spacing:0.1em;border:1px solid ${typeColor};padding:0.1rem 0.4rem">${typeLabel}</span>
+    <span class="log-time">${escapeHtml(createdAt)}</span>
+  </div>
+  <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem">
+    <span>hash: <span style="color:var(--cyan)">${hashShort}</span></span>
+    <span style="margin-left:1rem">prev: <span style="color:var(--text)">${prevShort}</span></span>
+    ${screenshotPath ? `<span style="margin-left:1rem;color:var(--green)">[screenshot]</span>` : ""}
+  </div>
+</div>`;
+}
+
+export function beforeAfterScreenshots(
+  beforePath: string | null,
+  afterPath: string | null,
+): string {
+  return `<div class="panel" style="margin-top:1.5rem">
+  <div class="panel-header">
+    <span class="panel-title">Before / After Screenshots</span>
+    <span class="panel-badge">EVIDENCE</span>
+  </div>
+  <div class="panel-body" style="padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+    <div>
+      <div style="font-size:0.65rem;letter-spacing:0.1em;color:var(--amber);margin-bottom:0.5rem">BEFORE (LISTING FOUND)</div>
+      ${beforePath
+        ? `<div style="font-size:0.7rem;color:var(--text-dim);word-break:break-all">${escapeHtml(beforePath)}</div>`
+        : `<div class="dim">No screenshot</div>`}
+    </div>
+    <div>
+      <div style="font-size:0.65rem;letter-spacing:0.1em;color:var(--green);margin-bottom:0.5rem">AFTER (REMOVED)</div>
+      ${afterPath
+        ? `<div style="font-size:0.7rem;color:var(--text-dim);word-break:break-all">${escapeHtml(afterPath)}</div>`
+        : `<div class="dim">No screenshot</div>`}
+    </div>
+  </div>
+</div>`;
+}
+
+// ─── Broker Table ─────────────────────────────────────────────────
+
 export function brokerTableRow(
   name: string,
   domain: string,

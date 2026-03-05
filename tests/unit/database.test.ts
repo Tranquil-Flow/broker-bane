@@ -34,6 +34,9 @@ describe("Database", () => {
       expect(names).toContain("email_log");
       expect(names).toContain("circuit_breaker_state");
       expect(names).toContain("pipeline_runs");
+      expect(names).toContain("scan_runs");
+      expect(names).toContain("scan_results");
+      expect(names).toContain("evidence_chain");
     });
 
     it("is idempotent", () => {

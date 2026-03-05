@@ -69,3 +69,43 @@ export interface PipelineRunRow {
   failed_count: number;
   skipped_count: number;
 }
+
+export interface ScanRunRow {
+  id: number;
+  started_at: string;
+  finished_at: string | null;
+  status: string;
+  total_brokers: number;
+  found_count: number;
+  not_found_count: number;
+  error_count: number;
+}
+
+export interface ScanResultRow {
+  id: number;
+  scan_run_id: number;
+  broker_id: string;
+  found: number;
+  confidence: number | null;
+  profile_data: string | null;
+  screenshot_path: string | null;
+  page_text: string | null;
+  error: string | null;
+  created_at: string;
+}
+
+export interface EvidenceChainRow {
+  id: number;
+  request_id: number | null;
+  scan_result_id: number | null;
+  entry_type: string;
+  content_hash: string;
+  prev_hash: string;
+  screenshot_path: string | null;
+  page_text: string | null;
+  page_text_hash: string | null;
+  broker_url: string | null;
+  broker_id: string;
+  metadata: string | null;
+  created_at: string;
+}

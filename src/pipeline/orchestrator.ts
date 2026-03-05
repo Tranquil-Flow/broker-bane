@@ -11,6 +11,8 @@ import { PendingTaskRepo } from "../db/repositories/pending-task.repo.js";
 import { EmailLogRepo } from "../db/repositories/email-log.repo.js";
 import { CircuitBreakerRepo } from "../db/repositories/circuit-breaker.repo.js";
 import { PipelineRunRepo } from "../db/repositories/pipeline-run.repo.js";
+import { EvidenceChainRepo } from "../db/repositories/evidence-chain.repo.js";
+import { EvidenceChainService } from "./evidence-chain.js";
 import { EmailSender } from "../email/sender.js";
 import { buildTemplateVariables, renderTemplate } from "../email/template-engine.js";
 import { CircuitBreaker } from "./circuit-breaker.js";
@@ -74,6 +76,9 @@ export class Orchestrator {
     const pipelineRunRepo = new PipelineRunRepo(this.db);
     const pendingTaskRepo = new PendingTaskRepo(this.db);
     const brokerResponseRepo = new BrokerResponseRepo(this.db);
+
+    const evidenceRepo = new EvidenceChainRepo(this.db);
+    const evidenceService = new EvidenceChainService(evidenceRepo);
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,
@@ -261,6 +266,22 @@ export class Orchestrator {
           }
 
           requestRepo.updateStatus(request.id, REQUEST_STATUS.matched);
+
+          // Record before_scan evidence
+          if (verification.pageText || verification.screenshotPath) {
+            try {
+              evidenceService.recordEvidence({
+                requestId: request.id,
+                entryType: "before_scan",
+                brokerId: broker.id,
+                brokerUrl: broker.search_url ?? `https://${broker.domain}`,
+                screenshotPath: verification.screenshotPath,
+                pageText: verification.pageText,
+              });
+            } catch (err) {
+              logger.warn({ brokerId: broker.id, err }, "Failed to record before_scan evidence");
+            }
+          }
         } else if (broker.verify_before_send && !browser && !dryRun) {
           logger.debug(
             { brokerId: broker.id },
@@ -451,6 +472,22 @@ export class Orchestrator {
       if (result.screenshotPath) {
         requestRepo.setScreenshot(requestId, result.screenshotPath);
       }
+
+      // Record after_removal evidence
+      try {
+        const evidenceRepo = new EvidenceChainRepo(this.db!);
+        const evidenceService = new EvidenceChainService(evidenceRepo);
+        evidenceService.recordEvidence({
+          requestId,
+          entryType: "after_removal",
+          brokerId: broker.id,
+          brokerUrl: broker.opt_out_url ?? `https://${broker.domain}`,
+          screenshotPath: result.screenshotPath,
+        });
+      } catch (err) {
+        logger.warn({ brokerId: broker.id, err }, "Failed to record after_removal evidence");
+      }
+
       logger.info({ brokerId: broker.id }, "Web form removal completed via browser");
       return true;
     } else {
@@ -488,6 +525,22 @@ export class Orchestrator {
       if (result.screenshotPath) {
         requestRepo.setScreenshot(requestId, result.screenshotPath);
       }
+
+      // Record after_removal evidence
+      try {
+        const evidenceRepo = new EvidenceChainRepo(this.db!);
+        const evidenceService = new EvidenceChainService(evidenceRepo);
+        evidenceService.recordEvidence({
+          requestId,
+          entryType: "after_removal",
+          brokerId: broker.id,
+          brokerUrl: broker.opt_out_url ?? `https://${broker.domain}`,
+          screenshotPath: result.screenshotPath,
+        });
+      } catch (err) {
+        logger.warn({ brokerId: broker.id, err }, "Failed to record after_removal evidence");
+      }
+
       logger.info({ brokerId: broker.id }, "Playbook removal completed");
       return true;
     }
