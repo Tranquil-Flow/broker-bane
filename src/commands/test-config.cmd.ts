@@ -4,6 +4,7 @@ import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { EmailSender } from "../email/sender.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
 import { runMigrations } from "../db/migrations.js";
+import { resolveImapAuth } from "../inbox/monitor.js";
 
 export async function testConfigCommand(options: {
   config?: string;
@@ -69,11 +70,12 @@ export async function testConfigCommand(options: {
   if (config.inbox) {
     try {
       const { ImapFlow } = await import("imapflow");
+      const imapAuth = await resolveImapAuth(config.inbox.auth);
       const client = new ImapFlow({
         host: config.inbox.host,
         port: config.inbox.port,
         secure: config.inbox.secure,
-        auth: { user: config.inbox.auth.user, pass: config.inbox.auth.pass },
+        auth: imapAuth,
         logger: false,
       });
       await client.connect();
