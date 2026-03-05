@@ -13,11 +13,10 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
 <div class="content-section" style="margin-bottom:1.5rem">
   <h3 style="color:var(--green);margin-bottom:0.5rem">What "brokers covered" means</h3>
   <p style="color:var(--muted);font-size:0.9rem;line-height:1.5">
-    Competitor numbers mix different types of coverage. <strong>Automated removals</strong> use pre-built
-    integrations with verified opt-out flows. <strong>Custom/manual removals</strong> mean a human (or you)
-    submits a request on your behalf &mdash; often with per-plan limits. BrokerBane sends legal removal
-    requests (GDPR/CCPA templates) to every broker in its database via email, and supports AI-powered
-    web form automation where opt-out forms exist.
+    Competitors often inflate coverage by counting websites instead of unique brokers &mdash;
+    one broker can operate many domains. All numbers below are counted by unique data broker.
+    <strong>Email removals</strong> send legal requests (GDPR/CCPA) directly to the broker.
+    <strong>Web form removals</strong> automate the broker's online opt-out form.
   </p>
 </div>
 
@@ -43,28 +42,28 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
         <td class="paid">$39&ndash;249/yr</td>
       </tr>
       <tr>
-        <td class="feature">Automated removals</td>
-        <td>1,103 email + web form</td>
-        <td>420+</td>
-        <td>313</td>
-        <td>85</td>
-        <td>130&ndash;400+</td>
-      </tr>
-      <tr>
-        <td class="feature">Custom/manual removals</td>
-        <td class="yes">Unlimited (DIY)</td>
-        <td>2,000+ sites</td>
-        <td>Unlimited</td>
-        <td>40&ndash;60 per plan</td>
-        <td>Unlimited (Ultimate)</td>
-      </tr>
-      <tr>
-        <td class="feature">Total sites claimed</td>
+        <td class="feature">Total brokers in scope</td>
         <td>1,103</td>
-        <td>2,420+</td>
+        <td>420+</td>
         <td>313</td>
         <td>750+</td>
         <td>950+</td>
+      </tr>
+      <tr>
+        <td class="feature">Email removals</td>
+        <td class="yes">1,103 brokers</td>
+        <td>Included</td>
+        <td>Included</td>
+        <td>Included</td>
+        <td>Included</td>
+      </tr>
+      <tr>
+        <td class="feature">Web form removals</td>
+        <td class="yes">YES</td>
+        <td>YES</td>
+        <td>YES</td>
+        <td class="no">Manual</td>
+        <td>YES</td>
       </tr>
       <tr>
         <td class="feature">Data stays local</td>
@@ -91,20 +90,12 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
         <td class="no">NO</td>
       </tr>
       <tr>
-        <td class="feature">Web form automation</td>
-        <td>AI-powered</td>
-        <td>YES</td>
-        <td>YES</td>
-        <td class="no">Manual</td>
-        <td>YES</td>
-      </tr>
-      <tr>
         <td class="feature">Inbox monitoring</td>
         <td class="yes">YES</td>
-        <td class="no">N/A</td>
-        <td class="no">N/A</td>
-        <td class="no">N/A</td>
-        <td class="no">N/A</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
+        <td class="no">NO</td>
       </tr>
       <tr>
         <td class="feature">Scheduled re-scan</td>
@@ -130,8 +121,9 @@ export function registerCompareRoutes(_app: Hono, _db: Database): void {
   <p style="color:var(--muted);font-size:0.8rem;line-height:1.5">
     Competitor data sourced from their official websites as of March 2026.
     Incogni: incogni.com | OneRep: onerep.com | DeleteMe: joindeleteme.com | Optery: optery.com.
-    "Automated removals" = pre-built integrations. BrokerBane's 1,103 includes email-based legal
-    requests and AI-powered web form submissions &mdash; not all have been individually verified.
+    Incogni claims 2,420+ "sites" but counts multiple domains per broker &mdash; their verified
+    unique broker count is 420+. BrokerBane's 1,103 includes email-based legal requests and
+    automated web form submissions &mdash; not all have been individually verified.
   </p>
 </div>`;
 
