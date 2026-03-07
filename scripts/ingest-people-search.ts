@@ -12,12 +12,16 @@ import yaml from "js-yaml";
 
 const ROOT = resolve(import.meta.dirname ?? __dirname, "..");
 const BROKERS_PATH = resolve(ROOT, "data/brokers.yaml");
-const SOURCES_PATH = resolve(ROOT, "scripts/data/people-search-sources.yaml");
+const SOURCE_PATHS = [
+  resolve(ROOT, "scripts/data/people-search-sources.yaml"),
+  resolve(ROOT, "scripts/data/people-search-expansion.yaml"),
+];
 
 interface SourceSubsidiary {
   name: string;
   domain: string;
   region?: string;
+  country?: string;
   search_url?: string;
   opt_out_url?: string;
 }
@@ -54,25 +58,29 @@ async function main(): Promise<void> {
   const existingIds = new Set(existing.brokers.map((b) => b.id as string));
   console.log(`Existing brokers: ${existing.brokers.length}`);
 
-  console.log(`\nReading sources from:\n  ${SOURCES_PATH}`);
-  const sources = yaml.load(readFileSync(SOURCES_PATH, "utf-8")) as SourceFile;
-
-  if (!sources?.parent_companies?.length) {
-    throw new Error("people-search-sources.yaml is empty or malformed");
+  const allParentCompanies: SourceParentCompany[] = [];
+  for (const sourcePath of SOURCE_PATHS) {
+    try {
+      console.log(`\nReading sources from:\n  ${sourcePath}`);
+      const sources = yaml.load(readFileSync(sourcePath, "utf-8")) as SourceFile;
+      if (sources?.parent_companies?.length) {
+        allParentCompanies.push(...sources.parent_companies);
+        const subs = sources.parent_companies.reduce((sum, pc) => sum + (pc.subsidiaries?.length ?? 0), 0);
+        console.log(`  ${sources.parent_companies.length} parent companies, ${subs} subsidiaries`);
+      }
+    } catch (err) {
+      console.log(`  Skipping (not found or invalid): ${sourcePath}`);
+    }
   }
 
-  const totalSubsidiaries = sources.parent_companies.reduce(
-    (sum, pc) => sum + (pc.subsidiaries?.length ?? 0),
-    0
-  );
-  console.log(
-    `Source file: ${sources.parent_companies.length} parent companies, ${totalSubsidiaries} subsidiaries`
-  );
+  if (allParentCompanies.length === 0) {
+    throw new Error("No valid source files found");
+  }
 
   const newBrokers: Record<string, unknown>[] = [];
   let skipped = 0;
 
-  for (const parentCompany of sources.parent_companies) {
+  for (const parentCompany of allParentCompanies) {
     const subsidiaries = parentCompany.subsidiaries ?? [];
     let firstSubsidiaryId: string | undefined;
 
@@ -120,6 +128,7 @@ async function main(): Promise<void> {
       if (i > 0 && firstSubsidiaryId !== id) {
         entry.subsidiary_of = firstSubsidiaryId;
       }
+      if (sub.country) entry.country = sub.country;
       if (sub.search_url) entry.search_url = sub.search_url;
       if (sub.opt_out_url) entry.opt_out_url = sub.opt_out_url;
 

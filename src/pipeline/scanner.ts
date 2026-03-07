@@ -16,6 +16,7 @@ export interface ScanOptions {
   dryRun?: boolean;
   autoRemove?: boolean;
   category?: string;
+  country?: string;
   brokerIds?: string[];
 }
 
@@ -62,6 +63,7 @@ export class Scanner {
         regions: this.config.options.regions as any,
         tiers: this.config.options.tiers,
         excludeIds: this.config.options.excluded_brokers,
+        country: options.country,
       });
     }
 

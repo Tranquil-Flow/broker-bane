@@ -6,6 +6,7 @@ export async function scanCommand(options: {
   dryRun?: boolean;
   autoRemove?: boolean;
   category?: string;
+  country?: string;
   brokers?: string;
   config?: string;
 }): Promise<void> {
@@ -30,6 +31,7 @@ export async function scanCommand(options: {
       dryRun: options.dryRun,
       autoRemove: options.autoRemove,
       category: options.category,
+      country: options.country?.toLowerCase(),
       brokerIds: options.brokers?.split(",").map((s) => s.trim()),
     });
 

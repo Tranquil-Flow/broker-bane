@@ -1,0 +1,471 @@
+# International People Search Expansion — curated for BrokerBane ingestion
+# Grouped by parent company to avoid redundant removal requests
+# Each entry includes search_url and/or opt_out_url where known
+version: "1.0.0"
+updated: "2026-03-08"
+
+parent_companies:
+  # ──── UK / GB ──────────────────────────────────────────────────────
+
+  - name: "192.com Ltd"
+    subsidiaries:
+      - name: "192.com"
+        domain: "192.com"
+        region: "gb"
+        country: "gb"
+        search_url: "https://www.192.com/people/"
+        opt_out_url: "https://www.192.com/privacy/"
+
+  - name: "InfoTracer UK"
+    subsidiaries:
+      - name: "InfoTracer UK"
+        domain: "infotracer.co.uk"
+        region: "gb"
+        country: "gb"
+        search_url: "https://infotracer.co.uk/people-search"
+        opt_out_url: "https://infotracer.co.uk/optout"
+
+  - name: "Tracesmart Ltd"
+    subsidiaries:
+      - name: "Tracesmart"
+        domain: "tracesmart.co.uk"
+        region: "gb"
+        country: "gb"
+        search_url: "https://www.tracesmart.co.uk/person-search"
+        opt_out_url: "https://www.tracesmart.co.uk/privacy-policy"
+
+  - name: "UK Roll"
+    subsidiaries:
+      - name: "UKRoll"
+        domain: "ukroll.com"
+        region: "gb"
+        country: "gb"
+        search_url: "https://www.ukroll.com"
+        opt_out_url: "https://www.ukroll.com/removal"
+
+  - name: "FindUKPeople"
+    subsidiaries:
+      - name: "FindUKPeople"
+        domain: "findukpeople.com"
+        region: "gb"
+        country: "gb"
+        search_url: "https://www.findukpeople.com"
+        opt_out_url: "https://www.findukpeople.com/privacy-policy"
+
+  # ──── Australia ────────────────────────────────────────────────────
+
+  - name: "Sensis Pty Ltd"
+    subsidiaries:
+      - name: "White Pages Australia"
+        domain: "whitepages.com.au"
+        region: "au"
+        country: "au"
+        search_url: "https://www.whitepages.com.au"
+        opt_out_url: "https://www.whitepages.com.au/opt-out"
+      - name: "Yellow Pages Australia"
+        domain: "yellowpages.com.au"
+        region: "au"
+        country: "au"
+        search_url: "https://www.yellowpages.com.au"
+        opt_out_url: "https://www.yellowpages.com.au/privacy"
+
+  - name: "PersonLookup AU"
+    subsidiaries:
+      - name: "PersonLookup"
+        domain: "personlookup.com.au"
+        region: "au"
+        country: "au"
+        search_url: "https://www.personlookup.com.au"
+        opt_out_url: "https://www.personlookup.com.au/removal"
+
+  - name: "PeopleFinders AU"
+    subsidiaries:
+      - name: "AnyWho Australia"
+        domain: "anywho.com.au"
+        region: "au"
+        country: "au"
+        search_url: "https://www.anywho.com.au"
+        opt_out_url: "https://www.anywho.com.au/opt-out"
+
+  - name: "Reverse Australia"
+    subsidiaries:
+      - name: "Reverse Australia"
+        domain: "reverseaustralia.com"
+        region: "au"
+        country: "au"
+        search_url: "https://www.reverseaustralia.com"
+        opt_out_url: "https://www.reverseaustralia.com/removal"
+
+  # ──── Canada ───────────────────────────────────────────────────────
+
+  - name: "Canada411 (Yellow Pages Group)"
+    subsidiaries:
+      - name: "Canada411"
+        domain: "canada411.ca"
+        region: "ca"
+        country: "ca"
+        search_url: "https://www.canada411.ca"
+        opt_out_url: "https://www.canada411.ca/pc/privacy.html"
+      - name: "YellowPages.ca"
+        domain: "yellowpages.ca"
+        region: "ca"
+        country: "ca"
+        search_url: "https://www.yellowpages.ca"
+        opt_out_url: "https://www.yellowpages.ca/privacy"
+
+  - name: "CanPages Inc"
+    subsidiaries:
+      - name: "CanPages"
+        domain: "canpages.ca"
+        region: "ca"
+        country: "ca"
+        search_url: "https://www.canpages.ca"
+        opt_out_url: "https://www.canpages.ca/privacy"
+
+  - name: "InfoTracer CA"
+    subsidiaries:
+      - name: "InfoTracer Canada"
+        domain: "infotracer.ca"
+        region: "ca"
+        country: "ca"
+        search_url: "https://infotracer.ca/people-search"
+        opt_out_url: "https://infotracer.ca/optout"
+
+  - name: "PeopleFinder.ca"
+    subsidiaries:
+      - name: "PeopleFinder Canada"
+        domain: "peoplefinder.ca"
+        region: "ca"
+        country: "ca"
+        search_url: "https://www.peoplefinder.ca"
+        opt_out_url: "https://www.peoplefinder.ca/privacy"
+
+  # ──── France (EU) ──────────────────────────────────────────────────
+
+  - name: "PagesJaunes (Solocal Group)"
+    subsidiaries:
+      - name: "Pages Jaunes"
+        domain: "pagesjaunes.fr"
+        region: "eu"
+        country: "fr"
+        search_url: "https://www.pagesjaunes.fr"
+        opt_out_url: "https://www.pagesjaunes.fr/vie-privee"
+      - name: "Pages Blanches"
+        domain: "pagesblanches.fr"
+        region: "eu"
+        country: "fr"
+        search_url: "https://www.pagesblanches.fr"
+        opt_out_url: "https://www.pagesblanches.fr/vie-privee"
+
+  - name: "Infobel FR"
+    subsidiaries:
+      - name: "Infobel France"
+        domain: "infobel.com/fr"
+        region: "eu"
+        country: "fr"
+        search_url: "https://www.infobel.com/fr/france"
+        opt_out_url: "https://www.infobel.com/en/privacy"
+
+  - name: "Annuaire.com (SFR)"
+    subsidiaries:
+      - name: "Annuaire"
+        domain: "annuaire.com"
+        region: "eu"
+        country: "fr"
+        search_url: "https://www.annuaire.com"
+        opt_out_url: "https://www.annuaire.com/confidentialite"
+
+  - name: "118000"
+    subsidiaries:
+      - name: "118000"
+        domain: "118000.fr"
+        region: "eu"
+        country: "fr"
+        search_url: "https://www.118000.fr"
+        opt_out_url: "https://www.118000.fr/confidentialite"
+
+  # ──── Germany (EU) ─────────────────────────────────────────────────
+
+  - name: "Das Telefonbuch (DeTeMedien)"
+    subsidiaries:
+      - name: "Das Telefonbuch"
+        domain: "dastelefonbuch.de"
+        region: "eu"
+        country: "de"
+        search_url: "https://www.dastelefonbuch.de"
+        opt_out_url: "https://www.dastelefonbuch.de/Datenschutz"
+      - name: "Das Oertliche"
+        domain: "dasoertliche.de"
+        region: "eu"
+        country: "de"
+        search_url: "https://www.dasoertliche.de"
+        opt_out_url: "https://www.dasoertliche.de/datenschutz"
+      - name: "Gelbe Seiten"
+        domain: "gelbeseiten.de"
+        region: "eu"
+        country: "de"
+        search_url: "https://www.gelbeseiten.de"
+        opt_out_url: "https://www.gelbeseiten.de/datenschutz"
+
+  - name: "11880 Solutions AG"
+    subsidiaries:
+      - name: "11880"
+        domain: "11880.com"
+        region: "eu"
+        country: "de"
+        search_url: "https://www.11880.com"
+        opt_out_url: "https://www.11880.com/datenschutz"
+
+  - name: "GoYellow"
+    subsidiaries:
+      - name: "GoYellow"
+        domain: "goyellow.de"
+        region: "eu"
+        country: "de"
+        search_url: "https://www.goyellow.de"
+        opt_out_url: "https://www.goyellow.de/datenschutz"
+
+  # ──── Brazil ───────────────────────────────────────────────────────
+
+  - name: "TeleListas (Oi)"
+    subsidiaries:
+      - name: "TeleListas"
+        domain: "telelistas.net"
+        region: "br"
+        country: "br"
+        search_url: "https://www.telelistas.net"
+        opt_out_url: "https://www.telelistas.net/privacidade"
+
+  - name: "Lista Mais"
+    subsidiaries:
+      - name: "Lista Mais"
+        domain: "listamais.com.br"
+        region: "br"
+        country: "br"
+        search_url: "https://www.listamais.com.br"
+        opt_out_url: "https://www.listamais.com.br/privacidade"
+
+  - name: "Guia Mais"
+    subsidiaries:
+      - name: "Guia Mais"
+        domain: "guiamais.com.br"
+        region: "br"
+        country: "br"
+        search_url: "https://www.guiamais.com.br"
+        opt_out_url: "https://www.guiamais.com.br/politica-de-privacidade"
+
+  # ──── Japan ────────────────────────────────────────────────────────
+
+  - name: "NTT Directory Services"
+    subsidiaries:
+      - name: "iTownPage"
+        domain: "itp.ne.jp"
+        region: "jp"
+        country: "jp"
+        search_url: "https://itp.ne.jp"
+        opt_out_url: "https://itp.ne.jp/info/privacy.html"
+      - name: "Townpage"
+        domain: "townpage.goo.ne.jp"
+        region: "jp"
+        country: "jp"
+        search_url: "https://townpage.goo.ne.jp"
+
+  - name: "Telcore Inc"
+    subsidiaries:
+      - name: "jpnumber"
+        domain: "jpnumber.com"
+        region: "jp"
+        country: "jp"
+        search_url: "https://www.jpnumber.com"
+        opt_out_url: "https://www.jpnumber.com/deleteform.do"
+
+  # ──── South Korea ──────────────────────────────────────────────────
+
+  - name: "KT Corporation"
+    subsidiaries:
+      - name: "114.co.kr"
+        domain: "114.co.kr"
+        region: "kr"
+        country: "kr"
+        search_url: "https://www.114.co.kr"
+
+  - name: "Naver Corp"
+    subsidiaries:
+      - name: "Naver People Search"
+        domain: "people.search.naver.com"
+        region: "kr"
+        country: "kr"
+        search_url: "https://people.search.naver.com"
+
+  # ──── India ────────────────────────────────────────────────────────
+
+  - name: "Justdial Ltd"
+    subsidiaries:
+      - name: "Justdial"
+        domain: "justdial.com"
+        region: "in"
+        country: "in"
+        search_url: "https://www.justdial.com"
+        opt_out_url: "https://www.justdial.com/privacy"
+
+  - name: "Sulekha"
+    subsidiaries:
+      - name: "Sulekha"
+        domain: "sulekha.com"
+        region: "in"
+        country: "in"
+        search_url: "https://www.sulekha.com"
+        opt_out_url: "https://www.sulekha.com/privacy-policy"
+
+  - name: "Truecaller AB"
+    subsidiaries:
+      - name: "Truecaller"
+        domain: "truecaller.com"
+        region: "global"
+        country: "se"
+        search_url: "https://www.truecaller.com/search"
+        opt_out_url: "https://www.truecaller.com/unlisting"
+
+  # ──── South Africa ─────────────────────────────────────────────────
+
+  - name: "Telkom SA"
+    subsidiaries:
+      - name: "Yellow Pages South Africa"
+        domain: "yellowpages.co.za"
+        region: "za"
+        country: "za"
+        search_url: "https://www.yellowpages.co.za"
+        opt_out_url: "https://www.yellowpages.co.za/privacy"
+      - name: "White Pages South Africa"
+        domain: "whitepages.co.za"
+        region: "za"
+        country: "za"
+        search_url: "https://www.whitepages.co.za"
+
+  # ──── New Zealand ──────────────────────────────────────────────────
+
+  - name: "Yellow NZ (Yell Group)"
+    subsidiaries:
+      - name: "White Pages NZ"
+        domain: "whitepages.co.nz"
+        region: "nz"
+        country: "nz"
+        search_url: "https://www.whitepages.co.nz"
+        opt_out_url: "https://www.whitepages.co.nz/privacy"
+      - name: "Yellow NZ"
+        domain: "yellow.co.nz"
+        region: "nz"
+        country: "nz"
+        search_url: "https://www.yellow.co.nz"
+        opt_out_url: "https://www.yellow.co.nz/privacy"
+
+  # ──── Singapore ────────────────────────────────────────────────────
+
+  - name: "Singapore Press Holdings"
+    subsidiaries:
+      - name: "Yellow Pages Singapore"
+        domain: "yellowpages.com.sg"
+        region: "sg"
+        country: "sg"
+        search_url: "https://www.yellowpages.com.sg"
+        opt_out_url: "https://www.yellowpages.com.sg/privacy"
+      - name: "The Green Book"
+        domain: "thegreenbook.com"
+        region: "sg"
+        country: "sg"
+        search_url: "https://www.thegreenbook.com"
+
+  # ──── Israel ───────────────────────────────────────────────────────
+
+  - name: "Bezeq"
+    subsidiaries:
+      - name: "144"
+        domain: "b144.co.il"
+        region: "il"
+        country: "il"
+        search_url: "https://www.b144.co.il"
+        opt_out_url: "https://www.b144.co.il/privacy"
+
+  - name: "d.co.il"
+    subsidiaries:
+      - name: "d.co.il"
+        domain: "d.co.il"
+        region: "il"
+        country: "il"
+        search_url: "https://www.d.co.il"
+
+  # ──── Mexico ───────────────────────────────────────────────────────
+
+  - name: "Telmex (America Movil)"
+    subsidiaries:
+      - name: "Seccion Amarilla"
+        domain: "seccionamarilla.com.mx"
+        region: "mx"
+        country: "mx"
+        search_url: "https://www.seccionamarilla.com.mx"
+        opt_out_url: "https://www.seccionamarilla.com.mx/aviso-de-privacidad"
+
+  # ──── Argentina ────────────────────────────────────────────────────
+
+  - name: "Telefonica Argentina"
+    subsidiaries:
+      - name: "Paginas Amarillas AR"
+        domain: "paginasamarillas.com.ar"
+        region: "ar"
+        country: "ar"
+        search_url: "https://www.paginasamarillas.com.ar"
+        opt_out_url: "https://www.paginasamarillas.com.ar/privacidad"
+
+  # ──── Switzerland ──────────────────────────────────────────────────
+
+  - name: "Swisscom Directories"
+    subsidiaries:
+      - name: "local.ch"
+        domain: "local.ch"
+        region: "ch"
+        country: "ch"
+        search_url: "https://www.local.ch"
+        opt_out_url: "https://www.local.ch/en/privacy"
+      - name: "search.ch"
+        domain: "search.ch"
+        region: "ch"
+        country: "ch"
+        search_url: "https://www.search.ch"
+        opt_out_url: "https://www.search.ch/privacy"
+
+  # ──── Hong Kong ────────────────────────────────────────────────────
+
+  - name: "PCCW"
+    subsidiaries:
+      - name: "Yell HK / Yellow Pages HK"
+        domain: "yp.com.hk"
+        region: "hk"
+        country: "hk"
+        search_url: "https://www.yp.com.hk"
+        opt_out_url: "https://www.yp.com.hk/privacy"
+
+  # ──── Global / Multi-region ────────────────────────────────────────
+
+  - name: "Pipl Inc"
+    subsidiaries:
+      - name: "Pipl"
+        domain: "pipl.com"
+        region: "global"
+        search_url: "https://pipl.com"
+        opt_out_url: "https://pipl.com/personal-information-removal-request"
+
+  - name: "Whitepages Inc"
+    subsidiaries:
+      - name: "Whitepages Global"
+        domain: "whitepages.com"
+        region: "us"
+        country: "us"
+        search_url: "https://www.whitepages.com"
+        opt_out_url: "https://www.whitepages.com/suppression-requests"
+
+  - name: "Ekata (Mastercard)"
+    subsidiaries:
+      - name: "Ekata"
+        domain: "ekata.com"
+        region: "global"
+        opt_out_url: "https://ekata.com/consumer-privacy/"

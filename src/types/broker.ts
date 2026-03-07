@@ -3,7 +3,26 @@ import { z } from "zod";
 export const RemovalMethodSchema = z.enum(["email", "web_form", "hybrid"]);
 export const DifficultySchema = z.enum(["easy", "medium", "hard", "manual"]);
 export const BrokerTierSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
-export const RegionSchema = z.enum(["us", "eu", "global"]);
+export const RegionSchema = z.enum([
+  "us",  // United States — CCPA / state privacy laws
+  "eu",  // European Union — GDPR (covers all EU member states via country field)
+  "gb",  // United Kingdom — UK GDPR
+  "ch",  // Switzerland — nFADP (new Federal Act on Data Protection)
+  "ca",  // Canada — PIPEDA
+  "br",  // Brazil — LGPD
+  "mx",  // Mexico — LFPDPPP
+  "ar",  // Argentina — Personal Data Protection Law
+  "au",  // Australia — Privacy Act 1988
+  "nz",  // New Zealand — Privacy Act 2020
+  "jp",  // Japan — APPI
+  "kr",  // South Korea — PIPA
+  "in",  // India — DPDP Act
+  "sg",  // Singapore — PDPA
+  "hk",  // Hong Kong — PDPO
+  "za",  // South Africa — POPIA
+  "il",  // Israel — Privacy Protection Law
+  "global",
+]);
 
 export const BrokerSchema = z.object({
   // Core fields (from Eraser)
@@ -31,6 +50,7 @@ export const BrokerSchema = z.object({
   form_hints: z.string().optional(),
   opt_out_url: z.string().url().optional(),
   opt_out_validity_days: z.number().int().positive().default(180),
+  country: z.string().length(2).optional(),
 });
 
 export const BrokerDatabaseSchema = z.object({

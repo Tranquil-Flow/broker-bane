@@ -38,7 +38,7 @@ function getBrokersWithStatus(db: Database): BrokerWithStatus[] {
 
 function filterBrokers(
   items: BrokerWithStatus[],
-  query: { category?: string; region?: string; tier?: string; status?: string; search?: string },
+  query: { category?: string; region?: string; country?: string; tier?: string; status?: string; search?: string },
 ): BrokerWithStatus[] {
   let filtered = items;
 
@@ -47,6 +47,9 @@ function filterBrokers(
   }
   if (query.region) {
     filtered = filtered.filter((b) => b.broker.region === query.region);
+  }
+  if (query.country) {
+    filtered = filtered.filter((b) => b.broker.country === query.country);
   }
   if (query.tier) {
     const tier = Number(query.tier);
@@ -105,7 +108,22 @@ function renderFilters(): string {
   <select name="region" class="filter-select" hx-get="/api/brokers" hx-target="#broker-tbody" hx-include=".filters [name]">
     <option value="">All Regions</option>
     <option value="us">US</option>
-    <option value="eu">EU</option>
+    <option value="eu">EU (GDPR)</option>
+    <option value="gb">UK</option>
+    <option value="ch">Switzerland</option>
+    <option value="ca">Canada</option>
+    <option value="br">Brazil</option>
+    <option value="mx">Mexico</option>
+    <option value="ar">Argentina</option>
+    <option value="au">Australia</option>
+    <option value="nz">New Zealand</option>
+    <option value="jp">Japan</option>
+    <option value="kr">South Korea</option>
+    <option value="in">India</option>
+    <option value="sg">Singapore</option>
+    <option value="hk">Hong Kong</option>
+    <option value="za">South Africa</option>
+    <option value="il">Israel</option>
     <option value="global">Global</option>
   </select>
   <select name="tier" class="filter-select" hx-get="/api/brokers" hx-target="#broker-tbody" hx-include=".filters [name]">
@@ -123,6 +141,7 @@ function renderFilters(): string {
     <option value="completed">Completed</option>
     <option value="failed">Failed</option>
   </select>
+  <input type="text" name="country" class="filter-input" placeholder="Country (e.g. fr, de)..." style="max-width:10rem" hx-get="/api/brokers" hx-target="#broker-tbody" hx-trigger="keyup changed delay:300ms" hx-include=".filters [name]">
   <input type="text" name="search" class="filter-input" placeholder="Search brokers..." hx-get="/api/brokers" hx-target="#broker-tbody" hx-trigger="keyup changed delay:300ms" hx-include=".filters [name]">
 </div>`;
 }
@@ -168,6 +187,7 @@ export function registerBrokerRoutes(app: Hono, db: Database): void {
     const query = {
       category: c.req.query("category") || undefined,
       region: c.req.query("region") || undefined,
+      country: c.req.query("country")?.toLowerCase() || undefined,
       tier: c.req.query("tier") || undefined,
       status: c.req.query("status") || undefined,
       search: c.req.query("search") || undefined,
@@ -209,7 +229,7 @@ export function registerBrokerRoutes(app: Hono, db: Database): void {
   <div style="padding:1rem 1.25rem;font-size:0.75rem">
     <div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Domain:</span> <span style="color:var(--white)">${escapeHtml(broker.domain)}</span></div>
     <div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Category:</span> ${escapeHtml(broker.category)}</div>
-    <div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Region:</span> ${escapeHtml(broker.region)} | <span style="color:var(--text-dim)">Tier:</span> ${broker.tier} | <span style="color:var(--text-dim)">Difficulty:</span> ${escapeHtml(broker.difficulty)}</div>
+    <div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Region:</span> ${escapeHtml(broker.region)}${broker.country ? ` (${escapeHtml(broker.country)})` : ""} | <span style="color:var(--text-dim)">Tier:</span> ${broker.tier} | <span style="color:var(--text-dim)">Difficulty:</span> ${escapeHtml(broker.difficulty)}</div>
     ${broker.email ? `<div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Email:</span> ${escapeHtml(broker.email)}</div>` : ""}
     ${broker.opt_out_url ? `<div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">Opt-out:</span> <a href="${escapeHtml(broker.opt_out_url)}" target="_blank" style="color:var(--cyan)">${escapeHtml(broker.opt_out_url)}</a></div>` : ""}
     <div style="margin-bottom:0.5rem"><span style="color:var(--text-dim)">CAPTCHA:</span> ${broker.requires_captcha ? "YES" : "NO"} | <span style="color:var(--text-dim)">Email confirm:</span> ${broker.requires_email_confirm ? "YES" : "NO"} | <span style="color:var(--text-dim)">ID upload:</span> ${broker.requires_id_upload ? "YES" : "NO"}</div>

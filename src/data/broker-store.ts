@@ -11,6 +11,7 @@ export interface BrokerFilter {
   difficulty?: readonly string[];
   publicDirectoryOnly?: boolean;
   parentCompany?: string;
+  country?: string;
 }
 
 export class BrokerStore {
@@ -64,6 +65,9 @@ export class BrokerStore {
         return false;
       }
       if (criteria.parentCompany && broker.parent_company !== criteria.parentCompany) {
+        return false;
+      }
+      if (criteria.country && broker.country !== criteria.country) {
         return false;
       }
       return true;

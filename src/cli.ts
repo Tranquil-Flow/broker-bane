@@ -62,7 +62,8 @@ program
 program
   .command("list-brokers")
   .description("List and filter available brokers")
-  .option("-r, --region <region>", "Filter by region (us, eu, global)")
+  .option("-r, --region <region>", "Filter by region (us, eu, gb, ch, ca, br, mx, ar, au, nz, jp, kr, in, sg, hk, za, il, global)")
+  .option("--country <code>", "Filter by ISO country code (e.g., fr, de, au)")
   .option("-t, --tier <tier>", "Filter by tier (1, 2, 3)")
   .option("-m, --method <method>", "Filter by method (email, web_form, hybrid)")
   .option("-s, --search <query>", "Search by name or domain")
@@ -125,6 +126,7 @@ program
   .option("-d, --dry-run", "Preview which brokers would be scanned")
   .option("-a, --auto-remove", "Automatically trigger removal for found listings")
   .option("--category <category>", "Broker category to scan (default: people_search)")
+  .option("--country <code>", "Filter by ISO country code (e.g., fr, de, au)")
   .option("-b, --brokers <ids>", "Comma-separated broker IDs to scan")
   .option("-c, --config <path>", "Override config file path")
   .action(async (opts) => {

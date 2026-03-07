@@ -4,6 +4,7 @@ import type { Region, RemovalMethod } from "../types/broker.js";
 
 export async function listBrokersCommand(options: {
   region?: string;
+  country?: string;
   tier?: string;
   method?: string;
   search?: string;
@@ -19,6 +20,7 @@ export async function listBrokersCommand(options: {
   } else {
     brokers = store.filter({
       regions: options.region ? [options.region as Region] : undefined,
+      country: options.country?.toLowerCase(),
       tiers: options.tier ? [parseInt(options.tier, 10)] : undefined,
       methods: options.method ? [options.method as RemovalMethod] : undefined,
     });
