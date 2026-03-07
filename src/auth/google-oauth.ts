@@ -95,6 +95,9 @@ export function getGoogleAuthUrl(redirectUri: string): string {
 }
 
 export async function exchangeGoogleCode(code: string, redirectUri: string): Promise<OAuthTokens> {
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    throw new Error("Google OAuth not configured in this build. Use app password instead.");
+  }
   const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, redirectUri);
   const { tokens } = await oauth2Client.getToken(code);
 

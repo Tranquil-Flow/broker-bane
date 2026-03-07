@@ -59,15 +59,6 @@ describe("Google OAuth helpers", () => {
     expect(tokens.refreshToken).toBe("goog-refresh");
   });
 
-  it("throws when Google client ID is not set", async () => {
-    vi.stubEnv("BROKERBANE_GOOGLE_CLIENT_ID", "");
-    vi.stubEnv("BROKERBANE_GOOGLE_CLIENT_SECRET", "");
-    // Re-import to pick up empty env vars — but module is cached.
-    // The functions read CLIENT_ID at module scope, so we test the guard directly.
-    const { getGoogleAuthUrl } = await import("../../src/auth/google-oauth.js");
-    // CLIENT_ID was already set when module loaded; this test validates the function exists.
-    expect(typeof getGoogleAuthUrl).toBe("function");
-  });
 });
 
 describe("Microsoft OAuth helpers", () => {

@@ -104,6 +104,9 @@ export async function exchangeMicrosoftCode(
   redirectUri: string,
   verifier: string,
 ): Promise<OAuthTokens> {
+  if (!CLIENT_ID) {
+    throw new Error("Microsoft OAuth not configured in this build. Use app password instead.");
+  }
   const pca = createPCAWithCache();
   const result = await pca.acquireTokenByCode({
     code,
