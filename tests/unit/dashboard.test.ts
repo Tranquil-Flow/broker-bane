@@ -163,11 +163,12 @@ describe("Dashboard", () => {
       expect(text).toContain("DeleteMe");
     });
 
-    it("GET /setup returns 200 and contains COMING SOON", async () => {
+    it("GET /setup returns 200 and contains wizard step 1", async () => {
       const res = await app.request("/setup");
       expect(res.status).toBe(200);
       const text = await res.text();
-      expect(text.toLowerCase()).toContain("coming soon");
+      expect(text).toContain("PROFILE");
+      expect(text).toContain("first_name");
     });
   });
 

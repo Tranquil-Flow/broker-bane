@@ -19,7 +19,7 @@ import { registerEvidenceRoutes } from "./routes/evidence.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export function createDashboardApp(config: AppConfig, existingDb?: Database): { app: Hono; db: Database } {
+export function createDashboardApp(config: AppConfig, existingDb?: Database, port?: number): { app: Hono; db: Database } {
   const app = new Hono();
   const db = existingDb ?? createDatabase(config.database.path);
   if (!existingDb) runMigrations(db);
@@ -37,7 +37,7 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database): { 
   registerTaskRoutes(app, db);
   registerAboutRoutes(app, db);
   registerCompareRoutes(app, db);
-  registerSetupRoutes(app, db);
+  registerSetupRoutes(app, db, config, port);
   registerScanRoutes(app, db, config);
   registerEvidenceRoutes(app, db);
 
@@ -45,7 +45,7 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database): { 
 }
 
 export async function startDashboard(config: AppConfig, port: number): Promise<void> {
-  const { app, db } = createDashboardApp(config);
+  const { app, db } = createDashboardApp(config, undefined, port);
 
   serve({ fetch: app.fetch, port, hostname: "127.0.0.1" });
 
