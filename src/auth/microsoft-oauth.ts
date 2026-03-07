@@ -84,6 +84,48 @@ export async function runMicrosoftOAuthFlow(): Promise<OAuthTokens> {
   return tokens;
 }
 
+export async function getMicrosoftAuthUrl(redirectUri: string): Promise<{ url: string; verifier: string }> {
+  if (!CLIENT_ID) {
+    throw new Error("Microsoft OAuth not configured in this build. Use app password instead.");
+  }
+  const pca = createPCAWithCache();
+  const { verifier, challenge } = await generatePKCE();
+  const url = await pca.getAuthCodeUrl({
+    scopes: SCOPES,
+    redirectUri,
+    codeChallenge: challenge,
+    codeChallengeMethod: "S256",
+  });
+  return { url, verifier };
+}
+
+export async function exchangeMicrosoftCode(
+  code: string,
+  redirectUri: string,
+  verifier: string,
+): Promise<OAuthTokens> {
+  const pca = createPCAWithCache();
+  const result = await pca.acquireTokenByCode({
+    code,
+    scopes: SCOPES,
+    redirectUri,
+    codeVerifier: verifier,
+  });
+
+  if (!result?.accessToken) {
+    throw new Error("Microsoft did not return the required tokens. Try again.");
+  }
+
+  const oauthTokens: OAuthTokens = {
+    accessToken: result.accessToken,
+    refreshToken: "msal-managed",
+    expiresAt: result.expiresOn ? result.expiresOn.getTime() : Date.now() + 3600_000,
+  };
+
+  await saveTokens("microsoft", oauthTokens);
+  return oauthTokens;
+}
+
 export async function refreshMicrosoftToken(user: string): Promise<OAuthTokens> {
   const pca = createPCAWithCache();
 

@@ -82,6 +82,36 @@ function waitForCallbackCode(): Promise<string> {
   });
 }
 
+export function getGoogleAuthUrl(redirectUri: string): string {
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    throw new Error("Google OAuth not configured in this build. Use app password instead.");
+  }
+  const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, redirectUri);
+  return oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: SCOPES,
+    prompt: "consent",
+  });
+}
+
+export async function exchangeGoogleCode(code: string, redirectUri: string): Promise<OAuthTokens> {
+  const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, redirectUri);
+  const { tokens } = await oauth2Client.getToken(code);
+
+  if (!tokens.access_token || !tokens.refresh_token) {
+    throw new Error("Google did not return the required tokens. Try again.");
+  }
+
+  const oauthTokens: OAuthTokens = {
+    accessToken: tokens.access_token,
+    refreshToken: tokens.refresh_token,
+    expiresAt: tokens.expiry_date ?? Date.now() + 3600_000,
+  };
+
+  await saveTokens("google", oauthTokens);
+  return oauthTokens;
+}
+
 export async function refreshGoogleToken(refreshToken: string): Promise<OAuthTokens> {
   const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
   oauth2Client.setCredentials({ refresh_token: refreshToken });
