@@ -67,6 +67,10 @@ function str(val: unknown): string {
   return typeof val === "string" ? val.trim() : "";
 }
 
+function startPageHtml(): string {
+  return layout("Setup", "SETUP", `<div class="panel"><div id="wizard-container">${renderStep1Profile()}</div></div>`);
+}
+
 // ── Route registration ──
 
 export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfig, dashboardPort?: number): void {
@@ -191,7 +195,9 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     const body = await c.req.parseBody();
     const email = wizardState.profile?.email ?? "";
     const provider = wizardState.provider;
-    const password = str(body["app_password"]).replace(/\s/g, "");
+    // Strip spaces from app passwords for known providers (Google/Apple format with spaces)
+    const rawPassword = str(body["app_password"]);
+    const password = provider ? rawPassword.replace(/\s/g, "") : rawPassword;
 
     // Custom SMTP fields
     const smtpHost = str(body["smtp_host"]);
@@ -267,6 +273,10 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
 
   // POST /api/setup/test — run connection tests, return results
   app.post("/api/setup/test", async (c) => {
+    if (!wizardState.profile || !wizardState.smtpAuth) {
+      return c.html(startPageHtml());
+    }
+
     let smtpOk = false;
     let smtpError: string | null = null;
     let imapOk: boolean | null = null;
@@ -324,7 +334,11 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
 
   // POST /api/setup/complete — write config, return step 5
   app.post("/api/setup/complete", async (c) => {
-    const profile = wizardState.profile!;
+    if (!wizardState.profile || !wizardState.smtpAuth || !wizardState.smtpHost) {
+      return c.html(startPageHtml());
+    }
+
+    const profile = wizardState.profile;
     const provider = wizardState.provider;
 
     const config: Record<string, unknown> = {
@@ -384,12 +398,17 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     const sendingAddress = wizardState.alias ?? profile.email;
     const imapMethod = wizardState.usedOAuth ? "OAuth" : "password";
 
-    return c.html(renderStep5Done(
+    const result = renderStep5Done(
       provider?.name ?? "Custom",
       sendingAddress,
       wizardState.template ?? "generic",
       wizardState.enableImap ?? false,
       imapMethod,
-    ));
+    );
+
+    // Clear sensitive state after config is written
+    wizardState = {};
+
+    return c.html(result);
   });
 }
