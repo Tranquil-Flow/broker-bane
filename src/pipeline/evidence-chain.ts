@@ -87,7 +87,7 @@ export class EvidenceChainService {
       prevHash,
       screenshotPath: input.screenshotPath,
       pageText: input.pageText,
-      pageTextHash,
+      pageTextHash: pageTextHash ?? undefined,
       brokerUrl: input.brokerUrl,
       brokerId: input.brokerId,
       metadata: input.metadata ? JSON.stringify(input.metadata) : undefined,
