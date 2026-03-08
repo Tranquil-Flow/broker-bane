@@ -22,12 +22,6 @@ export async function generatePlaybookCommand(options: {
     redactPii: config.logging.redact_pii,
   });
 
-  if (!config.browser.api_key) {
-    console.error("  Error: AI API key required for playbook generation.");
-    console.error("  Set browser.api_key in your config or BROKERBANE_BROWSER_API_KEY env var.");
-    process.exit(1);
-  }
-
   const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
   const brokerDb = loadBrokerDatabase();
   const store = new BrokerStore(brokerDb.brokers);
@@ -71,6 +65,12 @@ export async function generatePlaybookCommand(options: {
   if (targets.length === 0) {
     console.log("  No brokers need playbook generation.");
     return;
+  }
+
+  if (!config.browser.api_key) {
+    console.error("  Error: AI API key required for playbook generation.");
+    console.error("  Set browser.api_key in your config or BROKERBANE_BROWSER_API_KEY env var.");
+    process.exit(1);
   }
 
   // Initialize browser
