@@ -24,7 +24,8 @@
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "convert-brokers": "tsx scripts/convert-eraser-brokers.ts",
-    "ingest-cppa": "tsx scripts/ingest-cppa.ts"
+    "ingest-cppa": "tsx scripts/ingest-cppa.ts",
+    "postinstall": "node scripts/patch-stagehand-models.cjs"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.5",
