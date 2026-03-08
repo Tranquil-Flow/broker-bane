@@ -1,4 +1,6 @@
-import type { Playbook } from "./schema.js";
+import { writeFileSync } from "node:fs";
+import yaml from "js-yaml";
+import { type Playbook, PlaybookSchema } from "./schema.js";
 import { logger } from "../util/logger.js";
 
 export interface RepairContext {
@@ -59,6 +61,65 @@ export function applyRepair(playbook: Playbook, patch: RepairPatch): Playbook {
   }
 
   return updated;
+}
+
+export interface FullDomRepairContext extends RepairContext {
+  previousStep?: { action: string; url?: string; selector?: string };
+  nextStep?: { action: string; url?: string; selector?: string };
+}
+
+export function buildFullDomRepairPrompt(ctx: FullDomRepairContext): string {
+  const lines = [
+    `A BrokerBane playbook for "${ctx.brokerId}" has a broken CSS selector.`,
+    `This is a second repair attempt using full page HTML.`,
+    ``,
+    `Page URL: ${ctx.pageUrl}`,
+    `Step action: ${ctx.stepAction}`,
+    `Expected selector: ${ctx.failedSelector}`,
+    `This selector no longer matches any element on the page.`,
+  ];
+
+  if (ctx.previousStep) {
+    lines.push(
+      ``,
+      `Previous step: ${ctx.previousStep.action}` +
+        (ctx.previousStep.selector ? ` on "${ctx.previousStep.selector}"` : "") +
+        (ctx.previousStep.url ? ` to ${ctx.previousStep.url}` : "")
+    );
+  }
+  if (ctx.nextStep) {
+    lines.push(
+      `Next step: ${ctx.nextStep.action}` +
+        (ctx.nextStep.selector ? ` on "${ctx.nextStep.selector}"` : "")
+    );
+  }
+
+  lines.push(
+    ``,
+    `Here is the full page HTML:`,
+    "```html",
+    ctx.domSnippet,
+    "```",
+    ``,
+    `What is the correct CSS selector for this element? Reply with ONLY the CSS selector string, nothing else.`,
+    `Use standard CSS selectors. Prefer attribute selectors (input[type="email"]) over fragile class names.`,
+  );
+
+  return lines.join("\n");
+}
+
+export function validateAndSavePlaybook(playbook: Playbook, filePath: string, dryRun = false): boolean {
+  const result = PlaybookSchema.safeParse(playbook);
+  if (!result.success) {
+    logger.warn({ errors: result.error.issues }, "Repaired playbook failed Zod validation, not saving");
+    return false;
+  }
+
+  if (!dryRun) {
+    writeFileSync(filePath, yaml.dump(result.data, { lineWidth: 140 }));
+    logger.info({ filePath }, "Validated playbook saved to disk");
+  }
+  return true;
 }
 
 /**

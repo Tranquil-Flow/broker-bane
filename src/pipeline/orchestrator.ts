@@ -558,10 +558,35 @@ export class Orchestrator {
       return true;
     }
 
-    // Playbook failed — try self-healing if browser supports extract()
-    if (result.failedStep?.selector) {
+    // Playbook failed — try 2-step self-healing if AI key is available
+    if (result.failedStep?.selector && this.config.browser.api_key) {
+      const { repairSelector, applyRepair, buildFullDomRepairPrompt, validateAndSavePlaybook } = await import("../playbook/repair.js");
+      const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
+      const playbookPath = join(defaultDir, `${broker.id}.yaml`);
+
+      // Find adjacent steps for context
+      let previousStep: { action: string; selector?: string; url?: string } | undefined;
+      let nextStep: { action: string; selector?: string; url?: string } | undefined;
+      for (const phase of playbook.phases) {
+        for (let i = 0; i < phase.steps.length; i++) {
+          const s = phase.steps[i];
+          const sel = "selector" in s ? (s as { selector: string }).selector : undefined;
+          if (sel === result.failedStep.selector && s.action === result.failedStep.action) {
+            if (i > 0) {
+              const prev = phase.steps[i - 1];
+              previousStep = { action: prev.action, ...("selector" in prev ? { selector: (prev as any).selector } : {}), ...("url" in prev ? { url: (prev as any).url } : {}) };
+            }
+            if (i < phase.steps.length - 1) {
+              const nxt = phase.steps[i + 1];
+              nextStep = { action: nxt.action, ...("selector" in nxt ? { selector: (nxt as any).selector } : {}), ...("url" in nxt ? { url: (nxt as any).url } : {}) };
+            }
+            break;
+          }
+        }
+      }
+
+      // Step 1: Selector repair with ~2000 char DOM snippet
       try {
-        const { repairSelector, applyRepair } = await import("../playbook/repair.js");
         const domSnippet = await (browser.page as any).extract(
           "Return the HTML of the main form on this page, max 2000 characters"
         ) as string;
@@ -570,7 +595,7 @@ export class Orchestrator {
           brokerId: broker.id,
           failedSelector: result.failedStep.selector,
           stepAction: result.failedStep.action,
-          pageUrl: (browser.page as any).url(),
+          pageUrl: (browser.page as any).url?.() ?? "",
           domSnippet: typeof domSnippet === "string" ? domSnippet : JSON.stringify(domSnippet),
         });
 
@@ -582,25 +607,59 @@ export class Orchestrator {
             newSelector,
           });
 
-          // Retry with repaired playbook
           const retryResult = await executor.execute(repaired);
           if (retryResult.success) {
-            // Save repaired playbook to disk
-            const { writeFileSync } = await import("node:fs");
-            const yamlLib = (await import("js-yaml")).default;
-            const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
-            const playbookPath = join(defaultDir, `${broker.id}.yaml`);
-            writeFileSync(playbookPath, yamlLib.dump(repaired));
-            logger.info({ brokerId: broker.id }, "Playbook self-healed and saved");
-
-            if (retryResult.screenshotPath) {
-              requestRepo.setScreenshot(requestId, retryResult.screenshotPath);
-            }
+            validateAndSavePlaybook(repaired, playbookPath);
+            logger.info({ brokerId: broker.id }, "Playbook self-healed (step 1: selector repair)");
+            if (retryResult.screenshotPath) requestRepo.setScreenshot(requestId, retryResult.screenshotPath);
             return true;
           }
         }
       } catch (err) {
-        logger.warn({ brokerId: broker.id, err }, "Self-healing repair failed");
+        logger.warn({ brokerId: broker.id, err }, "Step 1 selector repair failed");
+      }
+
+      // Step 2: Full-DOM repair with ~8000 char context
+      try {
+        const fullDom = await (browser.page as any).extract(
+          "Return the full HTML of this page, max 8000 characters"
+        ) as string;
+
+        const fullDomPrompt = buildFullDomRepairPrompt({
+          brokerId: broker.id,
+          failedSelector: result.failedStep.selector,
+          stepAction: result.failedStep.action,
+          pageUrl: (browser.page as any).url?.() ?? "",
+          domSnippet: typeof fullDom === "string" ? fullDom : JSON.stringify(fullDom),
+          previousStep,
+          nextStep,
+        });
+
+        const fullResult = await (browser.page as any).extract(fullDomPrompt);
+        const newSelector2 = typeof fullResult === "string"
+          ? fullResult.trim()
+          : typeof fullResult === "object" && fullResult !== null && "selector" in fullResult
+            ? String((fullResult as { selector: string }).selector).trim()
+            : null;
+
+        if (newSelector2 && newSelector2.length > 0 && newSelector2.length < 500) {
+          const repaired2 = applyRepair(playbook, {
+            phase: result.failedStep.phase,
+            action: result.failedStep.action,
+            oldSelector: result.failedStep.selector,
+            newSelector: newSelector2,
+          });
+
+          const retryResult2 = await executor.execute(repaired2);
+          if (retryResult2.success) {
+            validateAndSavePlaybook(repaired2, playbookPath);
+            logger.info({ brokerId: broker.id }, "Playbook self-healed (step 2: full-DOM repair)");
+            if (retryResult2.screenshotPath) requestRepo.setScreenshot(requestId, retryResult2.screenshotPath);
+            return true;
+          }
+        }
+      } catch (err) {
+        logger.warn({ brokerId: broker.id, err }, "Step 2 full-DOM repair failed");
       }
     }
 
