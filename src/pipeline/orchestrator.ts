@@ -515,9 +515,22 @@ export class Orchestrator {
     requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
     requestRepo.incrementAttempt(requestId);
 
+    // Build CAPTCHA hooks if config has a key
+    let captchaHooks: import("../playbook/executor.js").CaptchaHooks | undefined;
+    if (this.config.captcha.api_key) {
+      const { detectCaptcha: detect } = await import("../captcha/detector.js");
+      const { solveCaptcha: solve } = await import("../captcha/solver.js");
+      captchaHooks = {
+        detectCaptcha: () => detect(browser as any),
+        solveCaptcha: (detection, pageUrl) => solve(detection, pageUrl, this.config.captcha),
+      };
+    }
+
     const executor = new PlaybookExecutor(
       browser.page as any,
-      this.config.profile
+      this.config.profile,
+      undefined,
+      captchaHooks,
     );
     const result = await executor.execute(playbook);
 
@@ -588,6 +601,25 @@ export class Orchestrator {
         }
       } catch (err) {
         logger.warn({ brokerId: broker.id, err }, "Self-healing repair failed");
+      }
+    }
+
+    // Suggest update if no AI key available for self-healing
+    if (!this.config.browser.api_key) {
+      try {
+        const { execFileSync } = await import("node:child_process");
+        const { readFileSync } = await import("node:fs");
+        const latestVersion = execFileSync("npm", ["view", "brokerbane", "version"], { encoding: "utf-8", timeout: 5000 }).trim();
+        const pkgPath = join(dirname(fileURLToPath(import.meta.url)), "../../package.json");
+        const currentVersion = JSON.parse(readFileSync(pkgPath, "utf-8")).version;
+        if (latestVersion && latestVersion !== currentVersion) {
+          logger.info(
+            { current: currentVersion, latest: latestVersion },
+            `A newer version of BrokerBane is available (${latestVersion}). Run \`npm update -g brokerbane\` for updated playbooks.`
+          );
+        }
+      } catch {
+        // npm check failed silently — non-critical
       }
     }
 
