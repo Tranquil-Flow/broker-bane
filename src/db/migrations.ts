@@ -167,6 +167,18 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (3);
     `,
   },
+  {
+    version: 4,
+    sql: `
+      CREATE TABLE IF NOT EXISTS daily_counters (
+        key TEXT PRIMARY KEY,
+        count INTEGER NOT NULL DEFAULT 0,
+        date TEXT NOT NULL
+      );
+
+      INSERT INTO schema_version (version) VALUES (4);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

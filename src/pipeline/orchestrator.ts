@@ -24,6 +24,7 @@ import { EmailError } from "../util/errors.js";
 import { loadAllPlaybooks } from "../playbook/loader.js";
 import { PlaybookExecutor } from "../playbook/executor.js";
 import type { Playbook } from "../playbook/schema.js";
+import { setDatabase as setCaptchaDatabase } from "../captcha/solver.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -69,6 +70,7 @@ export class Orchestrator {
     // Initialize database
     this.db = createDatabase(this.config.database.path);
     runMigrations(this.db);
+    setCaptchaDatabase(this.db);
 
     const requestRepo = new RemovalRequestRepo(this.db);
     const emailLogRepo = new EmailLogRepo(this.db);

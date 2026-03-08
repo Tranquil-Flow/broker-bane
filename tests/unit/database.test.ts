@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { createInMemoryDatabase } from "../../src/db/connection.js";
+import { createInMemoryDatabase, createDatabase, closeDatabase } from "../../src/db/connection.js";
 import { runMigrations } from "../../src/db/migrations.js";
 import { RemovalRequestRepo } from "../../src/db/repositories/removal-request.repo.js";
 import { BrokerResponseRepo } from "../../src/db/repositories/broker-response.repo.js";
@@ -41,6 +41,18 @@ describe("Database", () => {
 
     it("is idempotent", () => {
       expect(() => runMigrations(db)).not.toThrow();
+    });
+
+    it("migration v4 creates daily_counters table", () => {
+      const db2 = createDatabase(":memory:");
+      runMigrations(db2);
+
+      const tables = db2
+        .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='daily_counters'")
+        .all();
+      expect(tables).toHaveLength(1);
+
+      closeDatabase(db2);
     });
   });
 
