@@ -4,10 +4,15 @@ import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { BrokerStore } from "../data/broker-store.js";
 import { PlaybookGenerator } from "../playbook/generator.js";
 import { loadAllPlaybooks } from "../playbook/loader.js";
+import { randomDelay } from "../util/delay.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Broker } from "../types/broker.js";
 import type { CaptchaHooks } from "../playbook/executor.js";
+
+// Minimum delay between broker visits in batch mode (ms)
+const BATCH_DELAY_MIN_MS = 4_000;
+const BATCH_DELAY_MAX_MS = 8_000;
 
 export async function generatePlaybookCommand(options: {
   broker?: string;
@@ -96,7 +101,14 @@ export async function generatePlaybookCommand(options: {
 
   console.log(`\n  Generating playbooks for ${targets.length} brokers...\n`);
 
-  for (const broker of targets) {
+  for (let i = 0; i < targets.length; i++) {
+    const broker = targets[i];
+
+    // Rate limit: pause between brokers in batch mode to avoid blocks
+    if (i > 0 && options.allMissing) {
+      await randomDelay(BATCH_DELAY_MIN_MS, BATCH_DELAY_MAX_MS);
+    }
+
     try {
       const result = await generator.generate(broker);
       if (result.playbook) {
