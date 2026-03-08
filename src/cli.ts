@@ -13,6 +13,7 @@ import { scheduleCommand } from "./commands/schedule.cmd.js";
 import { dashboardCommand } from "./commands/dashboard.cmd.js";
 import { scanCommand } from "./commands/scan.cmd.js";
 import { verifyEvidenceCommand } from "./commands/verify-evidence.cmd.js";
+import { generatePlaybookCommand } from "./commands/generate-playbook.cmd.js";
 
 const program = new Command();
 
@@ -140,6 +141,17 @@ program
   .option("-c, --config <path>", "Override config file path")
   .action(async (opts) => {
     await verifyEvidenceCommand(opts);
+  });
+
+program
+  .command("generate-playbook")
+  .description("Generate playbook YAML for broker opt-out forms using AI")
+  .option("-b, --broker <id>", "Generate playbook for a specific broker")
+  .option("--all-missing", "Generate for all brokers with opt_out_url but no playbook")
+  .option("-d, --dry-run", "Show which brokers would be targeted without generating")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await generatePlaybookCommand(opts);
   });
 
 // Global error handler
