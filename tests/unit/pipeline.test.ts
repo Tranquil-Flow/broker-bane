@@ -1,7 +1,9 @@
 import { validateTransition, transition, isTerminal, getNextStates } from "../../src/pipeline/state-machine.js";
 import { withRetry } from "../../src/pipeline/retry.js";
 import { CircuitBreaker } from "../../src/pipeline/circuit-breaker.js";
+import { scheduleBrokers } from "../../src/pipeline/scheduler.js";
 import { REQUEST_STATUS } from "../../src/types/pipeline.js";
+import type { Broker } from "../../src/types/broker.js";
 import { StateTransitionError, CircuitBreakerOpenError } from "../../src/util/errors.js";
 import Database from "better-sqlite3";
 import { createInMemoryDatabase, createDatabase, closeDatabase } from "../../src/db/connection.js";
@@ -275,5 +277,95 @@ describe("Orchestrator email alias", () => {
     closeDatabase(db);
 
     await orchestrator.cleanup();
+  });
+});
+
+function makeBroker(overrides: Partial<Broker> & { id: string }): Broker {
+  return {
+    name: overrides.id,
+    domain: `${overrides.id}.com`,
+    region: "us",
+    category: "people_search",
+    removal_method: "email",
+    difficulty: "easy",
+    tier: 1,
+    requires_captcha: false,
+    requires_email_confirm: false,
+    requires_id_upload: false,
+    public_directory: false,
+    verify_before_send: false,
+    opt_out_validity_days: 180,
+    ...overrides,
+  } as Broker;
+}
+
+describe("scheduleBrokers parent-company spacing", () => {
+  it("spaces apart brokers with the same parent_company", () => {
+    // Seed Math.random for deterministic shuffle that would otherwise
+    // place all PeopleConnect brokers together
+    let callCount = 0;
+    const values = [0.1, 0.9, 0.2, 0.8, 0.3, 0.7, 0.4, 0.6, 0.5, 0.5];
+    const spy = vi.spyOn(Math, "random").mockImplementation(() => values[callCount++ % values.length]!);
+
+    const brokers = [
+      makeBroker({ id: "intelius", parent_company: "PeopleConnect", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "zabasearch", parent_company: "PeopleConnect", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "ussearch", parent_company: "PeopleConnect", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "spokeo", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "whitepages", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "beenverified", tier: 1, difficulty: "easy" }),
+    ];
+
+    const scheduled = scheduleBrokers(brokers);
+    spy.mockRestore();
+
+    // No two consecutive brokers should share a parent_company
+    for (let i = 1; i < scheduled.length; i++) {
+      const prev = scheduled[i - 1]!;
+      const curr = scheduled[i]!;
+      if (prev.parent_company && curr.parent_company) {
+        expect(
+          prev.parent_company !== curr.parent_company,
+          `Consecutive brokers ${prev.id} and ${curr.id} share parent ${prev.parent_company}`
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("handles all brokers from same parent gracefully", () => {
+    const brokers = [
+      makeBroker({ id: "a", parent_company: "SameParent", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "b", parent_company: "SameParent", tier: 1, difficulty: "easy" }),
+    ];
+
+    // Should not throw even when spacing is impossible
+    const scheduled = scheduleBrokers(brokers);
+    expect(scheduled).toHaveLength(2);
+  });
+
+  it("uses subsidiary_of for spacing too", () => {
+    // Mock Math.random so shuffle produces a deterministic order
+    // where parent1 and sub1 end up adjacent before spacing
+    let callCount = 0;
+    const values = [0.9, 0.1];
+    const spy = vi.spyOn(Math, "random").mockImplementation(() => values[callCount++ % values.length]!);
+
+    const brokers = [
+      makeBroker({ id: "parent1", parent_company: "BigCorp", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "sub1", subsidiary_of: "BigCorp", tier: 1, difficulty: "easy" }),
+      makeBroker({ id: "other", tier: 1, difficulty: "easy" }),
+    ];
+
+    const scheduled = scheduleBrokers(brokers);
+    spy.mockRestore();
+
+    // parent1 and sub1 should not be adjacent
+    for (let i = 1; i < scheduled.length; i++) {
+      const prevGroup = scheduled[i - 1]!.parent_company ?? scheduled[i - 1]!.subsidiary_of;
+      const currGroup = scheduled[i]!.parent_company ?? scheduled[i]!.subsidiary_of;
+      if (prevGroup && currGroup) {
+        expect(prevGroup !== currGroup, `${scheduled[i-1]!.id} and ${scheduled[i]!.id} share group`).toBe(true);
+      }
+    }
   });
 });

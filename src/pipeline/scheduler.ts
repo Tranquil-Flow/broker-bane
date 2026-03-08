@@ -11,6 +11,40 @@ function shuffle<T>(array: T[]): T[] {
   return shuffled;
 }
 
+function getGroup(broker: Broker): string | undefined {
+  return broker.parent_company ?? broker.subsidiary_of;
+}
+
+function spaceByParentCompany(queue: Broker[]): Broker[] {
+  if (queue.length <= 1) return queue;
+
+  const result = [...queue];
+
+  for (let i = 1; i < result.length; i++) {
+    const currGroup = getGroup(result[i]!);
+    const prevGroup = getGroup(result[i - 1]!);
+
+    if (!currGroup || !prevGroup || currGroup !== prevGroup) continue;
+
+    // Find the nearest broker (forward) that doesn't share the same parent
+    let swapIdx = -1;
+    for (let j = i + 1; j < result.length; j++) {
+      const candidateGroup = getGroup(result[j]!);
+      if (candidateGroup !== currGroup) {
+        swapIdx = j;
+        break;
+      }
+    }
+
+    if (swapIdx !== -1) {
+      [result[i], result[swapIdx]] = [result[swapIdx]!, result[i]!];
+    }
+    // If no swap candidate found, leave as-is (best effort)
+  }
+
+  return result;
+}
+
 export function scheduleBrokers(brokers: readonly Broker[]): Broker[] {
   // Group by tier, then sort by difficulty within each tier
   const groups = new Map<number, Broker[]>();
@@ -46,5 +80,5 @@ export function scheduleBrokers(brokers: readonly Broker[]): Broker[] {
     }
   }
 
-  return result;
+  return spaceByParentCompany(result);
 }
