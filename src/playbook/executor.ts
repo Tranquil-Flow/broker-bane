@@ -3,6 +3,7 @@ import type { Playbook, PlaybookStep } from "./schema.js";
 import type { CaptchaDetection } from "../captcha/detector.js";
 import type { SolveResult } from "../captcha/solver.js";
 import { resolveTemplateValue } from "./template.js";
+import { detectBlock } from "../browser/block-detector.js";
 import { logger } from "../util/logger.js";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -16,6 +17,8 @@ export interface PlaybookResult {
   requiresManualAction?: boolean;
   captchaBlocked?: boolean;
   captchaType?: string;
+  blocked?: boolean;
+  blockReason?: string;
 }
 
 export interface CaptchaHooks {
@@ -58,6 +61,39 @@ export class PlaybookExecutor {
           await this.executeStep(step, playbook.broker_id);
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
+
+          // Check for block BEFORE checking for CAPTCHA
+          if ("title" in this.page && "url" in this.page && "content" in this.page) {
+            try {
+              const blockResult = await detectBlock(this.page as any);
+              if (blockResult.blocked) {
+                let screenshotPath: string | undefined;
+                try {
+                  screenshotPath = await this.captureScreenshot(playbook.broker_id, "blocked");
+                } catch { /* ignore */ }
+
+                logger.warn(
+                  { brokerId: playbook.broker_id, reason: blockResult.reason },
+                  "Site blocked automated access"
+                );
+
+                return {
+                  success: false,
+                  screenshotPath,
+                  error: `Site blocked automated access: ${blockResult.reason}`,
+                  failedStep: {
+                    phase: phase.name,
+                    action: step.action,
+                    selector: "selector" in step ? (step as { selector: string }).selector : undefined,
+                  },
+                  blocked: true,
+                  blockReason: blockResult.reason,
+                };
+              }
+            } catch {
+              // Block detection failed — continue with normal failure path
+            }
+          }
 
           // Check for CAPTCHA before giving up on this step
           if (this.captchaHooks?.detectCaptcha) {

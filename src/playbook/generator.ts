@@ -3,6 +3,7 @@ import { PlaybookSchema, type Playbook } from "./schema.js";
 import { PlaybookExecutor, type CaptchaHooks } from "./executor.js";
 import type { Profile } from "../types/config.js";
 import type { Broker } from "../types/broker.js";
+import { detectBlock } from "../browser/block-detector.js";
 import { logger } from "../util/logger.js";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -143,6 +144,18 @@ export class PlaybookGenerator {
       await this.browser.page.goto(broker.opt_out_url, { waitUntil: "domcontentloaded", timeout: 30_000 });
     } catch (err) {
       return { playbook: null, verified: false, error: `Navigation failed: ${err instanceof Error ? err.message : err}` };
+    }
+
+    // Check for block after navigation
+    if (this.browser.page.title && this.browser.page.url && this.browser.page.content) {
+      try {
+        const blockResult = await detectBlock(this.browser.page as any);
+        if (blockResult.blocked) {
+          return { playbook: null, verified: false, error: `Site blocked automated access: ${blockResult.reason}` };
+        }
+      } catch {
+        // Block detection failed — continue
+      }
     }
 
     // 2. Extract form structure

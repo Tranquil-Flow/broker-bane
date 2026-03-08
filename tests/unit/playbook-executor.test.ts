@@ -121,6 +121,48 @@ describe("PlaybookExecutor", () => {
   });
 });
 
+describe("block detection", () => {
+  it("detects block and returns blocked result before checking CAPTCHA", async () => {
+    const blockedPage = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      fill: vi.fn().mockRejectedValue(new Error("Element not found")),
+      click: vi.fn().mockRejectedValue(new Error("Element not found")),
+      waitForTimeout: vi.fn().mockResolvedValue(undefined),
+      waitForSelector: vi.fn().mockResolvedValue(undefined),
+      screenshot: vi.fn().mockResolvedValue(Buffer.from("screenshot")),
+      selectOption: vi.fn().mockResolvedValue(undefined),
+      check: vi.fn().mockResolvedValue(undefined),
+      title: vi.fn().mockResolvedValue("Just a moment..."),
+      url: vi.fn().mockReturnValue("https://example.com/cdn-cgi/challenge"),
+      content: vi.fn().mockResolvedValue("<html></html>"),
+    };
+
+    const executor = new PlaybookExecutor(
+      blockedPage as any,
+      testProfile,
+      "/tmp/screenshots",
+    );
+
+    const playbook: Playbook = {
+      broker_id: "test-broker",
+      version: 1,
+      last_verified: "2026-03-04",
+      phases: [{
+        name: "submit",
+        steps: [
+          { action: "goto" as const, url: "https://example.com/optout" },
+          { action: "fill" as const, selector: "input[name=email]", value: "{{email}}" },
+        ],
+      }],
+    };
+
+    const result = await executor.execute(playbook);
+    expect(result.success).toBe(false);
+    expect(result.blocked).toBe(true);
+    expect(result.blockReason).toBe("cloudflare_challenge");
+  });
+});
+
 describe("PlaybookExecutor CAPTCHA handling", () => {
   it("detects CAPTCHA on step failure and returns captchaBlocked when no solver", async () => {
     const page = mockPage();

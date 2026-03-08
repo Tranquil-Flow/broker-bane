@@ -8,6 +8,7 @@ import { ScanRunRepo, ScanResultRepo } from "../db/repositories/scan.repo.js";
 import { EvidenceChainRepo } from "../db/repositories/evidence-chain.repo.js";
 import { EvidenceChainService } from "./evidence-chain.js";
 import { randomDelay } from "../util/delay.js";
+import { detectBlock } from "../browser/block-detector.js";
 import { logger } from "../util/logger.js";
 
 import type Database from "better-sqlite3";
@@ -181,7 +182,22 @@ export class Scanner {
         );
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        logger.error({ brokerId: broker.id, err: message }, "Scan error for broker");
+
+        // Check if this was a block rather than a normal error
+        let blocked = false;
+        if (browser) {
+          try {
+            const blockResult = await detectBlock(browser.page as any);
+            if (blockResult.blocked) {
+              blocked = true;
+              logger.warn({ brokerId: broker.id, reason: blockResult.reason }, "Broker blocked automated access");
+            }
+          } catch { /* ignore */ }
+        }
+
+        if (!blocked) {
+          logger.error({ brokerId: broker.id, err: message }, "Scan error for broker");
+        }
         summary.errors++;
         scanRunRepo.incrementError(scanRun.id);
 
@@ -189,7 +205,7 @@ export class Scanner {
           scanRunId: scanRun.id,
           brokerId: broker.id,
           found: false,
-          error: message,
+          error: blocked ? `Blocked: ${message}` : message,
         });
       }
     }
