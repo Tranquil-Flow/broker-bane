@@ -1,5 +1,7 @@
 import type { Profile } from "../types/config.js";
 import type { Playbook, PlaybookStep } from "./schema.js";
+import type { CaptchaDetection } from "../captcha/detector.js";
+import type { SolveResult } from "../captcha/solver.js";
 import { resolveTemplateValue } from "./template.js";
 import { logger } from "../util/logger.js";
 import { writeFileSync, mkdirSync } from "node:fs";
@@ -12,6 +14,13 @@ export interface PlaybookResult {
   error?: string;
   failedStep?: { phase: string; action: string; selector?: string };
   requiresManualAction?: boolean;
+  captchaBlocked?: boolean;
+  captchaType?: string;
+}
+
+export interface CaptchaHooks {
+  detectCaptcha: (page: PlaywrightPage) => Promise<CaptchaDetection>;
+  solveCaptcha: ((detection: CaptchaDetection, pageUrl: string) => Promise<SolveResult | null>) | null;
 }
 
 // Use a minimal Page interface instead of importing from @playwright/test
@@ -35,6 +44,7 @@ export class PlaybookExecutor {
     private readonly page: PlaywrightPage,
     private readonly profile: Profile,
     private readonly screenshotDir: string = DEFAULT_SCREENSHOT_DIR,
+    private readonly captchaHooks?: CaptchaHooks,
   ) {}
 
   async execute(playbook: Playbook): Promise<PlaybookResult> {
@@ -48,12 +58,60 @@ export class PlaybookExecutor {
           await this.executeStep(step, playbook.broker_id);
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
+
+          // Check for CAPTCHA before giving up on this step
+          if (this.captchaHooks?.detectCaptcha) {
+            try {
+              const detection = await this.captchaHooks.detectCaptcha(this.page);
+              if (detection.type !== "none") {
+                // CAPTCHA detected — try to solve
+                if (this.captchaHooks.solveCaptcha) {
+                  const pageUrl = typeof (this.page as any).url === "function"
+                    ? (this.page as any).url()
+                    : "";
+                  const solved = await this.captchaHooks.solveCaptcha(detection, pageUrl);
+                  if (solved) {
+                    // Retry the failed step after solving
+                    try {
+                      await this.executeStep(step, playbook.broker_id);
+                      continue; // step succeeded after CAPTCHA solve
+                    } catch {
+                      // retry also failed — fall through to captchaBlocked return
+                    }
+                  }
+                }
+
+                // CAPTCHA detected but couldn't solve
+                let screenshotPath: string | undefined;
+                try {
+                  screenshotPath = await this.captureScreenshot(playbook.broker_id, "captcha");
+                } catch { /* ignore */ }
+
+                return {
+                  success: false,
+                  screenshotPath,
+                  error: `CAPTCHA detected (${detection.type}). Set BROKERBANE_NOPECHA_API_KEY to auto-solve.`,
+                  failedStep: {
+                    phase: phase.name,
+                    action: step.action,
+                    selector: "selector" in step ? (step as { selector: string }).selector : undefined,
+                  },
+                  captchaBlocked: true,
+                  captchaType: detection.type,
+                  requiresManualAction: true,
+                };
+              }
+            } catch {
+              // CAPTCHA detection itself failed — continue with normal failure path
+            }
+          }
+
+          // No CAPTCHA (or no hooks) — normal failure path
           logger.error(
             { brokerId: playbook.broker_id, phase: phase.name, action: step.action, err: message },
             "Playbook step failed",
           );
 
-          // Capture error screenshot
           let screenshotPath: string | undefined;
           try {
             screenshotPath = await this.captureScreenshot(playbook.broker_id, "error");

@@ -1,6 +1,7 @@
 // tests/unit/playbook-executor.test.ts
 import { describe, it, expect, vi } from "vitest";
 import { PlaybookExecutor } from "../../src/playbook/executor.js";
+import { CAPTCHA_TYPE } from "../../src/captcha/detector.js";
 import type { Playbook } from "../../src/playbook/schema.js";
 import type { Profile } from "../../src/types/config.js";
 
@@ -117,5 +118,71 @@ describe("PlaybookExecutor", () => {
 
     await executor.execute(pb);
     expect(page.waitForSelector).toHaveBeenCalledWith("#loaded", expect.any(Object));
+  });
+});
+
+describe("PlaybookExecutor CAPTCHA handling", () => {
+  it("detects CAPTCHA on step failure and returns captchaBlocked when no solver", async () => {
+    const page = mockPage();
+    page.click.mockRejectedValue(new Error("Element not found"));
+
+    const executor = new PlaybookExecutor(page as any, testProfile, "/tmp", {
+      detectCaptcha: vi.fn().mockResolvedValue({ type: CAPTCHA_TYPE.recaptcha_v2, siteKey: "abc" }),
+      solveCaptcha: null,
+    });
+
+    const result = await executor.execute(simplePlaybook);
+
+    expect(result.success).toBe(false);
+    expect(result.captchaBlocked).toBe(true);
+    expect(result.captchaType).toBe("recaptcha_v2");
+  });
+
+  it("solves CAPTCHA and retries step when solver is available", async () => {
+    const page = mockPage();
+    let callCount = 0;
+    page.click.mockImplementation(async () => {
+      callCount++;
+      if (callCount === 1) throw new Error("CAPTCHA blocked");
+      // second call succeeds
+    });
+
+    const mockSolver = vi.fn().mockResolvedValue({ token: "solved-token", type: "recaptcha_v2" });
+
+    const executor = new PlaybookExecutor(page as any, testProfile, "/tmp", {
+      detectCaptcha: vi.fn().mockResolvedValue({ type: CAPTCHA_TYPE.recaptcha_v2, siteKey: "abc" }),
+      solveCaptcha: mockSolver,
+    });
+
+    const result = await executor.execute(simplePlaybook);
+
+    expect(mockSolver).toHaveBeenCalled();
+    expect(result.success).toBe(true);
+  });
+
+  it("skips CAPTCHA detection when no captcha hooks provided", async () => {
+    const page = mockPage();
+    page.click.mockRejectedValue(new Error("Element not found"));
+
+    const executor = new PlaybookExecutor(page as any, testProfile);
+    const result = await executor.execute(simplePlaybook);
+
+    expect(result.success).toBe(false);
+    expect(result.captchaBlocked).toBeUndefined();
+  });
+
+  it("returns captchaBlocked when CAPTCHA detected but solve fails", async () => {
+    const page = mockPage();
+    page.click.mockRejectedValue(new Error("Element not found"));
+
+    const executor = new PlaybookExecutor(page as any, testProfile, "/tmp", {
+      detectCaptcha: vi.fn().mockResolvedValue({ type: CAPTCHA_TYPE.hcaptcha }),
+      solveCaptcha: vi.fn().mockResolvedValue(null),
+    });
+
+    const result = await executor.execute(simplePlaybook);
+
+    expect(result.success).toBe(false);
+    expect(result.captchaBlocked).toBe(true);
   });
 });
