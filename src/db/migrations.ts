@@ -227,6 +227,19 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (6);
     `,
   },
+  {
+    version: 7,
+    sql: `
+      -- CAPTCHA daily counter persistence
+      CREATE TABLE IF NOT EXISTS daily_counters (
+        key TEXT PRIMARY KEY,
+        count INTEGER NOT NULL DEFAULT 0,
+        date TEXT NOT NULL
+      );
+
+      INSERT INTO schema_version (version) VALUES (7);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {
