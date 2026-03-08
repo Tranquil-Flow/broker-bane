@@ -10,10 +10,6 @@ import { fileURLToPath } from "node:url";
 import type { Broker } from "../types/broker.js";
 import type { CaptchaHooks } from "../playbook/executor.js";
 
-// Minimum delay between broker visits in batch mode (ms)
-const BATCH_DELAY_MIN_MS = 4_000;
-const BATCH_DELAY_MAX_MS = 8_000;
-
 export async function generatePlaybookCommand(options: {
   broker?: string;
   allMissing?: boolean;
@@ -106,7 +102,7 @@ export async function generatePlaybookCommand(options: {
 
     // Rate limit: pause between brokers in batch mode to avoid blocks
     if (i > 0 && options.allMissing) {
-      await randomDelay(BATCH_DELAY_MIN_MS, BATCH_DELAY_MAX_MS);
+      await randomDelay(config.options.delay_min_ms, config.options.delay_max_ms);
     }
 
     try {
