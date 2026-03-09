@@ -5,6 +5,7 @@ import type { SolveResult } from "../captcha/solver.js";
 import { resolveTemplateValue } from "./template.js";
 import { logger } from "../util/logger.js";
 import { loadProfileCookies, saveProfileCookies } from "../browser/session.js";
+import { waitForChallenge } from "../browser/block-detector.js";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
@@ -17,6 +18,7 @@ export interface PlaybookResult {
   requiresManualAction?: boolean;
   captchaBlocked?: boolean;
   captchaType?: string;
+  blocked?: boolean;
 }
 
 export interface CaptchaHooks {
@@ -59,6 +61,32 @@ export class PlaybookExecutor {
           await this.executeStep(step, playbook.broker_id);
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
+
+          // Check for Cloudflare block first (wait for transient challenges to auto-resolve)
+          try {
+            const blockResult = await waitForChallenge(this.page as any);
+            if (blockResult.blocked) {
+              let screenshotPath: string | undefined;
+              try {
+                screenshotPath = await this.captureScreenshot(playbook.broker_id, "blocked");
+              } catch { /* ignore */ }
+
+              return {
+                success: false,
+                screenshotPath,
+                error: `Page blocked: ${blockResult.reason}`,
+                failedStep: {
+                  phase: phase.name,
+                  action: step.action,
+                  selector: "selector" in step ? (step as { selector: string }).selector : undefined,
+                },
+                blocked: true,
+                requiresManualAction: true,
+              };
+            }
+          } catch {
+            // Block detection failed — continue with normal failure path
+          }
 
           // Check for CAPTCHA before giving up on this step
           if (this.captchaHooks?.detectCaptcha) {

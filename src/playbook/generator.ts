@@ -6,6 +6,7 @@ import type { Broker } from "../types/broker.js";
 import { logger } from "../util/logger.js";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { waitForChallenge } from "../browser/block-detector.js";
 
 export interface FormField {
   selector: string;
@@ -145,13 +146,23 @@ export class PlaybookGenerator {
       return { playbook: null, verified: false, error: `Navigation failed: ${err instanceof Error ? err.message : err}` };
     }
 
-    // 2. Extract form structure
+    // 2. Check for Cloudflare or other blocks (wait for transient challenges to auto-resolve)
+    try {
+      const blockResult = await waitForChallenge(this.browser.page);
+      if (blockResult.blocked) {
+        return { playbook: null, verified: false, error: `Page blocked: ${blockResult.reason}` };
+      }
+    } catch {
+      // Block detection failed — continue
+    }
+
+    // 3. Extract form structure
     const formStructure = await this.extractFormStructure();
     if (!formStructure || (formStructure.inputs.length === 0 && formStructure.buttons.length === 0)) {
       return { playbook: null, verified: false, error: "No form structure found on page" };
     }
 
-    // 3. Generate playbook via LLM
+    // 4. Generate playbook via LLM
     const prompt = buildGeneratorPrompt({
       brokerId: broker.id,
       brokerName: broker.name,
@@ -178,10 +189,10 @@ export class PlaybookGenerator {
       return { playbook: null, verified: false, error: "LLM failed to generate valid playbook YAML" };
     }
 
-    // 4. Auto-test (dry run — execute all steps except the last click/submit)
+    // 5. Auto-test (dry run — execute all steps except the last click/submit)
     const verified = await this.autoTest(playbook);
 
-    // 5. Save
+    // 6. Save
     const filePath = join(this.playbookDir, `${broker.id}.yaml`);
     writeFileSync(filePath, yaml.dump(playbook, { lineWidth: 140 }));
     logger.info({ brokerId: broker.id, verified, path: filePath }, "Playbook generated and saved");
