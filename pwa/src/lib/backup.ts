@@ -29,5 +29,6 @@ export async function exportBackup(db: IDBPDatabase): Promise<void> {
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  // Revoke after browser has time to initiate the download
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
 }

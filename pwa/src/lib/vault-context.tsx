@@ -21,12 +21,33 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<IDBPDatabase | null>(null)
   const [isFirstRun, setIsFirstRun] = useState(false)
 
+  const CANARY_KEY = '__canary__'
+  const CANARY_VALUE = 'brokerbane-vault-v1'
+
   const unlock = useCallback(async (passphrase: string) => {
     const firstRun = !(await hasSalt())
-    setIsFirstRun(firstRun)
     const salt = await getOrCreateSalt()
     const derivedKey = await deriveKey(passphrase, salt)
     const database = await openStore()
+
+    if (firstRun) {
+      // Store a canary so future sessions can verify the passphrase
+      await saveEncrypted(database, derivedKey, CANARY_KEY, CANARY_VALUE)
+      setIsFirstRun(true)
+    } else {
+      // Verify passphrase by decrypting the canary
+      let canary: string | null
+      try {
+        canary = await loadEncrypted<string>(database, derivedKey, CANARY_KEY)
+      } catch {
+        throw new Error('Incorrect passphrase')
+      }
+      if (canary !== CANARY_VALUE) {
+        throw new Error('Incorrect passphrase')
+      }
+      setIsFirstRun(false)
+    }
+
     setKey(derivedKey)
     setDb(database)
   }, [])

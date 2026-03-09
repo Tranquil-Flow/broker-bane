@@ -14,8 +14,14 @@ export function buildGmailPayload(message: EmailMessage): GmailPayload {
     message.body,
   ].join('\r\n')
 
-  // Gmail API requires base64url encoding (no +, /, or trailing =)
-  const raw = btoa(unescape(encodeURIComponent(rfc2822)))
+  // Encode to UTF-8 bytes, then base64url (Gmail API requirement)
+  const bytes = new TextEncoder().encode(rfc2822)
+  let binary = ''
+  const chunkSize = 8192
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize))
+  }
+  const raw = btoa(binary)
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/, '')

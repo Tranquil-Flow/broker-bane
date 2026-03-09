@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useVault } from '../lib/vault-context'
 import { useEmail } from '../lib/email-context'
 import {
@@ -6,6 +6,7 @@ import {
   getAllBrokers,
   runEmailRemovals,
 } from '../lib/removal-engine'
+import { buildRemovalEmail } from '../lib/email-templates'
 import BrokerCard from './BrokerCard'
 import UpgradeCallout from './UpgradeCallout'
 import { exportBackup } from '../lib/backup'
@@ -13,7 +14,8 @@ import type { UserProfile, BrokerStatus } from '../types'
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load, db } = useVault()
-  const { sendEmail, provider } = useEmail()
+  const { sendEmail, provider, openMailto } = useEmail()
+  const runningRef = useRef(false)
   const [statuses, setStatuses] = useState<Record<string, BrokerStatus>>({})
   const [running, setRunning] = useState(false)
   const [runError, setRunError] = useState('')
@@ -37,7 +39,10 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
             lastUpdated: new Date().toISOString(),
           },
         }
-        save('statuses', updated).catch(() => {})
+        // Schedule save outside the state updater
+        setTimeout(() => {
+          save('statuses', updated).catch(() => {})
+        }, 0)
         return updated
       })
     },
@@ -45,7 +50,27 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   )
 
   async function startRemovals() {
-    if (!provider) return
+    if (!provider || runningRef.current) return
+
+    if (provider.type === 'mailto') {
+      // For mailto, open each broker's email in the user's client
+      const emailBrokersToSend = emailBrokers.filter(b => {
+        const s = statuses[b.id]
+        return !s || s.status === 'pending' || s.status === 'failed'
+      })
+      for (const broker of emailBrokersToSend) {
+        if (!broker.removalEmail) continue
+        const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail)
+        openMailto(message)
+        updateStatus(broker.id, 'sent')
+        // Small delay between opening mailto links
+        await new Promise(r => setTimeout(r, 200))
+      }
+      return
+    }
+
+    // Gmail/Outlook path
+    runningRef.current = true
     setRunning(true)
     setRunError('')
     try {
@@ -59,6 +84,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       setRunError(e instanceof Error ? e.message : 'Unknown error')
     } finally {
       setRunning(false)
+      runningRef.current = false
     }
   }
 

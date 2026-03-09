@@ -1,5 +1,5 @@
 export async function deriveKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> {
-  if (salt.length < 16) throw new Error('Salt must be at least 16 bytes')
+  if (salt.length < 32) throw new Error('Salt must be at least 32 bytes')
   if (salt.every(b => b === 0)) throw new Error('Salt must not be all zeros')
   const enc = new TextEncoder()
   const baseKey = await crypto.subtle.importKey(

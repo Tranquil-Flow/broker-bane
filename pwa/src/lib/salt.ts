@@ -15,7 +15,7 @@ export async function getOrCreateSalt(): Promise<Uint8Array> {
   const db = await openMetaDb()
   const existing = await db.get(SALT_STORE, SALT_KEY)
   if (existing) return existing as Uint8Array
-  const salt = crypto.getRandomValues(new Uint8Array(16))
+  const salt = crypto.getRandomValues(new Uint8Array(32))
   await db.put(SALT_STORE, salt, SALT_KEY)
   return salt
 }

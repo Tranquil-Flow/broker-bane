@@ -4,7 +4,7 @@ import { deriveKey } from './crypto'
 
 describe('storage', () => {
   it('saves and loads encrypted data by key', async () => {
-    const salt = new Uint8Array(16).fill(1)
+    const salt = new Uint8Array(32).fill(1)
     const key = await deriveKey('pass', salt)
     const db = await openStore()
     await saveEncrypted(db, key, 'profile', { name: 'Alice', email: 'alice@example.com' })
@@ -13,7 +13,7 @@ describe('storage', () => {
   })
 
   it('returns null for missing key', async () => {
-    const key = await deriveKey('pass', new Uint8Array(16).fill(1))
+    const key = await deriveKey('pass', new Uint8Array(32).fill(1))
     const db = await openStore()
     const result = await loadEncrypted(db, key, 'nonexistent')
     expect(result).toBeNull()

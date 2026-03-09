@@ -41,7 +41,7 @@ export async function loadEncrypted<T>(
     if (err instanceof Error && err.message.startsWith('Decryption failed')) {
       throw err // re-throw typed error so UI can show "wrong passphrase"
     }
-    throw new Error(`Failed to load vault entry "${storeKey}": ${err}`)
+    throw new Error(`Failed to load vault entry "${storeKey}"`)
   }
 }
 

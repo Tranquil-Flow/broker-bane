@@ -63,8 +63,13 @@ export default function OnboardingWizard({ onComplete }: Props) {
   }
 
   async function handleUseMailto() {
-    await save('email-provider', { type: 'mailto' })
-    setStep(3)
+    setConnectError('')
+    try {
+      await save('email-provider', { type: 'mailto' })
+      setStep(3)
+    } catch (e) {
+      setConnectError(e instanceof Error ? e.message : 'Failed to save settings')
+    }
   }
 
   function handleFinish() {

@@ -50,6 +50,6 @@ export async function runEmailRemovals(
     }
 
     // Rate limiting: avoid triggering spam filters
-    await new Promise(r => setTimeout(r, 50)) // shorter in tests, 500ms in prod usage
+    await new Promise(r => setTimeout(r, 500))
   }
 }
