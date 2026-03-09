@@ -1,0 +1,25 @@
+broker_id: taboola_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://accessrequest.taboola.com/access
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[type="text"]
+        value: '{{email}}'
+      - action: click
+        selector: input[type="checkbox"]
+      - action: click
+        selector: input[type="checkbox"]
+      - action: click
+        selector: input[type="checkbox"]
+      - action: click
+        selector: button:has-text("SHOW ME THE DATA")
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

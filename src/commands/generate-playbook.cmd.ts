@@ -44,7 +44,7 @@ export async function generatePlaybookCommand(options: {
   } else if (options.allMissing) {
     const existingPlaybooks = loadAllPlaybooks(defaultDir);
     targets = brokerDb.brokers.filter(
-      (b) => b.opt_out_url && !existingPlaybooks.has(b.id)
+      (b) => b.opt_out_url && !b.email && !existingPlaybooks.has(b.id)
     );
   } else {
     console.error("  Specify --broker <id> or --all-missing");

@@ -1,0 +1,41 @@
+broker_id: lead_me_media_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://policy.leadmemedia.com/States/privacyrequestform.html
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[aria-label='Email Address:']
+        value: '{{email}}'
+      - action: fill
+        selector: input[aria-label='First Name:']
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[aria-label='Last Name:']
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[aria-label='Address:']
+        value: '{{address}}'
+      - action: fill
+        selector: input[aria-label='City:']
+        value: '{{city}}'
+      - action: fill
+        selector: input[aria-label='State:']
+        value: '{{state}}'
+      - action: fill
+        selector: input[aria-label='Zip Code:']
+        value: '{{zip}}'
+      - action: click
+        selector: input[type='checkbox'][aria-label=' Please delete my personal information']
+      - action: click
+        selector: input[type='checkbox'][aria-label=' Please do not sell or share my information']
+      - action: click
+        selector: button
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

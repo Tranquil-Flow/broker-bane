@@ -1,0 +1,42 @@
+broker_id: key_marketing_advantage_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.keymarketingcorp.com/do_not_use_my_personal_information
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[aria-label="(* Required) Name"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[aria-label="(* Required) Last Name"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[aria-label="(* Required) Your Email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[aria-label="(* Required) Address"]
+        value: '{{address}}'
+      - action: fill
+        selector: input[aria-label="(* Required) City"]
+        value: '{{city}}'
+      - action: fill
+        selector: input[aria-label="(* Required) ZIP"]
+        value: '{{zip}}'
+      - action: fill
+        selector: input[aria-label="Phone"]
+        value: '{{phone}}'
+      - action: fill
+        selector: textarea[aria-label="(* Required) Your Message"]
+        value: I request that you do not use my personal information.
+      - action: click
+        selector: input[type="checkbox"][aria-label="Do Not Use My Data"]
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

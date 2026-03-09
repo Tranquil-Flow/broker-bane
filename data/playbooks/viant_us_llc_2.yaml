@@ -1,0 +1,25 @@
+broker_id: viant_us_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://privacyportal.onetrust.com/webform/18c06089-a9ec-473c-a6d8-23d20fea46af/43201dea-88d7-44cd-9142-e5b4f485e428
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="firstName"], input[type="text"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"], input[type="text"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email"], input[type="email"]
+        value: '{{email}}'
+      - action: click
+        selector: button[type="submit"], button:has-text("Submit")
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

@@ -1,0 +1,23 @@
+broker_id: dspolitical_llc
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.winwithoptimal.com/privacy-policy/
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button:contains('Cookie Settings'), button:has-text('Cookie Settings')
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[type='email'], input[name='aa']
+        value: '{{email}}'
+      - action: click
+        selector: form button[type='submit'], button:has-text('Submit')
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

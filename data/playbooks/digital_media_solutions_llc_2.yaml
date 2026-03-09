@@ -1,0 +1,31 @@
+broker_id: digital_media_solutions_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://dms-privacy.my.onetrust.com/webform/506f8b15-11ff-4f18-95fa-48ff903e623f/4268d0f0-bd98-4afb-b33a-a7a922ae182a
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="firstName"], input[placeholder*="first name"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"], input[placeholder*="last name"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email"], input[type="email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="mobilePhone"], input[placeholder*="Mobile"]
+        value: '{{phone}}'
+      - action: fill
+        selector: input[name="captcha"], input[placeholder*="Captcha"]
+        value: '{{captcha}}'
+      - action: click
+        selector: button:contains("Submit"), button[aria-label*="submit"]
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

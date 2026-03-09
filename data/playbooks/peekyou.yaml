@@ -1,0 +1,20 @@
+broker_id: peekyou
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.peekyou.com/about/contact/optout/
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[placeholder="First Name"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[placeholder="Last Name"]
+        value: '{{last_name}}'
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

@@ -1,0 +1,18 @@
+broker_id: purecars_technologies_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://docs.google.com/forms/d/e/1FAIpQLSdXAQsI4b0angLCONbwT4B4YSFiPyVMMLzizCuBSnPZmsTp_g/viewform
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: input[type="radio"][aria-label="I want to opt-out or manage marketing, targeted advertising, or cookie preferences"]
+      - action: click
+        selector: button:has-text("Next")
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

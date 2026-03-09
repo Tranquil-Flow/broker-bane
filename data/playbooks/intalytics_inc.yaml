@@ -1,0 +1,12 @@
+broker_id: intalytics_inc
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://kalibrate.com/data-subject-access-request-form/
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

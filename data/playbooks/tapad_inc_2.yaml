@@ -1,0 +1,23 @@
+broker_id: tapad_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://crportal.tapad.com/#/
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: a:contains("EMAIL"), button:contains("EMAIL"), a[href*="email"]
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[type="email"], input[name="email"]
+        value: '{{email}}'
+      - action: click
+        selector: button[type="submit"], button:contains("Submit")
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

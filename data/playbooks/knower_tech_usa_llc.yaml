@@ -1,0 +1,22 @@
+broker_id: knower_tech_usa_llc
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.rbarrel.com/opt-out
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="advertising_id"], input[type="text"]
+        value: '{{advertising_id}}'
+      - action: fill
+        selector: input[name="email"], input[type="email"]
+        value: '{{email}}'
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

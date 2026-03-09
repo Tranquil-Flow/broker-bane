@@ -1,0 +1,16 @@
+broker_id: experian_health_inc
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://consumerprivacy.experian.com/
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button[type='button']:nth-of-type(1)
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success
