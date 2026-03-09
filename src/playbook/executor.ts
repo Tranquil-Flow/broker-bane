@@ -4,6 +4,7 @@ import type { CaptchaDetection } from "../captcha/detector.js";
 import type { SolveResult } from "../captcha/solver.js";
 import { resolveTemplateValue } from "./template.js";
 import { logger } from "../util/logger.js";
+import { loadProfileCookies, saveProfileCookies } from "../browser/session.js";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
@@ -132,6 +133,20 @@ export class PlaybookExecutor {
       }
     }
 
+    // Save cookies after successful completion
+    try {
+      const lastGotoStep = playbook.phases
+        .flatMap(p => p.steps)
+        .filter(s => s.action === "goto")
+        .pop();
+      if (lastGotoStep && "url" in lastGotoStep) {
+        const domain = new URL(lastGotoStep.url).hostname;
+        await saveProfileCookies(this.page, domain);
+      }
+    } catch {
+      // Cookie save failed — not critical
+    }
+
     // Capture success screenshot
     let screenshotPath: string | undefined;
     try {
@@ -144,9 +159,16 @@ export class PlaybookExecutor {
 
   private async executeStep(step: PlaybookStep, brokerId: string): Promise<void> {
     switch (step.action) {
-      case "goto":
+      case "goto": {
+        try {
+          const domain = new URL(step.url).hostname;
+          await loadProfileCookies(this.page, domain);
+        } catch {
+          // Cookie loading failed — continue without cookies
+        }
         await this.page.goto(step.url, { waitUntil: "domcontentloaded", timeout: DEFAULT_TIMEOUT });
         break;
+      }
 
       case "fill": {
         const value = resolveTemplateValue(step.value, this.profile);

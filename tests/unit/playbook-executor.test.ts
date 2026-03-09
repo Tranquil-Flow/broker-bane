@@ -121,6 +121,53 @@ describe("PlaybookExecutor", () => {
   });
 });
 
+describe("PlaybookExecutor cookie integration", () => {
+  it("completes goto step successfully (cookie integration smoke test)", async () => {
+    const mockPageWithCtx = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      fill: vi.fn().mockResolvedValue(undefined),
+      click: vi.fn().mockResolvedValue(undefined),
+      waitForTimeout: vi.fn().mockResolvedValue(undefined),
+      waitForSelector: vi.fn().mockResolvedValue(undefined),
+      screenshot: vi.fn().mockResolvedValue(Buffer.from("img")),
+      selectOption: vi.fn().mockResolvedValue(undefined),
+      check: vi.fn().mockResolvedValue(undefined),
+      context: vi.fn().mockReturnValue({
+        addCookies: vi.fn().mockResolvedValue(undefined),
+        cookies: vi.fn().mockResolvedValue([]),
+        storageState: vi.fn().mockResolvedValue({ cookies: [], origins: [] }),
+      }),
+    };
+
+    const executor = new PlaybookExecutor(mockPageWithCtx as any, {
+      first_name: "Test",
+      last_name: "User",
+      email: "test@example.com",
+      country: "US",
+      aliases: [],
+    });
+
+    const result = await executor.execute({
+      broker_id: "test-broker",
+      version: 1,
+      last_verified: "2026-01-01",
+      phases: [{
+        name: "submit",
+        steps: [
+          { action: "goto", url: "https://example.com/optout" },
+          { action: "screenshot", label: "success" },
+        ],
+      }],
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockPageWithCtx.goto).toHaveBeenCalledWith(
+      "https://example.com/optout",
+      expect.any(Object),
+    );
+  });
+});
+
 describe("PlaybookExecutor CAPTCHA handling", () => {
   it("detects CAPTCHA on step failure and returns captchaBlocked when no solver", async () => {
     const page = mockPage();
