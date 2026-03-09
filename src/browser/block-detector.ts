@@ -45,11 +45,11 @@ export async function detectBlock(page: PageLike): Promise<BlockDetection> {
       return { blocked: true, reason: "cloudflare_challenge" };
     }
 
-    // Access denied detection
+    // Access denied detection (use word boundary for "blocked" to avoid matching "unblocked")
     if (
       titleLower.includes("access denied") ||
       titleLower.includes("403 forbidden") ||
-      titleLower.includes("blocked")
+      /\bblocked\b/.test(titleLower)
     ) {
       logger.debug({ title, url: pageUrl }, "Access denied detected");
       return { blocked: true, reason: "access_denied" };
