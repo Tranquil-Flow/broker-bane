@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane — Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    --radius: 8px;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,.15);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,.15);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,.15);
+    --transition: 150ms ease;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg-card: #111;
+    --bg-elevated: #161616;
+    --border: #222;
+    --border-hover: #333;
+    --text-primary: #ededed;
+    --text-secondary: #888;
+    --text-tertiary: #555;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,.5);
+  }
+
+  [data-theme="light"] {
+    --bg: #fafafa;
+    --bg-card: #fff;
+    --bg-elevated: #f5f5f5;
+    --border: #e5e5e5;
+    --border-hover: #d0d0d0;
+    --text-primary: #111;
+    --text-secondary: #666;
+    --text-tertiary: #999;
+    --shadow: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,.12);
+    --green-dim: rgba(34,197,94,.1);
+    --amber-dim: rgba(245,158,11,.1);
+    --red-dim: rgba(239,68,68,.1);
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ---- Header ---- */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+  }
+
+  .header-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .wordmark {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  nav { display: flex; align-items: center; gap: 4px; }
+
+  nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: color var(--transition), background var(--transition);
+  }
+
+  nav a:hover, nav a.active {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+  }
+
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-left: 8px;
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  /* ---- Container ---- */
+  .container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ---- Page Title ---- */
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -.04em;
+    margin-bottom: 4px;
+  }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  /* ---- Metric Cards ---- */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .metric-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .metric-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-value {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -.04em;
+    line-height: 1.1;
+  }
+
+  .metric-change {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+
+  .indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .indicator-green { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,.4); }
+  .indicator-amber { background: var(--amber); box-shadow: 0 0 6px rgba(245,158,11,.4); }
+  .indicator-red   { background: var(--red);   box-shadow: 0 0 6px rgba(239,68,68,.4); }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-red   { background: var(--red-dim);   color: var(--red); }
+
+  /* ---- Progress Bar ---- */
+  .progress-section {
+    margin-bottom: 40px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+
+  .progress-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .progress-value {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .progress-value span {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 72%;
+    background: linear-gradient(90deg, var(--accent), #60a5fa);
+    border-radius: 3px;
+    transition: width 600ms ease;
+  }
+
+  /* ---- Two Column ---- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .section-action {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity var(--transition);
+  }
+
+  .section-action:hover { opacity: .75; }
+
+  /* ---- Activity List ---- */
+  .activity-list { list-style: none; }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item:hover { background: var(--bg-elevated); }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot-green { background: var(--green); }
+  .dot-amber { background: var(--amber); }
+  .dot-red   { background: var(--red); }
+  .dot-blue  { background: var(--accent); }
+
+  .activity-content { flex: 1; min-width: 0; }
+
+  .activity-text {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .activity-broker {
+    color: var(--text-primary);
+  }
+
+  .activity-action {
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .activity-time {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  /* ---- Task Cards ---- */
+  .task-list { list-style: none; }
+
+  .task-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+  }
+
+  .task-item:last-child { border-bottom: none; }
+  .task-item:hover { background: var(--bg-elevated); }
+
+  .task-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .task-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .task-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font);
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition), opacity var(--transition);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: var(--accent-hover); }
+
+  .btn-secondary {
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  .task-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  /* ---- Categories ---- */
+  .categories-section {
+    margin-bottom: 48px;
+  }
+
+  .categories-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    margin-bottom: 20px;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .category-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .category-row:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow);
+  }
+
+  .category-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .category-name {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .category-numbers {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .bar-track {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 500ms ease;
+  }
+
+  .bar-green { background: var(--green); }
+  .bar-blue  { background: var(--accent); }
+  .bar-amber { background: var(--amber); }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  .footer-text strong {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .category-grid { grid-template-columns: 1fr; }
+    .header-inner { gap: 8px; }
+    nav a { padding: 6px 8px; font-size: 13px; }
+    .page-title { font-size: 22px; }
+    .metric-value { font-size: 26px; }
+  }
+
+  @media (max-width: 480px) {
+    .metrics { grid-template-columns: 1fr; }
+    nav { display: none; }
+    .container { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="wordmark">BrokerBane</a>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">Brokers</a>
+      <a href="#">About</a>
+      <a href="#">Compare</a>
+      <a href="#">Setup</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="3.5"/>
+          <path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M3.4 12.6l.7-.7M11.9 4.1l.7-.7"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-subtitle">Overview of your data broker removal progress</p>
+
+  <!-- Metric Cards -->
+  <div class="metrics">
+    <div class="metric-card">
+      <div class="metric-label">Total Brokers</div>
+      <div class="metric-value">1,103</div>
+      <div class="metric-change" style="color:var(--text-tertiary);">Tracked across 8 categories</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><span class="indicator indicator-green"></span> Removed</div>
+      <div class="metric-value">793</div>
+      <div class="metric-change"><span class="badge badge-green">+12 this week</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><span class="indicator indicator-amber"></span> In Progress</div>
+      <div class="metric-value">142</div>
+      <div class="metric-change"><span class="badge badge-amber">47 awaiting response</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><span class="indicator indicator-red"></span> Action Needed</div>
+      <div class="metric-value">21</div>
+      <div class="metric-change"><span class="badge badge-red">5 urgent</span></div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-title">Overall Removal Progress</span>
+      <span class="progress-value"><span>72%</span> complete &mdash; 793 of 1,103 brokers</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Two Column -->
+  <div class="two-col">
+    <!-- Recent Activity -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Recent Activity</span>
+        <a href="#" class="section-action">View all</a>
+      </div>
+      <ul class="activity-list">
+        <li class="activity-item">
+          <span class="status-dot dot-green"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">Spokeo</span> <span class="activity-action">— removal confirmed</span></div>
+            <div class="activity-time">2 minutes ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-green"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">BeenVerified</span> <span class="activity-action">— data deleted</span></div>
+            <div class="activity-time">18 minutes ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-amber"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">Whitepages</span> <span class="activity-action">— email sent, awaiting reply</span></div>
+            <div class="activity-time">1 hour ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-blue"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">Intelius</span> <span class="activity-action">— web form submitted</span></div>
+            <div class="activity-time">2 hours ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-red"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">TruePeopleSearch</span> <span class="activity-action">— CAPTCHA failed, retry needed</span></div>
+            <div class="activity-time">3 hours ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-green"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">FastPeopleSearch</span> <span class="activity-action">— removal confirmed</span></div>
+            <div class="activity-time">5 hours ago</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <span class="status-dot dot-amber"></span>
+          <div class="activity-content">
+            <div class="activity-text"><span class="activity-broker">Radaris</span> <span class="activity-action">— confirmation link clicked</span></div>
+            <div class="activity-time">Yesterday, 9:41 PM</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Pending Tasks -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Pending Tasks</span>
+        <a href="#" class="section-action">View all (21)</a>
+      </div>
+      <ul class="task-list">
+        <li class="task-item">
+          <div class="task-top">
+            <span class="task-name">TruePeopleSearch</span>
+            <span class="badge badge-red">Urgent</span>
+          </div>
+          <div class="task-desc">CAPTCHA solving failed 3 times. Manual intervention or NopeCHA key required.</div>
+          <div class="task-actions">
+            <button class="btn btn-primary">Retry Now</button>
+            <button class="btn btn-secondary">Skip</button>
+          </div>
+        </li>
+        <li class="task-item">
+          <div class="task-top">
+            <span class="task-name">MyLife.com</span>
+            <span class="badge badge-red">Urgent</span>
+          </div>
+          <div class="task-desc">Broker requires identity verification. Upload a redacted ID to proceed.</div>
+          <div class="task-actions">
+            <button class="btn btn-primary">Upload ID</button>
+            <button class="btn btn-secondary">Dismiss</button>
+          </div>
+        </li>
+        <li class="task-item">
+          <div class="task-top">
+            <span class="task-name">PeopleFinders</span>
+            <span class="badge badge-amber">Pending</span>
+          </div>
+          <div class="task-desc">Removal email bounced. Alternate contact address found — resend?</div>
+          <div class="task-actions">
+            <button class="btn btn-primary">Resend</button>
+            <button class="btn btn-secondary">View Details</button>
+          </div>
+        </li>
+        <li class="task-item">
+          <div class="task-top">
+            <span class="task-name">Acxiom</span>
+            <span class="badge badge-amber">Pending</span>
+          </div>
+          <div class="task-desc">CCPA removal request needs your digital signature to submit.</div>
+          <div class="task-actions">
+            <button class="btn btn-primary">Sign &amp; Submit</button>
+          </div>
+        </li>
+        <li class="task-item">
+          <div class="task-top">
+            <span class="task-name">Epsilon Data</span>
+            <span class="badge badge-amber">Pending</span>
+          </div>
+          <div class="task-desc">30-day follow-up: no response received. Consider escalation.</div>
+          <div class="task-actions">
+            <button class="btn btn-primary">Escalate</button>
+            <button class="btn btn-secondary">Wait</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Categories Breakdown -->
+  <div class="categories-section">
+    <h2 class="categories-title">Removal Progress by Category</h2>
+    <div class="category-grid">
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">People Search</span>
+          <span class="category-numbers">187 / 231 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-green" style="width:81%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Data Brokers</span>
+          <span class="category-numbers">204 / 278 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-green" style="width:73%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Marketing Data</span>
+          <span class="category-numbers">118 / 189 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-blue" style="width:62%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Background Check</span>
+          <span class="category-numbers">94 / 112 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-green" style="width:84%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Public Records</span>
+          <span class="category-numbers">71 / 98 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-blue" style="width:72%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Social Media Aggregators</span>
+          <span class="category-numbers">52 / 84 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-blue" style="width:62%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Email / Phone Lookup</span>
+          <span class="category-numbers">41 / 62 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-blue" style="width:66%"></div></div>
+      </div>
+      <div class="category-row">
+        <div class="category-top">
+          <span class="category-name">Address / Property</span>
+          <span class="category-numbers">26 / 49 removed</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-amber" style="width:53%"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p class="footer-text"><strong>BrokerBane</strong> &mdash; Free &amp; Open Source. Your data never leaves your machine.</p>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  }
+</script>
+
+</body>
+</html>

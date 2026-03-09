@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane — Privacy Punk Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --lime: #84cc16;
+    --bg: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-card-hover: #1a1a26;
+    --text: #e4e4e7;
+    --text-muted: #71717a;
+    --border: #27272a;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --green: #22c55e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    padding: 2rem 2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--border);
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 30%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--purple), var(--pink), transparent);
+  }
+
+  .logo-group {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+  }
+
+  .logo-shield {
+    font-size: 2rem;
+    margin-right: 0.3rem;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1.5px solid;
+  }
+
+  .badge-purple { border-color: var(--purple); color: var(--purple); background: rgba(168, 85, 247, 0.1); }
+  .badge-lime { border-color: var(--lime); color: var(--lime); background: rgba(132, 204, 22, 0.1); }
+  .badge-pink { border-color: var(--pink); color: var(--pink); background: rgba(236, 72, 153, 0.1); }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    padding: 4rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-headline {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-headline .you { color: var(--lime); }
+  .hero-headline .vs { color: var(--text-muted); font-size: 0.7em; padding: 0 0.3em; }
+  .hero-headline .brokers { color: var(--pink); }
+
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .hero-sub strong { color: var(--purple); }
+
+  /* Donut chart */
+  .ring-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 0 auto 3rem;
+  }
+
+  .ring-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring-bg {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 18;
+  }
+
+  .ring-segment {
+    fill: none;
+    stroke-width: 18;
+    stroke-linecap: butt;
+    transition: stroke-dashoffset 1.5s ease;
+  }
+
+  .ring-purged { stroke: var(--green); }
+  .ring-fighting { stroke: var(--yellow); }
+  .ring-resisting { stroke: var(--red); }
+  .ring-queued { stroke: var(--text-muted); }
+
+  .ring-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .ring-percent {
+    font-family: 'Space Mono', monospace;
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--lime), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ring-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-chip .num {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+  }
+
+  .stat-chip.purged .num { color: var(--green); }
+  .stat-chip.fighting .num { color: var(--yellow); }
+  .stat-chip.resisting .num { color: var(--red); }
+  .stat-chip.queued .num { color: var(--text-muted); }
+
+  .stat-chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .stat-chip.purged .dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .stat-chip.fighting .dot { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .stat-chip.resisting .dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .stat-chip.queued .dot { background: var(--text-muted); }
+
+  /* ===== MANIFESTO STRIP ===== */
+  .manifesto {
+    background: linear-gradient(90deg, var(--purple), var(--pink), var(--purple));
+    padding: 1rem 0;
+    overflow: hidden;
+    position: relative;
+    border-top: 2px solid rgba(255,255,255,0.1);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+  }
+
+  .manifesto-track {
+    display: flex;
+    gap: 3rem;
+    animation: scrollManifesto 30s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  .manifesto-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .manifesto-item .sep {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+  }
+
+  @keyframes scrollManifesto {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ===== STATUS GRID ===== */
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3rem 2rem 1.5rem;
+  }
+
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    padding: 0 2rem 3rem;
+  }
+
+  .status-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .status-card:hover {
+    background: var(--bg-card-hover);
+  }
+
+  .status-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .status-card.removed::before { background: var(--green); }
+  .status-card.inprogress::before { background: var(--yellow); }
+  .status-card.failed::before { background: var(--red); }
+  .status-card.queued-card::before { background: var(--text-muted); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .card-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .card-status .emoji { font-size: 1.3rem; }
+
+  .card-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .status-card.removed .card-count { color: var(--green); }
+  .status-card.inprogress .card-count { color: var(--yellow); }
+  .status-card.failed .card-count { color: var(--red); }
+  .status-card.queued-card .card-count { color: var(--text-muted); }
+
+  .card-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .card-list-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0.6rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-list-item .broker-name { font-weight: 600; color: var(--text); }
+
+  .card-list-item .time-ago {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  .card-more {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--purple);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .retry-btn {
+    background: transparent;
+    border: 1.5px solid var(--red);
+    color: var(--red);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .retry-btn:hover {
+    background: var(--red);
+    color: #fff;
+  }
+
+  /* Scrolling broker names */
+  .scroll-strip {
+    overflow: hidden;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+  }
+
+  .scroll-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: scrollBrokers 20s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  .scroll-name {
+    font-size: 0.75rem;
+    font-family: 'Space Mono', monospace;
+    color: var(--yellow);
+    opacity: 0.7;
+  }
+
+  @keyframes scrollBrokers {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ===== WALL OF SHAME ===== */
+  .shame-section {
+    padding: 0 2rem 3rem;
+  }
+
+  .shame-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    color: var(--pink);
+  }
+
+  .shame-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .shame-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .shame-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .shame-card:hover { border-color: var(--pink); }
+
+  .shame-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .shame-broker-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .difficulty-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .difficulty-nightmare {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--red);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .difficulty-hard {
+    background: rgba(234, 179, 8, 0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+  }
+
+  .difficulty-sneaky {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--purple);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+
+  .shame-detail {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .shame-tactics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tactic-tag {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .shame-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .shame-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  .shame-bar-fill.nightmare { background: var(--red); }
+  .shame-bar-fill.hard { background: var(--yellow); }
+  .shame-bar-fill.sneaky { background: var(--purple); }
+
+  .shame-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ===== CTA ===== */
+  .cta-section {
+    text-align: center;
+    padding: 4rem 2rem 5rem;
+    position: relative;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .cta-manifesto {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  .cta-manifesto .accent-purple { color: var(--purple); }
+  .cta-manifesto .accent-pink { color: var(--pink); }
+
+  .cta-sub {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.3s;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(236, 72, 153, 0.15);
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.5), 0 0 80px rgba(236, 72, 153, 0.25);
+  }
+
+  .cta-btn:active { transform: translateY(0); }
+
+  .cta-note {
+    margin-top: 1.25rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .footer a { color: var(--purple); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .logo { font-size: 1.8rem; }
+    .hero { padding: 3rem 1.5rem; }
+    .ring-container { width: 220px; height: 220px; }
+    .ring-percent { font-size: 3.5rem; }
+    .stats-row { gap: 0.75rem; }
+    .stat-chip { font-size: 0.75rem; padding: 0.4rem 0.75rem; }
+    .status-grid { padding: 0 1.5rem 2rem; }
+    .section-title { padding: 2rem 1.5rem 1rem; }
+    .shame-section { padding: 0 1.5rem 2rem; }
+    .cta-section { padding: 3rem 1.5rem 4rem; }
+  }
+
+  @media (max-width: 480px) {
+    .logo-group { flex-direction: column; gap: 0.25rem; }
+    .stats-row { flex-direction: column; align-items: center; }
+    .header-badges { flex-wrap: wrap; }
+  }
+
+  /* Glow pulse for ring */
+  @keyframes glowPulse {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(132, 204, 22, 0.3)); }
+    50% { filter: drop-shadow(0 0 14px rgba(132, 204, 22, 0.6)); }
+  }
+
+  .ring-svg { animation: glowPulse 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo-group">
+    <div>
+      <span class="logo"><span class="logo-shield">&#x1F6E1;&#xFE0F;</span>BrokerBane</span>
+    </div>
+    <span class="tagline">Take back what's yours.</span>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-lime">&#x1F512; Local-Only</span>
+    <span class="badge badge-purple">v2.4.0</span>
+    <span class="badge badge-pink">1,103 Brokers</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="hero-headline">
+    <span class="you">You</span><span class="vs">vs</span><span class="brokers">1,103 Data Brokers</span>
+  </h1>
+  <p class="hero-sub">Your data was everywhere. <strong>Not for long.</strong></p>
+
+  <!-- Donut Ring Chart (CSS + SVG) -->
+  <div class="ring-container">
+    <!--
+      Circumference = 2 * pi * 100 = 628.32
+      Purged:    793/1103 = 71.9% => 451.6
+      Fighting:  142/1103 = 12.9% => 80.9
+      Resisting:  47/1103 =  4.3% => 26.8
+      Queued:    121/1103 = 11.0% => 68.9
+    -->
+    <svg class="ring-svg" viewBox="0 0 240 240">
+      <circle class="ring-bg" cx="120" cy="120" r="100"/>
+      <!-- Purged segment -->
+      <circle class="ring-segment ring-purged" cx="120" cy="120" r="100"
+        stroke-dasharray="451.6 628.32"
+        stroke-dashoffset="0"/>
+      <!-- Fighting segment -->
+      <circle class="ring-segment ring-fighting" cx="120" cy="120" r="100"
+        stroke-dasharray="80.9 628.32"
+        stroke-dashoffset="-451.6"/>
+      <!-- Resisting segment -->
+      <circle class="ring-segment ring-resisting" cx="120" cy="120" r="100"
+        stroke-dasharray="26.8 628.32"
+        stroke-dashoffset="-532.5"/>
+      <!-- Queued segment -->
+      <circle class="ring-segment ring-queued" cx="120" cy="120" r="100"
+        stroke-dasharray="68.9 628.32"
+        stroke-dashoffset="-559.3"/>
+    </svg>
+    <div class="ring-center">
+      <div class="ring-percent">72%</div>
+      <div class="ring-label">Purged</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip purged"><span class="dot"></span><span class="num">793</span> Purged</div>
+    <div class="stat-chip fighting"><span class="dot"></span><span class="num">142</span> Fighting</div>
+    <div class="stat-chip resisting"><span class="dot"></span><span class="num">47</span> Resisting</div>
+    <div class="stat-chip queued"><span class="dot"></span><span class="num">121</span> Queued</div>
+  </div>
+</section>
+
+<!-- MANIFESTO STRIP -->
+<div class="manifesto">
+  <div class="manifesto-track">
+    <span class="manifesto-item">YOUR DATA. YOUR RULES. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F6E1;&#xFE0F; TAKE BACK CONTROL <span class="sep"></span></span>
+    <span class="manifesto-item">1,103 BROKERS. ZERO PERMISSION. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F512; ALL DATA STAYS LOCAL <span class="sep"></span></span>
+    <span class="manifesto-item">PRIVACY IS NOT A PRODUCT <span class="sep"></span></span>
+    <span class="manifesto-item">THEY PROFIT. YOU PAY. NOT ANYMORE. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F6A8; DELETE EVERYTHING <span class="sep"></span></span>
+    <span class="manifesto-item">YOU ARE NOT A DATA POINT <span class="sep"></span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="manifesto-item">YOUR DATA. YOUR RULES. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F6E1;&#xFE0F; TAKE BACK CONTROL <span class="sep"></span></span>
+    <span class="manifesto-item">1,103 BROKERS. ZERO PERMISSION. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F512; ALL DATA STAYS LOCAL <span class="sep"></span></span>
+    <span class="manifesto-item">PRIVACY IS NOT A PRODUCT <span class="sep"></span></span>
+    <span class="manifesto-item">THEY PROFIT. YOU PAY. NOT ANYMORE. <span class="sep"></span></span>
+    <span class="manifesto-item">&#x1F6A8; DELETE EVERYTHING <span class="sep"></span></span>
+    <span class="manifesto-item">YOU ARE NOT A DATA POINT <span class="sep"></span></span>
+  </div>
+</div>
+
+<!-- STATUS GRID -->
+<h2 class="section-title">&#x1F4CA; Removal Status</h2>
+<div class="status-grid">
+
+  <!-- REMOVED -->
+  <div class="status-card removed">
+    <div class="card-header">
+      <span class="card-status"><span class="emoji">&#x1F7E2;</span> Removed</span>
+    </div>
+    <div class="card-count">793</div>
+    <div class="card-list">
+      <div class="card-list-item">
+        <span class="broker-name">Spokeo</span>
+        <span class="time-ago">2h ago</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">WhitePages</span>
+        <span class="time-ago">3h ago</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">BeenVerified</span>
+        <span class="time-ago">5h ago</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">Intelius</span>
+        <span class="time-ago">6h ago</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">PeopleFinder</span>
+        <span class="time-ago">8h ago</span>
+      </div>
+    </div>
+    <div class="card-more">+ 788 more removed &rarr;</div>
+  </div>
+
+  <!-- IN PROGRESS -->
+  <div class="status-card inprogress">
+    <div class="card-header">
+      <span class="card-status"><span class="emoji">&#x1F7E1;</span> In Progress</span>
+    </div>
+    <div class="card-count">142</div>
+    <div class="card-list">
+      <div class="card-list-item">
+        <span class="broker-name">TruePeopleSearch</span>
+        <span class="time-ago">Email sent</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">FastPeopleSearch</span>
+        <span class="time-ago">Awaiting reply</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">USPhoneBook</span>
+        <span class="time-ago">Form submitted</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">Radaris</span>
+        <span class="time-ago">Processing</span>
+      </div>
+    </div>
+    <div class="scroll-strip">
+      <div class="scroll-track">
+        <span class="scroll-name">TruePeopleSearch</span>
+        <span class="scroll-name">FastPeopleSearch</span>
+        <span class="scroll-name">USPhoneBook</span>
+        <span class="scroll-name">Radaris</span>
+        <span class="scroll-name">Nuwber</span>
+        <span class="scroll-name">ClustrMaps</span>
+        <span class="scroll-name">Pipl</span>
+        <span class="scroll-name">ZabaSearch</span>
+        <span class="scroll-name">AnyWho</span>
+        <span class="scroll-name">AddressSearch</span>
+        <!-- duplicate for loop -->
+        <span class="scroll-name">TruePeopleSearch</span>
+        <span class="scroll-name">FastPeopleSearch</span>
+        <span class="scroll-name">USPhoneBook</span>
+        <span class="scroll-name">Radaris</span>
+        <span class="scroll-name">Nuwber</span>
+        <span class="scroll-name">ClustrMaps</span>
+        <span class="scroll-name">Pipl</span>
+        <span class="scroll-name">ZabaSearch</span>
+        <span class="scroll-name">AnyWho</span>
+        <span class="scroll-name">AddressSearch</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIGHTING BACK -->
+  <div class="status-card failed">
+    <div class="card-header">
+      <span class="card-status"><span class="emoji">&#x1F534;</span> Fighting Back</span>
+    </div>
+    <div class="card-count">47</div>
+    <div class="card-list">
+      <div class="card-list-item">
+        <span class="broker-name">Acxiom</span>
+        <button class="retry-btn">Retry</button>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">Oracle Data Cloud</span>
+        <button class="retry-btn">Retry</button>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">LexisNexis</span>
+        <button class="retry-btn">Retry</button>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">Epsilon</span>
+        <button class="retry-btn">Retry</button>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">CoreLogic</span>
+        <button class="retry-btn">Retry</button>
+      </div>
+    </div>
+    <div class="card-more">+ 42 more resisting &rarr;</div>
+  </div>
+
+  <!-- QUEUED -->
+  <div class="status-card queued-card">
+    <div class="card-header">
+      <span class="card-status"><span class="emoji">&#x26AA;</span> Queued</span>
+    </div>
+    <div class="card-count">121</div>
+    <div class="card-list">
+      <div class="card-list-item">
+        <span class="broker-name">PeopleSmart</span>
+        <span class="time-ago">#1 in queue</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">Instant Checkmate</span>
+        <span class="time-ago">#2 in queue</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">TowerData</span>
+        <span class="time-ago">#3 in queue</span>
+      </div>
+      <div class="card-list-item">
+        <span class="broker-name">FullContact</span>
+        <span class="time-ago">#4 in queue</span>
+      </div>
+    </div>
+    <div class="card-more">+ 117 more queued &rarr;</div>
+  </div>
+</div>
+
+<!-- WALL OF SHAME -->
+<section class="shame-section">
+  <h2 class="shame-title">&#x1F6A8; Wall of Shame</h2>
+  <p class="shame-sub">The brokers that fight hardest to keep your data. Ranked by difficulty.</p>
+
+  <div class="shame-grid">
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">Acxiom</span>
+        <span class="difficulty-badge difficulty-nightmare">Nightmare</span>
+      </div>
+      <div class="shame-detail">Requires notarized letter, 90-day processing, re-lists after 6 months.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">Snail mail only</span>
+        <span class="tactic-tag">Re-lists data</span>
+        <span class="tactic-tag">ID required</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill nightmare" style="width:95%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>95/100</span></div>
+    </div>
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">Oracle Data Cloud</span>
+        <span class="difficulty-badge difficulty-nightmare">Nightmare</span>
+      </div>
+      <div class="shame-detail">No public opt-out. Requires corporate escalation. Ignores CCPA requests for weeks.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">No opt-out form</span>
+        <span class="tactic-tag">Ignores emails</span>
+        <span class="tactic-tag">Corporate maze</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill nightmare" style="width:92%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>92/100</span></div>
+    </div>
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">LexisNexis</span>
+        <span class="difficulty-badge difficulty-nightmare">Nightmare</span>
+      </div>
+      <div class="shame-detail">Multi-step verification, fax-based opt-out, frequently "loses" requests.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">Fax required</span>
+        <span class="tactic-tag">Lost requests</span>
+        <span class="tactic-tag">Multi-step</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill nightmare" style="width:90%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>90/100</span></div>
+    </div>
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">Epsilon</span>
+        <span class="difficulty-badge difficulty-hard">Hard</span>
+      </div>
+      <div class="shame-detail">Slow acknowledgment, requires SSN last-4 for verification, 60-day window.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">SSN required</span>
+        <span class="tactic-tag">60-day wait</span>
+        <span class="tactic-tag">Slow response</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill hard" style="width:78%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>78/100</span></div>
+    </div>
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">CoreLogic</span>
+        <span class="difficulty-badge difficulty-hard">Hard</span>
+      </div>
+      <div class="shame-detail">Property data removal requires proof of ownership. Partial removal only.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">Proof required</span>
+        <span class="tactic-tag">Partial removal</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill hard" style="width:74%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>74/100</span></div>
+    </div>
+
+    <div class="shame-card">
+      <div class="shame-card-header">
+        <span class="shame-broker-name">Radaris</span>
+        <span class="difficulty-badge difficulty-sneaky">Sneaky</span>
+      </div>
+      <div class="shame-detail">Opt-out form requires account creation. Collects more data during opt-out.</div>
+      <div class="shame-tactics">
+        <span class="tactic-tag">Dark patterns</span>
+        <span class="tactic-tag">Harvests during opt-out</span>
+      </div>
+      <div class="shame-bar"><div class="shame-bar-fill sneaky" style="width:68%"></div></div>
+      <div class="shame-bar-label"><span>Difficulty</span><span>68/100</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="cta-section">
+  <div class="cta-manifesto">
+    <span class="accent-purple">Your data.</span> <span class="accent-pink">Your rules.</span>
+  </div>
+  <p class="cta-sub">BrokerBane runs on your machine, uses your email, and never sends your personal information to anyone except the brokers you're demanding remove it.</p>
+  <button class="cta-btn">&#x1F6E1;&#xFE0F; Start Removing Your Data</button>
+  <div class="cta-note">&#x1F512; 100% local &mdash; no accounts, no cloud, no tracking</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>BrokerBane &mdash; Open source privacy tool. <a href="#">GitHub</a> &bull; <a href="#">Docs</a> &bull; <a href="#">Report a broker</a></p>
+  <p style="margin-top:0.5rem; font-size:0.7rem;">Design mockup &mdash; Privacy-Punk exploration #03</p>
+</footer>
+
+</body>
+</html>

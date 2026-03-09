@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane v1.0.0 — Mystic Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #0a0a12;
+    --bg-card:   #0d0d1a;
+    --bg-hover:  #12122a;
+    --border:    #1a1a2e;
+    --violet:    #b388ff;
+    --violet-dim:#8c6bc8;
+    --cyan:      #64ffda;
+    --cyan-dim:  #4db6ac;
+    --magenta:   #ff4081;
+    --gold:      #ffd740;
+    --red:       #ff4081;
+    --text:      #a0a0c0;
+    --text-dim:  #4a4a6a;
+    --white:     #d8d8f0;
+    --font:      'JetBrains Mono', 'Share Tech Mono', 'Fira Code', monospace;
+  }
+
+  html { font-size: 14px; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ========== CRT SCANLINE OVERLAY (purple tinted) ========== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(40, 20, 80, 0.06) 2px,
+      rgba(40, 20, 80, 0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Vignette with purple tint */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 5, 30, 0.55) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ========== FLOATING PARTICLES ========== */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9996;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: particleFloat linear infinite;
+    opacity: 0;
+  }
+
+  .particle:nth-child(odd) { background: var(--violet); }
+  .particle:nth-child(even) { background: var(--cyan); }
+
+  .particle:nth-child(1) { left: 8%; animation-duration: 12s; animation-delay: 0s; }
+  .particle:nth-child(2) { left: 15%; animation-duration: 9s; animation-delay: 1.5s; }
+  .particle:nth-child(3) { left: 25%; animation-duration: 14s; animation-delay: 3s; }
+  .particle:nth-child(4) { left: 35%; animation-duration: 10s; animation-delay: 0.5s; }
+  .particle:nth-child(5) { left: 45%; animation-duration: 11s; animation-delay: 2s; }
+  .particle:nth-child(6) { left: 55%; animation-duration: 13s; animation-delay: 4s; }
+  .particle:nth-child(7) { left: 65%; animation-duration: 9.5s; animation-delay: 1s; }
+  .particle:nth-child(8) { left: 72%; animation-duration: 12.5s; animation-delay: 3.5s; }
+  .particle:nth-child(9) { left: 82%; animation-duration: 10.5s; animation-delay: 2.5s; }
+  .particle:nth-child(10) { left: 92%; animation-duration: 11.5s; animation-delay: 0.8s; }
+  .particle:nth-child(11) { left: 20%; animation-duration: 15s; animation-delay: 5s; width: 3px; height: 3px; }
+  .particle:nth-child(12) { left: 50%; animation-duration: 13.5s; animation-delay: 6s; width: 3px; height: 3px; }
+  .particle:nth-child(13) { left: 78%; animation-duration: 14.5s; animation-delay: 7s; }
+  .particle:nth-child(14) { left: 40%; animation-duration: 16s; animation-delay: 8s; width: 3px; height: 3px; }
+
+  @keyframes particleFloat {
+    0%   { bottom: -5%; opacity: 0; transform: translateX(0); }
+    10%  { opacity: 0.6; }
+    50%  { opacity: 0.3; transform: translateX(20px); }
+    90%  { opacity: 0.5; }
+    100% { bottom: 105%; opacity: 0; transform: translateX(-15px); }
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes scanline {
+    0%   { top: -10%; }
+    100% { top: 110%; }
+  }
+
+  @keyframes glowViolet {
+    0%, 100% { text-shadow: 0 0 4px var(--violet), 0 0 12px rgba(179, 136, 255, 0.3); }
+    50%      { text-shadow: 0 0 8px var(--violet), 0 0 24px rgba(179, 136, 255, 0.5), 0 0 40px rgba(179, 136, 255, 0.15); }
+  }
+
+  @keyframes glowCyan {
+    0%, 100% { text-shadow: 0 0 4px var(--cyan), 0 0 10px rgba(100, 255, 218, 0.2); }
+    50%      { text-shadow: 0 0 8px var(--cyan), 0 0 20px rgba(100, 255, 218, 0.4); }
+  }
+
+  @keyframes headerPulse {
+    0%, 100% {
+      text-shadow: 0 0 6px var(--violet), 0 0 16px rgba(179, 136, 255, 0.4);
+      filter: brightness(1);
+    }
+    50% {
+      text-shadow: 0 0 10px var(--violet), 0 0 30px rgba(179, 136, 255, 0.6), 0 0 50px rgba(179, 136, 255, 0.2);
+      filter: brightness(1.1);
+    }
+  }
+
+  @keyframes countPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes runeShimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Moving scanline bar (purple tinted) */
+  .scanline-bar {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(180deg, transparent, rgba(179, 136, 255, 0.04), transparent);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 9997;
+  }
+
+  /* ========== LAYOUT ========== */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ========== HEADER ========== */
+  header {
+    padding: 2rem 0 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--violet);
+    letter-spacing: 0.15em;
+    animation: headerPulse 4s ease-in-out infinite;
+    white-space: nowrap;
+  }
+
+  .logo .rune {
+    font-weight: 400;
+    opacity: 0.6;
+    animation: runeShimmer 3s ease-in-out infinite;
+    margin: 0 0.15em;
+  }
+
+  .logo .rune:nth-child(2) { animation-delay: 0.5s; }
+  .logo .rune:nth-child(4) { animation-delay: 1s; }
+
+  .logo .version {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.2em;
+    background: var(--violet);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 4px;
+    box-shadow: 0 0 6px var(--violet);
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-weight: 300;
+    margin-top: 0.3rem;
+  }
+
+  .subtitle .accent {
+    color: var(--cyan-dim);
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .header-meta span { white-space: nowrap; }
+  .header-meta .val { color: var(--text); }
+
+  /* ========== NAV ========== */
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s, text-shadow 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .nav-tab::before {
+    content: '> ';
+    color: var(--text-dim);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .nav-tab:hover::before,
+  .nav-tab.active::before {
+    opacity: 1;
+  }
+
+  .nav-tab:hover {
+    color: var(--white);
+  }
+
+  .nav-tab.active {
+    color: var(--violet);
+    border-bottom-color: var(--violet);
+    text-shadow: 0 0 8px rgba(179, 136, 255, 0.3);
+  }
+
+  .nav-tab.active::before {
+    color: var(--violet);
+  }
+
+  /* ========== STAT CARDS ========== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { animation-delay: 0.3s; }
+  .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .stat-card.targets::before  { background: var(--cyan); box-shadow: 0 0 8px rgba(100, 255, 218, 0.3); }
+  .stat-card.success::before  { background: var(--violet); box-shadow: 0 0 8px rgba(179, 136, 255, 0.3); }
+  .stat-card.pending::before  { background: var(--gold); box-shadow: 0 0 8px rgba(255, 215, 64, 0.3); }
+  .stat-card.failed::before   { background: var(--magenta); box-shadow: 0 0 8px rgba(255, 64, 129, 0.3); }
+
+  /* Subtle corner rune decoration */
+  .stat-card::after {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.5rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    opacity: 0.12;
+    animation: runeShimmer 5s ease-in-out infinite;
+  }
+
+  .stat-card.targets::after  { content: '\16B1'; color: var(--cyan); } /* rune */
+  .stat-card.success::after  { content: '\16CF'; color: var(--violet); }
+  .stat-card.pending::after  { content: '\16D7'; color: var(--gold); }
+  .stat-card.failed::after   { content: '\2735'; color: var(--magenta); }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-card.targets .stat-value  { color: var(--cyan); text-shadow: 0 0 8px rgba(100, 255, 218, 0.2); }
+  .stat-card.success .stat-value  { color: var(--violet); text-shadow: 0 0 8px rgba(179, 136, 255, 0.2); }
+  .stat-card.pending .stat-value  { color: var(--gold); text-shadow: 0 0 8px rgba(255, 215, 64, 0.2); }
+  .stat-card.failed  .stat-value  { color: var(--magenta); text-shadow: 0 0 8px rgba(255, 64, 129, 0.2); }
+
+  .stat-sigil {
+    color: var(--text-dim);
+    margin-right: 0.15em;
+    font-size: 0.85em;
+  }
+
+  .stat-sub {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  .stat-ascii {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.75rem;
+    font-size: 1.8rem;
+    color: var(--border);
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  /* ========== PROGRESS SECTION ========== */
+  .progress-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.5s ease 0.5s both;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+
+  .progress-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+  }
+
+  .progress-title .sigil {
+    color: var(--violet);
+    opacity: 0.7;
+  }
+
+  .progress-pct {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--violet);
+    text-shadow: 0 0 8px rgba(179, 136, 255, 0.3);
+  }
+
+  .progress-bar-ascii {
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-fill { color: var(--violet); text-shadow: 0 0 4px rgba(179, 136, 255, 0.2); }
+  .progress-empty { color: var(--border); }
+  .progress-fill-alt { color: var(--cyan); text-shadow: 0 0 4px rgba(100, 255, 218, 0.2); }
+
+  .progress-detail {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+  }
+
+  .progress-detail .v { color: var(--violet-dim); }
+  .progress-detail .a { color: var(--gold); }
+  .progress-detail .r { color: var(--magenta); }
+
+  /* ========== TWO-COLUMN LAYOUT ========== */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ========== PANELS ========== */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    animation: fadeInUp 0.5s ease 0.6s both;
+  }
+
+  .panel:nth-child(2) { animation-delay: 0.7s; }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .panel-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--text-dim);
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .panel-badge.live {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(100, 255, 218, 0.15);
+  }
+
+  .panel-badge.wards {
+    border-color: var(--magenta);
+    color: var(--magenta);
+  }
+
+  .panel-body {
+    padding: 0;
+    max-height: 340px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .panel-body::-webkit-scrollbar { width: 4px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ========== LOG ENTRIES ========== */
+  .log-entry {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(100, 100, 150, 0.04);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.5;
+    transition: background 0.15s;
+  }
+
+  .log-entry:hover {
+    background: var(--bg-hover);
+  }
+
+  .log-time {
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .log-icon {
+    flex-shrink: 0;
+    width: 1.2em;
+    text-align: center;
+  }
+
+  .log-msg { color: var(--text); }
+  .log-msg .target { color: var(--white); }
+  .log-msg .tag { color: var(--text-dim); }
+
+  .log-entry.sent .log-icon    { color: var(--violet); text-shadow: 0 0 4px rgba(179, 136, 255, 0.3); }
+  .log-entry.confirm .log-icon { color: var(--cyan); text-shadow: 0 0 4px rgba(100, 255, 218, 0.3); }
+  .log-entry.fail .log-icon    { color: var(--magenta); text-shadow: 0 0 4px rgba(255, 64, 129, 0.3); }
+  .log-entry.scan .log-icon    { color: var(--gold); text-shadow: 0 0 4px rgba(255, 215, 64, 0.3); }
+  .log-entry.info .log-icon    { color: var(--text-dim); }
+
+  .log-entry.fail .log-msg .target { color: var(--magenta); }
+
+  .log-msg .spell {
+    color: var(--violet-dim);
+    font-style: italic;
+  }
+
+  /* ========== CIRCUIT BREAKER / BROKEN WARDS ========== */
+  .cb-item {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(100, 100, 150, 0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    transition: background 0.15s;
+  }
+
+  .cb-item:hover { background: var(--bg-hover); }
+
+  .cb-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cb-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--magenta);
+    animation: pulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(255, 64, 129, 0.4);
+  }
+
+  .cb-status.half-open {
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(255, 215, 64, 0.4);
+  }
+
+  .cb-name { color: var(--white); }
+
+  .cb-info {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.15rem;
+  }
+
+  .cb-right {
+    text-align: right;
+  }
+
+  .cb-timer {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--magenta);
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 4px rgba(255, 64, 129, 0.2);
+  }
+
+  .cb-timer.half-open { color: var(--gold); text-shadow: 0 0 4px rgba(255, 215, 64, 0.2); }
+
+  .cb-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ========== MANUAL TASKS / PENDING INCANTATIONS ========== */
+  .task-item {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(100, 100, 150, 0.04);
+    font-size: 0.75rem;
+    transition: background 0.15s;
+  }
+
+  .task-item:hover { background: var(--bg-hover); }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+  }
+
+  .task-broker { color: var(--white); }
+
+  .task-type {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid;
+    text-transform: uppercase;
+  }
+
+  .task-type.captcha { color: var(--gold); border-color: var(--gold); }
+  .task-type.verify  { color: var(--cyan); border-color: var(--cyan); }
+  .task-type.mail    { color: var(--text); border-color: var(--text-dim); }
+
+  .task-desc { color: var(--text-dim); line-height: 1.4; }
+
+  .task-time {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+  }
+
+  /* ========== BOTTOM PANELS ========== */
+  .bottom-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* ========== BROKER INTEL TABLE ========== */
+  .intel-row {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(100, 100, 150, 0.04);
+    transition: background 0.15s;
+  }
+  .intel-row:hover { background: var(--bg-hover); }
+  .intel-header {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(100, 100, 150, 0.04);
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer-ascii {
+    letter-spacing: 0.1em;
+  }
+
+  .footer-ascii .sigil {
+    color: var(--violet-dim);
+    opacity: 0.6;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .columns, .bottom-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 550px) {
+    html { font-size: 12px; }
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    .header-meta {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .progress-detail {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanline-bar"></div>
+
+<!-- Floating particles (CSS only) -->
+<div class="particles">
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+</div>
+
+<div class="container">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="header-top">
+      <div class="logo">
+        <span class="rune">&#x27D0;</span>BROKERBANE<span class="rune">&#x27D0;</span> <span class="version">v1.0.0</span><span class="cursor"></span>
+      </div>
+    </div>
+    <div class="subtitle"><span class="accent">//</span> arcane protocols initialized</div>
+    <div class="header-meta">
+      <span>SESSION <span class="val">bb-7f3a91</span></span>
+      <span>UPTIME <span class="val">04:12:37</span></span>
+      <span>PROFILE <span class="val">default</span></span>
+      <span>SMTP <span class="val" style="color:var(--cyan);">BOUND</span></span>
+      <span>IMAP <span class="val" style="color:var(--cyan);">WATCHING</span></span>
+    </div>
+  </header>
+
+  <!-- ============ NAV ============ -->
+  <nav>
+    <a class="nav-tab active">SANCTUM</a>
+    <a class="nav-tab">GRIMOIRE</a>
+    <a class="nav-tab">RITES</a>
+    <a class="nav-tab">ORACLE</a>
+    <a class="nav-tab">INVOKE</a>
+  </nav>
+
+  <!-- ============ STATS CARDS ============ -->
+  <div class="stats-grid">
+    <div class="stat-card targets">
+      <div class="stat-label">TOTAL TARGETS</div>
+      <div class="stat-value"><span class="stat-sigil">&#x27D0;</span>1,103</div>
+      <div class="stat-sub">&#x2727; data brokers tracked</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-label">NEUTRALIZED</div>
+      <div class="stat-value"><span class="stat-sigil">&#x27D0;</span>793</div>
+      <div class="stat-sub">&#x2727; confirmed banished</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-label">IN PROGRESS</div>
+      <div class="stat-value"><span class="stat-sigil">&#x27D0;</span>142</div>
+      <div class="stat-sub">&#x2727; rites pending</div>
+    </div>
+    <div class="stat-card failed">
+      <div class="stat-label">HOSTILE</div>
+      <div class="stat-value"><span class="stat-sigil">&#x27D0;</span>47</div>
+      <div class="stat-sub">&#x2727; warded / resistant</div>
+    </div>
+  </div>
+
+  <!-- ============ PROGRESS ============ -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-title"><span class="sigil">&#x27D0;</span> BANISHMENT PROTOCOL: 72% ENACTED <span class="sigil">&#x27D0;</span></span>
+      <span class="progress-pct">72%</span>
+    </div>
+    <div class="progress-bar-ascii">
+      <span class="progress-fill">&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;&#x25C9;</span><span class="progress-empty">&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;&#x25CE;</span>
+    </div>
+    <div class="progress-detail">
+      <span><span class="v">793</span> banished</span>
+      <span><span class="a">142</span> in-flight</span>
+      <span><span class="r">47</span> resisted</span>
+      <span>121 queued</span>
+      <span>ETA: ~6 days</span>
+    </div>
+  </div>
+
+  <!-- ============ ACTIVITY + BROKEN WARDS ============ -->
+  <div class="columns">
+
+    <!-- Activity Feed -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">&#x2726; Arcane Activity</span>
+        <span class="panel-badge live">SCRYING</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="log-entry sent">
+          <span class="log-time">[03:47:12]</span>
+          <span class="log-icon">&#x2726;</span>
+          <span class="log-msg">WARD CAST &rarr; <span class="target">spokeo.com</span> <span class="tag">[GDPR SIGIL]</span></span>
+        </div>
+        <div class="log-entry confirm">
+          <span class="log-time">[03:46:58]</span>
+          <span class="log-icon">&#x25C6;</span>
+          <span class="log-msg">BINDING CONFIRMED &larr; <span class="target">whitepages.com</span></span>
+        </div>
+        <div class="log-entry fail">
+          <span class="log-time">[03:46:31]</span>
+          <span class="log-icon">&#x22B9;</span>
+          <span class="log-msg">RESISTANCE DETECTED &rarr; <span class="target">radaris.com</span> <span class="tag">[ward breaker: ACTIVE]</span></span>
+        </div>
+        <div class="log-entry scan">
+          <span class="log-time">[03:45:19]</span>
+          <span class="log-icon">&#x263D;</span>
+          <span class="log-msg">SCRYING <span class="target">beenverified.com</span>...</span>
+        </div>
+        <div class="log-entry sent">
+          <span class="log-time">[03:44:47]</span>
+          <span class="log-icon">&#x2726;</span>
+          <span class="log-msg">WARD CAST &rarr; <span class="target">intelius.com</span> <span class="tag">[CCPA SIGIL]</span></span>
+        </div>
+        <div class="log-entry confirm">
+          <span class="log-time">[03:44:02]</span>
+          <span class="log-icon">&#x25C6;</span>
+          <span class="log-msg">BINDING CONFIRMED &larr; <span class="target">mylife.com</span></span>
+        </div>
+        <div class="log-entry sent">
+          <span class="log-time">[03:43:38]</span>
+          <span class="log-icon">&#x2726;</span>
+          <span class="log-msg">WARD CAST &rarr; <span class="target">truepeoplesearch.com</span> <span class="tag">[GDPR SIGIL]</span></span>
+        </div>
+        <div class="log-entry info">
+          <span class="log-time">[03:42:55]</span>
+          <span class="log-icon">&#x16B1;</span>
+          <span class="log-msg">Mana cooldown for <span class="target">peoplefinders.com</span> <span class="tag">[60s]</span></span>
+        </div>
+        <div class="log-entry confirm">
+          <span class="log-time">[03:42:11]</span>
+          <span class="log-icon">&#x25C6;</span>
+          <span class="log-msg">BINDING CONFIRMED &larr; <span class="target">pipl.com</span></span>
+        </div>
+        <div class="log-entry scan">
+          <span class="log-time">[03:41:28]</span>
+          <span class="log-icon">&#x263D;</span>
+          <span class="log-msg">SCRYING <span class="target">publicrecordsnow.com</span>...</span>
+        </div>
+        <div class="log-entry sent">
+          <span class="log-time">[03:40:52]</span>
+          <span class="log-icon">&#x2726;</span>
+          <span class="log-msg">WARD CAST &rarr; <span class="target">thatsthem.com</span> <span class="tag">[GDPR SIGIL]</span></span>
+        </div>
+        <div class="log-entry fail">
+          <span class="log-time">[03:40:14]</span>
+          <span class="log-icon">&#x22B9;</span>
+          <span class="log-msg">RESISTANCE DETECTED &rarr; <span class="target">ussearch.com</span> <span class="tag">[SMTP 550]</span></span>
+        </div>
+        <div class="log-entry confirm">
+          <span class="log-time">[03:39:30]</span>
+          <span class="log-icon">&#x25C6;</span>
+          <span class="log-msg">BINDING CONFIRMED &larr; <span class="target">zabasearch.com</span></span>
+        </div>
+        <div class="log-entry sent">
+          <span class="log-time">[03:38:59]</span>
+          <span class="log-icon">&#x2726;</span>
+          <span class="log-msg">WARD CAST &rarr; <span class="target">peekyou.com</span> <span class="tag">[CCPA SIGIL]</span></span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Broken Wards Panel (Circuit Breakers) -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">&#x16D7; Broken Wards</span>
+        <span class="panel-badge wards">3 SHATTERED</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status"></div>
+            <div>
+              <div class="cb-name">radaris.com</div>
+              <div class="cb-info">5 failed incantations &middot; last: 403 Forbidden</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer">14:32</div>
+            <div class="cb-label">reforge in</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status"></div>
+            <div>
+              <div class="cb-name">ussearch.com</div>
+              <div class="cb-info">3 failed incantations &middot; last: SMTP 550</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer">08:17</div>
+            <div class="cb-label">reforge in</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status half-open"></div>
+            <div>
+              <div class="cb-name">instantcheckmate.com</div>
+              <div class="cb-info">2 failures &middot; last: timeout 30s &middot; MENDING</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer half-open">02:41</div>
+            <div class="cb-label">probing in</div>
+          </div>
+        </div>
+
+        <!-- Spacer with mystical decoration -->
+        <div style="padding: 1.25rem; color: var(--border); font-size: 0.7rem; text-align: center; letter-spacing: 0.2em;">
+          &#x2500;&#x2500;&#x2500; &#x2726; INTACT WARDS: 1,100 / 1,103 &#x2726; &#x2500;&#x2500;&#x2500;
+        </div>
+
+        <!-- Recovered section -->
+        <div class="panel-header" style="border-top: 1px solid var(--border);">
+          <span class="panel-title" style="font-size:0.65rem; color: var(--text-dim);">&#x2726; Recently Restored</span>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status" style="background:var(--cyan); animation:none; box-shadow: 0 0 6px rgba(100,255,218,0.3);"></div>
+            <div>
+              <div class="cb-name" style="color:var(--text);">peoplefinders.com</div>
+              <div class="cb-info">ward restored 12 min ago &middot; 2 attempts</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer" style="color:var(--cyan); font-size:0.7rem; text-shadow: 0 0 4px rgba(100,255,218,0.2);">SEALED</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status" style="background:var(--cyan); animation:none; box-shadow: 0 0 6px rgba(100,255,218,0.3);"></div>
+            <div>
+              <div class="cb-name" style="color:var(--text);">familytreenow.com</div>
+              <div class="cb-info">ward restored 47 min ago &middot; 1 attempt</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer" style="color:var(--cyan); font-size:0.7rem; text-shadow: 0 0 4px rgba(100,255,218,0.2);">SEALED</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ PENDING INCANTATIONS + BROKER INTEL ============ -->
+  <div class="bottom-section">
+
+    <div class="panel" style="animation-delay: 0.8s;">
+      <div class="panel-header">
+        <span class="panel-title">&#x16CF; Pending Incantations</span>
+        <span class="panel-badge">5 AWAITING</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="task-item">
+          <div class="task-top">
+            <span class="task-broker">beenverified.com</span>
+            <span class="task-type captcha">WARD PUZZLE</span>
+          </div>
+          <div class="task-desc">Solve hCaptcha on opt-out form &mdash; NopeCHA unavailable</div>
+          <div class="task-time">&#x22B9; queued 3 min ago</div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-top">
+            <span class="task-broker">lexisnexis.com</span>
+            <span class="task-type verify">BLOOD SEAL</span>
+          </div>
+          <div class="task-desc">Upload government ID for identity verification</div>
+          <div class="task-time">&#x22B9; queued 18 min ago</div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-top">
+            <span class="task-broker">acxiom.com</span>
+            <span class="task-type mail">RAVEN POST</span>
+          </div>
+          <div class="task-desc">Send physical mail opt-out &mdash; no email/web option available</div>
+          <div class="task-time">&#x22B9; queued 1 hour ago</div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-top">
+            <span class="task-broker">peoplefinders.com</span>
+            <span class="task-type captcha">WARD PUZZLE</span>
+          </div>
+          <div class="task-desc">Solve reCAPTCHA v3 &mdash; score below threshold</div>
+          <div class="task-time">&#x22B9; queued 1 hour ago</div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-top">
+            <span class="task-broker">truthfinder.com</span>
+            <span class="task-type verify">BLOOD SEAL</span>
+          </div>
+          <div class="task-desc">Confirm phone number via SMS verification code</div>
+          <div class="task-time">&#x22B9; queued 2 hours ago</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Broker Intel Summary -->
+    <div class="panel" style="animation-delay: 0.9s;">
+      <div class="panel-header">
+        <span class="panel-title">&#x263D; Oracle Intel</span>
+        <span class="panel-badge">TOP 10</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="intel-header">
+          <span style="display:inline-block;width:55%;">BROKER</span>
+          <span style="display:inline-block;width:20%;text-align:right;">METHOD</span>
+          <span style="display:inline-block;width:25%;text-align:right;">STATUS</span>
+        </div>
+
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">spokeo.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">SIGIL</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--violet);">CAST</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">whitepages.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">WEB</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--cyan);">BANISHED</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">radaris.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">SIGIL</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--magenta);">WARDED</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">beenverified.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">WEB</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--gold);">PENDING</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">intelius.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">SIGIL</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--violet);">CAST</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">mylife.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">SIGIL</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--cyan);">BANISHED</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">lexisnexis.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">WEB</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--gold);">VERIFY</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">acxiom.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">RAVEN</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--gold);">QUEUED</span>
+        </div>
+        <div class="intel-row">
+          <span style="display:inline-block;width:55%;color:var(--white);">ussearch.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">SIGIL</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--magenta);">WARDED</span>
+        </div>
+        <div class="intel-row" style="border-bottom:none;">
+          <span style="display:inline-block;width:55%;color:var(--white);">truthfinder.com</span>
+          <span style="display:inline-block;width:20%;text-align:right;color:var(--text-dim);">WEB</span>
+          <span style="display:inline-block;width:25%;text-align:right;color:var(--gold);">VERIFY</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span class="footer-ascii"><span class="sigil">&#x2726;</span> [ BROKERBANE ] &mdash; PII never leaves this sanctum <span class="sigil">&#x2726;</span></span>
+    <span>NODE v20.11.0 &middot; SQLite 3.45 &middot; SMTP BOUND &middot; IMAP WATCHING</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

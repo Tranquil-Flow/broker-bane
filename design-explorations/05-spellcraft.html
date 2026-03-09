@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane — The Art of Digital Vanishing</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-card: #0f1525;
+  --bg-card-hover: #141b30;
+  --arcane-blue: #4fc3f7;
+  --ethereal-gold: #ffd54f;
+  --mystic-purple: #ce93d8;
+  --ember-red: #ef5350;
+  --parchment: #1a1f35;
+  --parchment-light: #1e2440;
+  --text-primary: #e0e6f0;
+  --text-secondary: #8892a8;
+  --text-dim: #4a5268;
+  --glow-blue: 0 0 20px rgba(79, 195, 247, 0.4);
+  --glow-gold: 0 0 20px rgba(255, 213, 79, 0.4);
+  --glow-purple: 0 0 20px rgba(206, 147, 216, 0.4);
+  --glow-red: 0 0 20px rgba(239, 83, 80, 0.4);
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ========== STARFIELD BACKGROUND ========== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(1px 1px at 10% 15%, rgba(79, 195, 247, 0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 35%, rgba(206, 147, 216, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 10%, rgba(255, 213, 79, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 60%, rgba(79, 195, 247, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 25%, rgba(206, 147, 216, 0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 80%, rgba(255, 213, 79, 0.2) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 5% 85%, rgba(79, 195, 247, 0.5) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 15% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 30% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 50% 40%, rgba(255, 255, 255, 0.12) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 65% 90%, rgba(255, 255, 255, 0.1) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 80% 55%, rgba(255, 255, 255, 0.15) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 95% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 40% 95%, rgba(206, 147, 216, 0.2) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 55% 20%, rgba(79, 195, 247, 0.2) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 70% 70%, rgba(255, 213, 79, 0.15) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 85% 10%, rgba(255, 255, 255, 0.08) 0%, transparent 100%),
+    radial-gradient(0.5px 0.5px at 20% 65%, rgba(255, 255, 255, 0.1) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 35% 45%, rgba(79, 195, 247, 0.25) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 88% 42%, rgba(206, 147, 216, 0.2) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== CSS PARTICLES ========== */
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+
+.particle:nth-child(1) { left: 5%; background: var(--arcane-blue); animation-duration: 12s; animation-delay: 0s; }
+.particle:nth-child(2) { left: 15%; background: var(--ethereal-gold); animation-duration: 15s; animation-delay: 2s; }
+.particle:nth-child(3) { left: 25%; background: var(--mystic-purple); animation-duration: 10s; animation-delay: 4s; }
+.particle:nth-child(4) { left: 35%; background: var(--arcane-blue); animation-duration: 14s; animation-delay: 1s; width: 3px; height: 3px; }
+.particle:nth-child(5) { left: 45%; background: var(--ethereal-gold); animation-duration: 11s; animation-delay: 3s; }
+.particle:nth-child(6) { left: 55%; background: var(--mystic-purple); animation-duration: 13s; animation-delay: 5s; }
+.particle:nth-child(7) { left: 65%; background: var(--arcane-blue); animation-duration: 16s; animation-delay: 0.5s; }
+.particle:nth-child(8) { left: 75%; background: var(--ethereal-gold); animation-duration: 9s; animation-delay: 2.5s; width: 3px; height: 3px; }
+.particle:nth-child(9) { left: 85%; background: var(--mystic-purple); animation-duration: 12s; animation-delay: 4.5s; }
+.particle:nth-child(10) { left: 95%; background: var(--arcane-blue); animation-duration: 14s; animation-delay: 1.5s; }
+.particle:nth-child(11) { left: 10%; background: var(--ethereal-gold); animation-duration: 17s; animation-delay: 6s; }
+.particle:nth-child(12) { left: 50%; background: var(--mystic-purple); animation-duration: 11s; animation-delay: 3.5s; width: 1.5px; height: 1.5px; }
+
+/* ========== LAYOUT ========== */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== HEADER ========== */
+.header {
+  text-align: center;
+  padding: 48px 0 24px;
+  position: relative;
+}
+
+.header__rune-line {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 1.2em;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.header__title {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  letter-spacing: 0.25em;
+  color: var(--arcane-blue);
+  text-shadow:
+    0 0 30px rgba(79, 195, 247, 0.6),
+    0 0 60px rgba(79, 195, 247, 0.3),
+    0 0 100px rgba(79, 195, 247, 0.15);
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+
+.header__title::before,
+.header__title::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--arcane-blue), transparent);
+  box-shadow: 0 0 8px var(--arcane-blue);
+}
+.header__title::before { right: calc(100% + 20px); }
+.header__title::after { left: calc(100% + 20px); }
+
+.header__subtitle {
+  font-family: 'Cinzel', serif;
+  font-weight: 400;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  color: var(--text-secondary);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.header__rune-bottom {
+  margin-top: 20px;
+  font-size: 0.65rem;
+  letter-spacing: 0.8em;
+  color: var(--ethereal-gold);
+  opacity: 0.4;
+}
+
+/* ========== RUNIC DIVIDER ========== */
+.runic-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 32px 0;
+  color: var(--text-dim);
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+}
+
+.runic-divider::before, .runic-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--text-dim), transparent);
+}
+
+/* ========== NAVIGATION ========== */
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0 40px;
+  flex-wrap: wrap;
+}
+
+.nav__tab {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border: 1px solid rgba(79, 195, 247, 0.15);
+  border-radius: 4px;
+  background: rgba(15, 21, 37, 0.6);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav__tab:hover {
+  color: var(--arcane-blue);
+  border-color: rgba(79, 195, 247, 0.4);
+  box-shadow: var(--glow-blue), inset 0 0 20px rgba(79, 195, 247, 0.05);
+}
+
+.nav__tab--active {
+  color: var(--arcane-blue);
+  border-color: rgba(79, 195, 247, 0.5);
+  background: rgba(79, 195, 247, 0.08);
+  box-shadow: var(--glow-blue), inset 0 0 30px rgba(79, 195, 247, 0.05);
+}
+
+.nav__tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--arcane-blue);
+  box-shadow: 0 0 8px var(--arcane-blue);
+}
+
+.nav__label {
+  display: block;
+  font-size: 0.55rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-top: 2px;
+  text-transform: lowercase;
+}
+
+/* ========== ARCANE CIRCLE ========== */
+.arcane-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 40px;
+}
+
+.magic-circle {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Outer rotating ring */
+@keyframes rotateRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotateRingReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+@keyframes pulseGlow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+.magic-circle__outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(79, 195, 247, 0.2);
+  animation: rotateRing 60s linear infinite;
+}
+
+.magic-circle__outer::before {
+  content: 'ᚱ  ᛏ  ᚨ  ᛗ  ᚠ  ᛒ  ᚢ  ᚦ  ᚲ  ᚷ  ᚹ  ᛃ  ᛇ  ᛈ  ᛉ  ᛊ';
+  position: absolute;
+  inset: -18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--arcane-blue);
+  opacity: 0.5;
+  letter-spacing: 0.5em;
+  text-shadow: 0 0 6px var(--arcane-blue);
+  /* Distribute runes around the circle using a circular text trick */
+}
+
+/* Rune positions around the circle */
+.rune {
+  position: absolute;
+  font-size: 0.85rem;
+  color: var(--arcane-blue);
+  text-shadow: 0 0 8px rgba(79, 195, 247, 0.6);
+  opacity: 0.6;
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.rune:nth-child(1)  { top: -10px; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.rune:nth-child(2)  { top: 5%; right: 12%; animation-delay: 0.25s; }
+.rune:nth-child(3)  { top: 20%; right: 0%; animation-delay: 0.5s; }
+.rune:nth-child(4)  { top: 42%; right: -8%; animation-delay: 0.75s; }
+.rune:nth-child(5)  { bottom: 25%; right: 0%; animation-delay: 1s; }
+.rune:nth-child(6)  { bottom: 8%; right: 12%; animation-delay: 1.25s; }
+.rune:nth-child(7)  { bottom: -10px; left: 50%; transform: translateX(-50%); animation-delay: 1.5s; }
+.rune:nth-child(8)  { bottom: 8%; left: 12%; animation-delay: 1.75s; }
+.rune:nth-child(9)  { bottom: 25%; left: 0%; animation-delay: 2s; }
+.rune:nth-child(10) { top: 42%; left: -8%; animation-delay: 2.25s; }
+.rune:nth-child(11) { top: 20%; left: 0%; animation-delay: 2.5s; }
+.rune:nth-child(12) { top: 5%; left: 12%; animation-delay: 2.75s; }
+
+/* Second ring */
+.magic-circle__mid {
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(206, 147, 216, 0.15);
+  animation: rotateRingReverse 45s linear infinite;
+}
+
+.magic-circle__mid::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px dashed rgba(206, 147, 216, 0.1);
+}
+
+/* Inner geometric ring */
+.magic-circle__inner-ring {
+  position: absolute;
+  inset: 55px;
+  border-radius: 50%;
+  border: 2px solid rgba(79, 195, 247, 0.25);
+  box-shadow:
+    0 0 15px rgba(79, 195, 247, 0.1),
+    inset 0 0 15px rgba(79, 195, 247, 0.05);
+}
+
+/* Cross lines inside circle */
+.magic-circle__cross {
+  position: absolute;
+  inset: 55px;
+}
+
+.magic-circle__cross::before,
+.magic-circle__cross::after {
+  content: '';
+  position: absolute;
+  background: rgba(79, 195, 247, 0.08);
+}
+
+.magic-circle__cross::before {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+}
+
+.magic-circle__cross::after {
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+}
+
+/* Percentage display */
+.magic-circle__center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.magic-circle__percent {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--arcane-blue);
+  text-shadow:
+    0 0 30px rgba(79, 195, 247, 0.8),
+    0 0 60px rgba(79, 195, 247, 0.4);
+  line-height: 1;
+}
+
+.magic-circle__percent-sign {
+  font-size: 1.5rem;
+  opacity: 0.7;
+}
+
+.magic-circle__label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Orbiting dots */
+@keyframes orbit1 { from { transform: rotate(0deg) translateX(130px) rotate(0deg); } to { transform: rotate(360deg) translateX(130px) rotate(-360deg); } }
+@keyframes orbit2 { from { transform: rotate(120deg) translateX(115px) rotate(-120deg); } to { transform: rotate(480deg) translateX(115px) rotate(-480deg); } }
+@keyframes orbit3 { from { transform: rotate(240deg) translateX(145px) rotate(-240deg); } to { transform: rotate(600deg) translateX(145px) rotate(-600deg); } }
+
+.orbit-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -3px 0 0 -3px;
+}
+
+.orbit-dot:nth-child(1) {
+  background: var(--arcane-blue);
+  box-shadow: 0 0 10px var(--arcane-blue), 0 0 20px rgba(79, 195, 247, 0.3);
+  animation: orbit1 8s linear infinite;
+}
+
+.orbit-dot:nth-child(2) {
+  background: var(--ethereal-gold);
+  box-shadow: 0 0 10px var(--ethereal-gold), 0 0 20px rgba(255, 213, 79, 0.3);
+  animation: orbit2 12s linear infinite;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+}
+
+.orbit-dot:nth-child(3) {
+  background: var(--mystic-purple);
+  box-shadow: 0 0 10px var(--mystic-purple), 0 0 20px rgba(206, 147, 216, 0.3);
+  animation: orbit3 10s linear infinite;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+}
+
+/* Status line under circle */
+.arcane-status {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.arcane-status__line {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+}
+
+.arcane-status__line span {
+  margin: 0 10px;
+}
+
+.status-val { font-weight: 600; }
+.status-val--blue { color: var(--arcane-blue); text-shadow: 0 0 8px rgba(79, 195, 247, 0.4); }
+.status-val--gold { color: var(--ethereal-gold); text-shadow: 0 0 8px rgba(255, 213, 79, 0.4); }
+.status-val--purple { color: var(--mystic-purple); text-shadow: 0 0 8px rgba(206, 147, 216, 0.4); }
+.status-val--red { color: var(--ember-red); text-shadow: 0 0 8px rgba(239, 83, 80, 0.4); }
+
+.arcane-status__total {
+  margin-top: 10px;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+}
+
+/* ========== SPELL STATUS CARDS ========== */
+.spell-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.spell-card {
+  background: linear-gradient(145deg, var(--parchment), var(--parchment-light));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.spell-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Runic corner decoration */
+.spell-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-radius: 0 8px 0 0;
+  opacity: 0.2;
+}
+
+.spell-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  border-radius: 0 0 0 8px;
+  opacity: 0.2;
+}
+
+.spell-card--blue { border-color: rgba(79, 195, 247, 0.2); box-shadow: 0 4px 30px rgba(79, 195, 247, 0.08); }
+.spell-card--blue:hover { box-shadow: var(--glow-blue); }
+.spell-card--blue::before, .spell-card--blue::after { border-color: var(--arcane-blue); }
+
+.spell-card--gold { border-color: rgba(255, 213, 79, 0.2); box-shadow: 0 4px 30px rgba(255, 213, 79, 0.08); }
+.spell-card--gold:hover { box-shadow: var(--glow-gold); }
+.spell-card--gold::before, .spell-card--gold::after { border-color: var(--ethereal-gold); }
+
+.spell-card--purple { border-color: rgba(206, 147, 216, 0.2); box-shadow: 0 4px 30px rgba(206, 147, 216, 0.08); }
+.spell-card--purple:hover { box-shadow: var(--glow-purple); }
+.spell-card--purple::before, .spell-card--purple::after { border-color: var(--mystic-purple); }
+
+.spell-card--red { border-color: rgba(239, 83, 80, 0.2); box-shadow: 0 4px 30px rgba(239, 83, 80, 0.08); }
+.spell-card--red:hover { box-shadow: var(--glow-red); }
+.spell-card--red::before, .spell-card--red::after { border-color: var(--ember-red); }
+
+.spell-card__icon {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+}
+
+.spell-card__title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.spell-card--blue .spell-card__title { color: var(--arcane-blue); }
+.spell-card--gold .spell-card__title { color: var(--ethereal-gold); }
+.spell-card--purple .spell-card__title { color: var(--mystic-purple); }
+.spell-card--red .spell-card__title { color: var(--ember-red); }
+
+.spell-card__count {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.spell-card--blue .spell-card__count { color: var(--arcane-blue); text-shadow: 0 0 20px rgba(79, 195, 247, 0.5); }
+.spell-card--gold .spell-card__count { color: var(--ethereal-gold); text-shadow: 0 0 20px rgba(255, 213, 79, 0.5); }
+.spell-card--purple .spell-card__count { color: var(--mystic-purple); text-shadow: 0 0 20px rgba(206, 147, 216, 0.5); }
+.spell-card--red .spell-card__count { color: var(--ember-red); text-shadow: 0 0 20px rgba(239, 83, 80, 0.5); }
+
+.spell-card__desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+.spell-card__rune {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 1.4rem;
+  opacity: 0.12;
+}
+
+/* ========== SECTION HEADINGS ========== */
+.section-heading {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ethereal-gold);
+  text-shadow: 0 0 20px rgba(255, 213, 79, 0.3);
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: 0.15em;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.3em;
+  margin-bottom: 28px;
+}
+
+/* ========== THE CODEX (BROKER TABLE) ========== */
+.codex {
+  margin-bottom: 48px;
+}
+
+.codex-table {
+  width: 100%;
+  background: linear-gradient(180deg, var(--parchment), rgba(26, 31, 53, 0.8));
+  border: 1px solid rgba(255, 213, 79, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.codex-table__header {
+  display: grid;
+  grid-template-columns: 44px 1.5fr 1.5fr 120px 100px 110px;
+  padding: 14px 20px;
+  background: rgba(255, 213, 79, 0.03);
+  border-bottom: 1px solid rgba(255, 213, 79, 0.1);
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ethereal-gold);
+  opacity: 0.7;
+}
+
+.codex-row {
+  display: grid;
+  grid-template-columns: 44px 1.5fr 1.5fr 120px 100px 110px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  align-items: center;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.codex-row:hover {
+  background: rgba(79, 195, 247, 0.03);
+}
+
+.codex-row:last-child {
+  border-bottom: none;
+}
+
+.codex-row__sigil {
+  font-size: 1.1rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.codex-row__name {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+}
+
+.codex-row__domain {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-family: 'Inter', monospace;
+}
+
+.codex-row__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes pulseDot { 0%, 100% { box-shadow: 0 0 4px currentColor; } 50% { box-shadow: 0 0 12px currentColor; } }
+
+.status-dot--banished { background: var(--arcane-blue); color: var(--arcane-blue); animation: pulseDot 3s ease-in-out infinite; }
+.status-dot--active { background: var(--ethereal-gold); color: var(--ethereal-gold); animation: pulseDot 1.5s ease-in-out infinite; }
+.status-dot--warded { background: var(--mystic-purple); color: var(--mystic-purple); animation: pulseDot 2.5s ease-in-out infinite; }
+.status-dot--inscribed { background: var(--ember-red); color: var(--ember-red); animation: pulseDot 2s ease-in-out infinite; }
+
+.codex-row__method {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.codex-row__date {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* ========== CHRONICLE (ACTIVITY LOG) ========== */
+.chronicle {
+  margin-bottom: 48px;
+}
+
+.chronicle-scroll {
+  background: linear-gradient(180deg, var(--parchment), var(--parchment-light));
+  border: 1px solid rgba(206, 147, 216, 0.1);
+  border-radius: 8px;
+  padding: 24px;
+  max-height: 380px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Parchment top/bottom fade */
+.chronicle-scroll::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 20px;
+  margin: -24px -24px 8px;
+  background: linear-gradient(var(--parchment), transparent);
+  z-index: 1;
+}
+
+.chronicle-entry {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.chronicle-entry:last-child { border-bottom: none; }
+
+.chronicle-entry__time {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  min-width: 70px;
+  font-family: 'Inter', monospace;
+  padding-top: 2px;
+}
+
+.chronicle-entry__rune {
+  font-size: 0.9rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.chronicle-entry__text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.chronicle-entry__text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.chronicle-entry__text .hl-blue { color: var(--arcane-blue); }
+.chronicle-entry__text .hl-gold { color: var(--ethereal-gold); }
+.chronicle-entry__text .hl-purple { color: var(--mystic-purple); }
+
+@keyframes inscribe {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.chronicle-entry {
+  animation: inscribe 0.4s ease-out both;
+}
+
+.chronicle-entry:nth-child(1) { animation-delay: 0.05s; }
+.chronicle-entry:nth-child(2) { animation-delay: 0.1s; }
+.chronicle-entry:nth-child(3) { animation-delay: 0.15s; }
+.chronicle-entry:nth-child(4) { animation-delay: 0.2s; }
+.chronicle-entry:nth-child(5) { animation-delay: 0.25s; }
+.chronicle-entry:nth-child(6) { animation-delay: 0.3s; }
+.chronicle-entry:nth-child(7) { animation-delay: 0.35s; }
+.chronicle-entry:nth-child(8) { animation-delay: 0.4s; }
+.chronicle-entry:nth-child(9) { animation-delay: 0.45s; }
+.chronicle-entry:nth-child(10) { animation-delay: 0.5s; }
+
+/* ========== FOOTER ========== */
+.footer {
+  text-align: center;
+  padding: 40px 0 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.footer__seal {
+  font-size: 1.8rem;
+  letter-spacing: 0.3em;
+  opacity: 0.15;
+  margin-bottom: 12px;
+}
+
+.footer__text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+}
+
+.footer__runes {
+  margin-top: 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  color: var(--ethereal-gold);
+  opacity: 0.25;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(79, 195, 247, 0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(79, 195, 247, 0.3); }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .codex-table__header,
+  .codex-row {
+    grid-template-columns: 36px 1fr 100px;
+  }
+  .codex-table__header > :nth-child(3),
+  .codex-table__header > :nth-child(5),
+  .codex-table__header > :nth-child(6),
+  .codex-row > :nth-child(3),
+  .codex-row > :nth-child(5),
+  .codex-row > :nth-child(6) {
+    display: none;
+  }
+  .magic-circle {
+    width: 260px;
+    height: 260px;
+  }
+  .magic-circle__percent { font-size: 2.8rem; }
+  .arcane-status__line span { display: block; margin: 6px 0; }
+  .header__title::before, .header__title::after { display: none; }
+  .nav__tab { padding: 8px 14px; font-size: 0.7rem; }
+}
+
+@media (max-width: 480px) {
+  .spell-cards { grid-template-columns: 1fr; }
+  .magic-circle { width: 220px; height: 220px; }
+  .magic-circle__percent { font-size: 2.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div class="particles">
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+</div>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__rune-line">&#5765; &#5791; &#5800; &#5768; &#5791; &#5765;</div>
+    <h1 class="header__title">BROKERBANE</h1>
+    <p class="header__subtitle">The Art of Digital Vanishing</p>
+    <div class="header__rune-bottom">&#5769; &#5791; &#5768; &#5800; &#5769; &#5801; &#5768; &#5791;</div>
+  </header>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav">
+    <div class="nav__tab nav__tab--active">
+      Sanctum
+      <span class="nav__label">dashboard</span>
+    </div>
+    <div class="nav__tab">
+      Codex
+      <span class="nav__label">brokers</span>
+    </div>
+    <div class="nav__tab">
+      Rites
+      <span class="nav__label">tasks</span>
+    </div>
+    <div class="nav__tab">
+      Scrolls
+      <span class="nav__label">about</span>
+    </div>
+    <div class="nav__tab">
+      Invoke
+      <span class="nav__label">setup</span>
+    </div>
+  </nav>
+
+  <!-- ===== ARCANE CIRCLE ===== -->
+  <section class="arcane-section">
+    <div class="magic-circle">
+      <!-- Outer ring with runes -->
+      <div class="magic-circle__outer">
+        <span class="rune">&#5765;</span>
+        <span class="rune">&#5791;</span>
+        <span class="rune">&#5800;</span>
+        <span class="rune">&#5768;</span>
+        <span class="rune">&#5792;</span>
+        <span class="rune">&#5794;</span>
+        <span class="rune">&#5799;</span>
+        <span class="rune">&#5801;</span>
+        <span class="rune">&#5798;</span>
+        <span class="rune">&#5769;</span>
+        <span class="rune">&#5803;</span>
+        <span class="rune">&#5804;</span>
+      </div>
+
+      <!-- Middle ring -->
+      <div class="magic-circle__mid"></div>
+
+      <!-- Inner ring -->
+      <div class="magic-circle__inner-ring"></div>
+
+      <!-- Cross lines -->
+      <div class="magic-circle__cross"></div>
+
+      <!-- Orbiting dots -->
+      <div class="orbit-dot"></div>
+      <div class="orbit-dot"></div>
+      <div class="orbit-dot"></div>
+
+      <!-- Center percentage -->
+      <div class="magic-circle__center">
+        <div class="magic-circle__percent">72<span class="magic-circle__percent-sign">%</span></div>
+        <div class="magic-circle__label">Banished</div>
+      </div>
+    </div>
+
+    <div class="arcane-status">
+      <div class="arcane-status__line">
+        <span><span class="status-val status-val--blue">793</span> Banished</span>
+        <span>&middot;</span>
+        <span><span class="status-val status-val--gold">142</span> Dissolving</span>
+        <span>&middot;</span>
+        <span><span class="status-val status-val--purple">47</span> Warded</span>
+        <span>&middot;</span>
+        <span><span class="status-val status-val--red">21</span> Inscribed</span>
+      </div>
+      <div class="arcane-status__total">of 1,103 known data brokers in the realm</div>
+    </div>
+  </section>
+
+  <div class="runic-divider">&#5765; &#5791; &#5800; &#5768; &#5792;</div>
+
+  <!-- ===== SPELL STATUS CARDS ===== -->
+  <section class="spell-cards">
+    <div class="spell-card spell-card--blue">
+      <div class="spell-card__icon">&#9670;</div>
+      <div class="spell-card__title">Banishment Complete</div>
+      <div class="spell-card__count">793</div>
+      <div class="spell-card__desc">Data broker records permanently dissolved. Your presence has been erased from their ledgers.</div>
+      <div class="spell-card__rune">&#5765;</div>
+    </div>
+
+    <div class="spell-card spell-card--gold">
+      <div class="spell-card__icon">&#9676;</div>
+      <div class="spell-card__title">Incantation Active</div>
+      <div class="spell-card__count">142</div>
+      <div class="spell-card__desc">Removal spells in progress. Email rites sent, web forms invoked, awaiting broker compliance.</div>
+      <div class="spell-card__rune">&#5791;</div>
+    </div>
+
+    <div class="spell-card spell-card--purple">
+      <div class="spell-card__icon">&#9671;</div>
+      <div class="spell-card__title">Ward Holding</div>
+      <div class="spell-card__count">47</div>
+      <div class="spell-card__desc">Confirmation links detected. Protective wards in place while awaiting broker acknowledgment.</div>
+      <div class="spell-card__rune">&#5800;</div>
+    </div>
+
+    <div class="spell-card spell-card--red">
+      <div class="spell-card__icon">&#9651;</div>
+      <div class="spell-card__title">Ritual Required</div>
+      <div class="spell-card__count">21</div>
+      <div class="spell-card__desc">Manual intervention needed. Identity verification or physical mail required by these brokers.</div>
+      <div class="spell-card__rune">&#5768;</div>
+    </div>
+  </section>
+
+  <div class="runic-divider">&#5769; &#5801; &#5798; &#5803; &#5804;</div>
+
+  <!-- ===== THE CODEX ===== -->
+  <section class="codex">
+    <h2 class="section-heading">The Codex</h2>
+    <p class="section-subtitle">REGISTRY OF KNOWN DATA BROKERS</p>
+
+    <div class="codex-table">
+      <div class="codex-table__header">
+        <div>Sigil</div>
+        <div>Name</div>
+        <div>Domain</div>
+        <div>Status</div>
+        <div>Method</div>
+        <div>Last Rite</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128065;</div>
+        <div class="codex-row__name">Spokeo</div>
+        <div class="codex-row__domain">spokeo.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--banished"></span> Banished</div>
+        <div class="codex-row__method">Web Form</div>
+        <div class="codex-row__date">2 Mar 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128270;</div>
+        <div class="codex-row__name">BeenVerified</div>
+        <div class="codex-row__domain">beenverified.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--banished"></span> Banished</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">1 Mar 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128100;</div>
+        <div class="codex-row__name">WhitePages</div>
+        <div class="codex-row__domain">whitepages.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--active"></span> Dissolving</div>
+        <div class="codex-row__method">Web Form</div>
+        <div class="codex-row__date">4 Mar 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#127760;</div>
+        <div class="codex-row__name">Intelius</div>
+        <div class="codex-row__domain">intelius.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--active"></span> Dissolving</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">3 Mar 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128209;</div>
+        <div class="codex-row__name">PeopleFinder</div>
+        <div class="codex-row__domain">peoplefinder.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--warded"></span> Warded</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">28 Feb 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128274;</div>
+        <div class="codex-row__name">Radaris</div>
+        <div class="codex-row__domain">radaris.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--warded"></span> Warded</div>
+        <div class="codex-row__method">Web Form</div>
+        <div class="codex-row__date">27 Feb 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#9888;</div>
+        <div class="codex-row__name">TruePeopleSearch</div>
+        <div class="codex-row__domain">truepeoplesearch.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--inscribed"></span> Inscribed</div>
+        <div class="codex-row__method">Manual</div>
+        <div class="codex-row__date">Pending</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128065;</div>
+        <div class="codex-row__name">FastPeopleSearch</div>
+        <div class="codex-row__domain">fastpeoplesearch.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--banished"></span> Banished</div>
+        <div class="codex-row__method">Web Form</div>
+        <div class="codex-row__date">25 Feb 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128270;</div>
+        <div class="codex-row__name">USSearch</div>
+        <div class="codex-row__domain">ussearch.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--active"></span> Dissolving</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">4 Mar 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128100;</div>
+        <div class="codex-row__name">MyLife</div>
+        <div class="codex-row__domain">mylife.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--inscribed"></span> Inscribed</div>
+        <div class="codex-row__method">Manual</div>
+        <div class="codex-row__date">Pending</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#127760;</div>
+        <div class="codex-row__name">Acxiom</div>
+        <div class="codex-row__domain">acxiom.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--banished"></span> Banished</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">20 Feb 2026</div>
+      </div>
+
+      <div class="codex-row">
+        <div class="codex-row__sigil">&#128209;</div>
+        <div class="codex-row__name">Epsilon Data</div>
+        <div class="codex-row__domain">epsilon.com</div>
+        <div class="codex-row__status"><span class="status-dot status-dot--banished"></span> Banished</div>
+        <div class="codex-row__method">Email</div>
+        <div class="codex-row__date">18 Feb 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="runic-divider">&#5792; &#5794; &#5799; &#5801; &#5798;</div>
+
+  <!-- ===== CHRONICLE ===== -->
+  <section class="chronicle">
+    <h2 class="section-heading">Chronicle</h2>
+    <p class="section-subtitle">INSCRIPTIONS OF RECENT ENCHANTMENTS</p>
+
+    <div class="chronicle-scroll">
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">14:32:08</span>
+        <span class="chronicle-entry__rune">&#9670;</span>
+        <span class="chronicle-entry__text"><strong>Spokeo</strong> &mdash; Banishment confirmed. The broker has <span class="hl-blue">purged all records</span> matching your sigil. Verification seal received.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">14:28:45</span>
+        <span class="chronicle-entry__rune">&#9676;</span>
+        <span class="chronicle-entry__text"><strong>WhitePages</strong> &mdash; Incantation dispatched via <span class="hl-gold">web form submission</span>. CCPA opt-out rite invoked. Awaiting broker response within 45 days.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">14:15:22</span>
+        <span class="chronicle-entry__rune">&#9671;</span>
+        <span class="chronicle-entry__text"><strong>PeopleFinder</strong> &mdash; Confirmation link detected in inbox. <span class="hl-purple">Ward activated</span> &mdash; auto-clicking verification link in 3... 2... 1...</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">13:58:11</span>
+        <span class="chronicle-entry__rune">&#9670;</span>
+        <span class="chronicle-entry__text"><strong>Intelius</strong> &mdash; GDPR removal email composed from <span class="hl-blue">gdpr.hbs template</span>. Sent via encrypted SMTP channel. Message-ID sealed.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">13:42:37</span>
+        <span class="chronicle-entry__rune">&#9651;</span>
+        <span class="chronicle-entry__text"><strong>TruePeopleSearch</strong> &mdash; CAPTCHA ward detected. NopeCHA solver <span class="hl-gold">not configured</span>. Manual ritual required. Added to Inscribed queue.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">13:30:05</span>
+        <span class="chronicle-entry__rune">&#9670;</span>
+        <span class="chronicle-entry__text"><strong>FastPeopleSearch</strong> &mdash; Broker acknowledged removal. All <span class="hl-blue">3 matching profiles dissolved</span>. Verification screenshot captured.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">12:55:19</span>
+        <span class="chronicle-entry__rune">&#9676;</span>
+        <span class="chronicle-entry__text"><strong>USSearch</strong> &mdash; Removal request dispatched. Using <span class="hl-gold">ccpa.hbs template</span> with California residency assertion. 45-day compliance window opened.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">12:40:44</span>
+        <span class="chronicle-entry__rune">&#9671;</span>
+        <span class="chronicle-entry__text"><strong>Radaris</strong> &mdash; Form submission complete. <span class="hl-purple">Awaiting confirmation email</span>. IMAP IDLE monitor active on inbox channel.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">11:22:08</span>
+        <span class="chronicle-entry__rune">&#9670;</span>
+        <span class="chronicle-entry__text">Pipeline scheduler &mdash; <span class="hl-blue">Batch of 12 brokers queued</span> for processing. Circuit breaker nominal. Rate limits: 4 req/min.</span>
+      </div>
+      <div class="chronicle-entry">
+        <span class="chronicle-entry__time">10:05:33</span>
+        <span class="chronicle-entry__rune">&#9670;</span>
+        <span class="chronicle-entry__text">Sanctum initialized. Loaded <span class="hl-blue">1,103 broker definitions</span> from codex. SQLite grimoire opened. All enchantments operating locally.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__seal">&#9670; &#9671; &#9670;</div>
+    <div class="footer__text">All enchantments cast locally. No data leaves the sanctum.</div>
+    <div class="footer__runes">&#5800; &#5768; &#5801; &#5769;</div>
+  </footer>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brokerbane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #050507;
+    --bg-card:   #09090d;
+    --bg-hover:  #0e0e14;
+    --border:    #141420;
+    --border-dim:#0e0e18;
+    --teal:      #0d9488;
+    --teal-dim:  #0a756b;
+    --orange:    #e85d26;
+    --orange-dim:#b84a1e;
+    --red:       #9b2c2c;
+    --text:      #c0c0c8;
+    --text-dim:  #3a3a48;
+    --text-faint:#252530;
+    --white:     #c0c0c8;
+    --white-bright: #d8d8e0;
+    --font:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+
+  html { font-size: 14px; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  /* ========== FILM GRAIN NOISE OVERLAY ========== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.035;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(180,180,200,0.03) 1px, transparent 2px),
+      repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(180,180,200,0.03) 1px, transparent 2px),
+      repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(100,100,140,0.02) 2px, transparent 4px),
+      repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(100,100,140,0.015) 3px, transparent 5px);
+    background-size: 3px 3px, 3px 3px, 5px 5px, 7px 7px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ========== VIGNETTE ========== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(3,3,5,0.4) 65%, rgba(2,2,4,0.85) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ========== DARK GRADIENT PATCHES ========== */
+  .bg-atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 15% 20%, rgba(15,10,30,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 500px at 80% 70%, rgba(8,12,25,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(12,8,20,0.3) 0%, transparent 60%);
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes breathe {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse-dim {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* ========== LAYOUT ========== */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ========== HEADER ========== */
+  header {
+    padding: 2.5rem 0 1rem;
+    border-bottom: 1px solid var(--border-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.25em;
+    text-transform: lowercase;
+    animation: breathe 8s ease-in-out infinite;
+  }
+
+  .logo .lock {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    opacity: 0.4;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-weight: 300;
+    margin-top: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ========== NAV ========== */
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border-dim);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    white-space: nowrap;
+    transition: color 0.3s, border-color 0.3s;
+    cursor: pointer;
+    text-transform: lowercase;
+  }
+
+  .nav-tab:hover {
+    color: var(--text);
+  }
+
+  .nav-tab.active {
+    color: var(--white);
+    border-bottom-color: var(--text-dim);
+  }
+
+  /* ========== STAT CARDS ========== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease both;
+    border-radius: 2px;
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.4),
+      0 8px 24px rgba(0,0,0,0.3),
+      0 16px 48px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { animation-delay: 0.3s; }
+  .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    text-transform: lowercase;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    color: var(--white-bright);
+  }
+
+  .stat-card.targets .stat-value  { color: var(--white); }
+  .stat-card.success .stat-value  { color: var(--teal); }
+  .stat-card.pending .stat-value  { color: var(--white); opacity: 0.7; }
+  .stat-card.failed  .stat-value  { color: var(--orange); }
+
+  .stat-sub {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+
+  /* ========== PROGRESS SECTION ========== */
+  .progress-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.5s ease 0.5s both;
+    border-radius: 2px;
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.4),
+      0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+
+  .progress-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+
+  .progress-pct {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 0.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill-bar {
+    height: 100%;
+    width: 72%;
+    background: var(--teal-dim);
+    transition: width 1s ease;
+  }
+
+  .progress-detail {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+  }
+
+  .progress-detail .t { color: var(--teal-dim); }
+  .progress-detail .o { color: var(--orange-dim); }
+
+  /* ========== TWO-COLUMN LAYOUT ========== */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ========== PANELS (ONION LAYERS) ========== */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    animation: fadeInUp 0.5s ease 0.6s both;
+    border-radius: 2px;
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.4),
+      0 8px 24px rgba(0,0,0,0.3),
+      0 20px 60px rgba(0,0,0,0.2);
+    position: relative;
+  }
+
+  /* Onion routing nesting effect — subtle layered border */
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px solid rgba(20,20,32,0.4);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .panel::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid rgba(20,20,32,0.2);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  .panel:nth-child(2) { animation-delay: 0.7s; }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .panel-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: lowercase;
+  }
+
+  .panel-badge {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--text-faint);
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    border-radius: 1px;
+  }
+
+  .panel-badge.monitoring {
+    border-color: var(--text-dim);
+    color: var(--text-dim);
+    animation: pulse-dim 4s ease-in-out infinite;
+  }
+
+  .panel-body {
+    padding: 0;
+    max-height: 340px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .panel-body::-webkit-scrollbar { width: 3px; }
+  .panel-body::-webkit-scrollbar-track { background: transparent; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ========== LOG ENTRIES ========== */
+  .log-entry {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.72rem;
+    border-bottom: 1px solid rgba(255,255,255,0.015);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.5;
+    transition: background 0.2s;
+  }
+
+  .log-entry:hover {
+    background: var(--bg-hover);
+  }
+
+  .log-time {
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .log-separator {
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+
+  .log-msg {
+    color: var(--text);
+    opacity: 0.7;
+  }
+
+  .log-msg .target { color: var(--white); opacity: 1; }
+  .log-msg .tag { color: var(--text-dim); }
+  .log-msg .redacted {
+    background: var(--text-dim);
+    color: var(--text-dim);
+    letter-spacing: -0.05em;
+    user-select: none;
+    padding: 0 2px;
+    border-radius: 1px;
+  }
+  .log-msg .verified {
+    color: var(--teal-dim);
+  }
+  .log-msg .fallback {
+    color: var(--orange-dim);
+  }
+
+  /* ========== CIRCUIT BREAKER PANEL ========== */
+  .cb-item {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.015);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    transition: background 0.2s;
+  }
+
+  .cb-item:hover { background: var(--bg-hover); }
+
+  .cb-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cb-status {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(232,93,38,0.3);
+  }
+
+  .cb-status.critical {
+    background: var(--red);
+    box-shadow: 0 0 6px rgba(155,44,44,0.3);
+  }
+
+  .cb-name { color: var(--text); font-weight: 400; }
+
+  .cb-info {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    margin-top: 0.15rem;
+  }
+
+  .cb-right {
+    text-align: right;
+  }
+
+  .cb-timer {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--orange-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cb-timer.critical { color: var(--red); }
+
+  .cb-label {
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+  }
+
+  /* ========== MANUAL TASKS ========== */
+  .task-item {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.015);
+    font-size: 0.72rem;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .task-item:hover { background: var(--bg-hover); }
+
+  .task-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--orange-dim);
+    flex-shrink: 0;
+    box-shadow: 0 0 4px rgba(232,93,38,0.2);
+  }
+
+  .task-text {
+    color: var(--text);
+    opacity: 0.6;
+  }
+
+  .task-text .broker {
+    color: var(--white);
+    opacity: 0.8;
+  }
+
+  /* ========== BOTTOM PANELS ========== */
+  .bottom-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-dim);
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    opacity: 0.5;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .columns, .bottom-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 550px) {
+    html { font-size: 12px; }
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    .progress-detail {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-atmosphere"></div>
+
+<div class="container">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="header-top">
+      <div class="logo">
+        brokerbane<span class="lock">&#x1f512;</span>
+      </div>
+    </div>
+    <div class="subtitle">operating in shadow</div>
+  </header>
+
+  <!-- ============ NAV ============ -->
+  <nav>
+    <a class="nav-tab active">shadow</a>
+    <a class="nav-tab">targets</a>
+    <a class="nav-tab">operations</a>
+    <a class="nav-tab">dead drops</a>
+    <a class="nav-tab">config</a>
+  </nav>
+
+  <!-- ============ STATS CARDS ============ -->
+  <div class="stats-grid">
+    <div class="stat-card targets">
+      <div class="stat-label">targets acquired</div>
+      <div class="stat-value">1,103</div>
+      <div class="stat-sub">data brokers indexed</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-label">eliminated</div>
+      <div class="stat-value">793</div>
+      <div class="stat-sub">confirmed purged</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-label">in transit</div>
+      <div class="stat-value">142</div>
+      <div class="stat-sub">awaiting confirmation</div>
+    </div>
+    <div class="stat-card failed">
+      <div class="stat-label">compromised</div>
+      <div class="stat-value">47</div>
+      <div class="stat-sub">blocked or failed</div>
+    </div>
+  </div>
+
+  <!-- ============ PROGRESS ============ -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-title">72% // silent progress</span>
+      <span class="progress-pct"></span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill-bar"></div>
+    </div>
+    <div class="progress-detail">
+      <span><span class="t">793</span> eliminated</span>
+      <span>142 in transit</span>
+      <span><span class="o">47</span> compromised</span>
+      <span>121 queued</span>
+    </div>
+  </div>
+
+  <!-- ============ ACTIVITY + HARDENED TARGETS ============ -->
+  <div class="columns">
+
+    <!-- Activity Feed -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">intercept log</span>
+        <span class="panel-badge monitoring">monitoring</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="log-entry">
+          <span class="log-time">03:47:12</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">removal dispatched &rarr; <span class="target">spokeo.com</span> via <span class="redacted">████████</span> channel</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:46:58</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">confirmation intercepted &larr; <span class="redacted">████████</span>.com <span class="verified">[verified]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:46:31</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">target hardened &rarr; <span class="target">radaris.com</span> <span class="fallback">[fallback protocol]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:45:19</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">sweep complete &rarr; <span class="redacted">████████████</span> <span class="tag">[no trace found]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:44:47</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">removal dispatched &rarr; <span class="target">intelius.com</span> via <span class="redacted">██████</span> channel</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:44:02</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">confirmation intercepted &larr; <span class="target">mylife.com</span> <span class="verified">[verified]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:43:38</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">removal dispatched &rarr; <span class="target">truepeoplesearch.com</span> via <span class="redacted">████████</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:42:55</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">cooldown imposed &rarr; <span class="target">peoplefinders.com</span> <span class="tag">[60s]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:42:11</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">confirmation intercepted &larr; <span class="redacted">████</span>.com <span class="verified">[verified]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:41:28</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">deep scan &rarr; <span class="redacted">██████████████</span>.com <span class="tag">[probing]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:40:52</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">removal dispatched &rarr; <span class="target">thatsthem.com</span> via <span class="redacted">████</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:40:14</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">target refused &rarr; <span class="target">ussearch.com</span> <span class="fallback">[escalating]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:39:30</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">confirmation intercepted &larr; <span class="target">zabasearch.com</span> <span class="verified">[verified]</span></span>
+        </div>
+        <div class="log-entry">
+          <span class="log-time">03:38:59</span>
+          <span class="log-separator">&mdash;</span>
+          <span class="log-msg">removal dispatched &rarr; <span class="target">peekyou.com</span> via <span class="redacted">██████████</span></span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Hardened Targets -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">hardened targets</span>
+        <span class="panel-badge">3 active</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status"></div>
+            <div>
+              <div class="cb-name">radaris.com</div>
+              <div class="cb-info">5 failures &middot; 403 forbidden</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer">14:32</div>
+            <div class="cb-label">next attempt</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status"></div>
+            <div>
+              <div class="cb-name">ussearch.com</div>
+              <div class="cb-info">3 failures &middot; smtp rejected</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer">08:17</div>
+            <div class="cb-label">next attempt</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status critical"></div>
+            <div>
+              <div class="cb-name">instantcheckmate.com</div>
+              <div class="cb-info">2 failures &middot; timeout 30s</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer critical">02:41</div>
+            <div class="cb-label">probing</div>
+          </div>
+        </div>
+
+        <div style="padding: 1.25rem; color: var(--text-faint); font-size: 0.65rem; text-align: center; letter-spacing: 0.2em;">
+          1,100 / 1,103 circuits nominal
+        </div>
+
+        <div class="panel-header" style="border-top: 1px solid var(--border-dim);">
+          <span class="panel-title" style="font-size:0.6rem; color: var(--text-dim);">recently cleared</span>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status" style="background:var(--teal-dim); box-shadow:0 0 4px rgba(13,148,136,0.2);"></div>
+            <div>
+              <div class="cb-name" style="color:var(--text-dim);">peoplefinders.com</div>
+              <div class="cb-info">cleared 12 min ago</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer" style="color:var(--teal-dim); font-size:0.65rem;">nominal</div>
+          </div>
+        </div>
+
+        <div class="cb-item">
+          <div class="cb-left">
+            <div class="cb-status" style="background:var(--teal-dim); box-shadow:0 0 4px rgba(13,148,136,0.2);"></div>
+            <div>
+              <div class="cb-name" style="color:var(--text-dim);">familytreenow.com</div>
+              <div class="cb-info">cleared 47 min ago</div>
+            </div>
+          </div>
+          <div class="cb-right">
+            <div class="cb-timer" style="color:var(--teal-dim); font-size:0.65rem;">nominal</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ REQUIRED ACTIONS + INTEL ============ -->
+  <div class="bottom-section">
+
+    <div class="panel" style="animation-delay: 0.8s;">
+      <div class="panel-header">
+        <span class="panel-title">required actions</span>
+        <span class="panel-badge">5</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="task-item">
+          <div class="task-dot"></div>
+          <span class="task-text"><span class="broker">beenverified.com</span> &mdash; solve captcha manually, nopecha unavailable</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-dot"></div>
+          <span class="task-text"><span class="broker">lexisnexis.com</span> &mdash; upload identity document for verification</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-dot"></div>
+          <span class="task-text"><span class="broker">acxiom.com</span> &mdash; physical mail required, no digital channel</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-dot"></div>
+          <span class="task-text"><span class="broker">peoplefinders.com</span> &mdash; recaptcha score below threshold</span>
+        </div>
+
+        <div class="task-item">
+          <div class="task-dot"></div>
+          <span class="task-text"><span class="broker">truthfinder.com</span> &mdash; sms verification code needed</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Target Intel -->
+    <div class="panel" style="animation-delay: 0.9s;">
+      <div class="panel-header">
+        <span class="panel-title">target intel</span>
+        <span class="panel-badge">recent</span>
+      </div>
+      <div class="panel-body">
+
+        <div style="padding: 0.6rem 1.25rem; font-size: 0.6rem; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.015); letter-spacing: 0.1em;">
+          <span style="display:inline-block;width:50%;">target</span>
+          <span style="display:inline-block;width:22%;text-align:right;">vector</span>
+          <span style="display:inline-block;width:28%;text-align:right;">status</span>
+        </div>
+
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">spokeo.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">smtp</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--text-dim);">dispatched</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">whitepages.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">web</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--teal-dim);">purged</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">radaris.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">smtp</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--orange-dim);">hardened</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">beenverified.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">web</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--text-dim);">pending</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">intelius.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">smtp</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--text-dim);">dispatched</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">mylife.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">smtp</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--teal-dim);">purged</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">lexisnexis.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">web</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--orange-dim);">verify</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">acxiom.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">postal</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--text-dim);">queued</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem; border-bottom: 1px solid rgba(255,255,255,0.015);">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">ussearch.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">smtp</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--orange-dim);">hardened</span>
+        </div>
+        <div style="padding: 0.45rem 1.25rem; font-size: 0.7rem;">
+          <span style="display:inline-block;width:50%;color:var(--text);opacity:0.7;">truthfinder.com</span>
+          <span style="display:inline-block;width:22%;text-align:right;color:var(--text-dim);">web</span>
+          <span style="display:inline-block;width:28%;text-align:right;color:var(--orange-dim);">verify</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span>pii never leaves this machine</span>
+    <span>all channels encrypted &middot; no external telemetry</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

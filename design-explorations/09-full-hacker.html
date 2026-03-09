@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane v1.0.0 — TERMINAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #000000;
+    --green:     #00ff41;
+    --green-dim: #00aa2a;
+    --green-dark:#005a15;
+    --red:       #ff0000;
+    --font:      'JetBrains Mono', monospace;
+  }
+
+  html { font-size: 14px; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--green);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  /* ========== MATRIX RAIN BACKGROUND ========== */
+  .matrix-rain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .matrix-column {
+    position: absolute;
+    top: -100%;
+    font-size: 14px;
+    line-height: 1.1;
+    color: var(--green);
+    opacity: 0.04;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    animation: matrix-fall linear infinite;
+    font-family: var(--font);
+    letter-spacing: -0.1em;
+  }
+
+  @keyframes matrix-fall {
+    0%   { transform: translateY(-100%); }
+    100% { transform: translateY(calc(100vh + 100%)); }
+  }
+
+  /* Generate 30 columns */
+  .matrix-column:nth-child(1)  { left: 2%;  animation-duration: 18s; animation-delay: -2s; }
+  .matrix-column:nth-child(2)  { left: 5%;  animation-duration: 22s; animation-delay: -8s; }
+  .matrix-column:nth-child(3)  { left: 9%;  animation-duration: 16s; animation-delay: -4s; }
+  .matrix-column:nth-child(4)  { left: 13%; animation-duration: 25s; animation-delay: -12s; }
+  .matrix-column:nth-child(5)  { left: 17%; animation-duration: 19s; animation-delay: -1s; }
+  .matrix-column:nth-child(6)  { left: 20%; animation-duration: 23s; animation-delay: -6s; }
+  .matrix-column:nth-child(7)  { left: 24%; animation-duration: 17s; animation-delay: -9s; }
+  .matrix-column:nth-child(8)  { left: 28%; animation-duration: 21s; animation-delay: -3s; }
+  .matrix-column:nth-child(9)  { left: 31%; animation-duration: 20s; animation-delay: -15s; }
+  .matrix-column:nth-child(10) { left: 35%; animation-duration: 24s; animation-delay: -7s; }
+  .matrix-column:nth-child(11) { left: 38%; animation-duration: 18s; animation-delay: -11s; }
+  .matrix-column:nth-child(12) { left: 42%; animation-duration: 26s; animation-delay: -5s; }
+  .matrix-column:nth-child(13) { left: 45%; animation-duration: 15s; animation-delay: -13s; }
+  .matrix-column:nth-child(14) { left: 49%; animation-duration: 22s; animation-delay: -2s; }
+  .matrix-column:nth-child(15) { left: 52%; animation-duration: 19s; animation-delay: -10s; }
+  .matrix-column:nth-child(16) { left: 56%; animation-duration: 21s; animation-delay: -4s; }
+  .matrix-column:nth-child(17) { left: 59%; animation-duration: 17s; animation-delay: -14s; }
+  .matrix-column:nth-child(18) { left: 63%; animation-duration: 23s; animation-delay: -8s; }
+  .matrix-column:nth-child(19) { left: 66%; animation-duration: 20s; animation-delay: -1s; }
+  .matrix-column:nth-child(20) { left: 70%; animation-duration: 25s; animation-delay: -6s; }
+  .matrix-column:nth-child(21) { left: 73%; animation-duration: 18s; animation-delay: -12s; }
+  .matrix-column:nth-child(22) { left: 77%; animation-duration: 22s; animation-delay: -3s; }
+  .matrix-column:nth-child(23) { left: 80%; animation-duration: 16s; animation-delay: -9s; }
+  .matrix-column:nth-child(24) { left: 84%; animation-duration: 24s; animation-delay: -7s; }
+  .matrix-column:nth-child(25) { left: 87%; animation-duration: 19s; animation-delay: -15s; }
+  .matrix-column:nth-child(26) { left: 91%; animation-duration: 21s; animation-delay: -5s; }
+  .matrix-column:nth-child(27) { left: 94%; animation-duration: 17s; animation-delay: -11s; }
+  .matrix-column:nth-child(28) { left: 97%; animation-duration: 23s; animation-delay: -2s; }
+  .matrix-column:nth-child(29) { left: 7%;  animation-duration: 26s; animation-delay: -16s; opacity: 0.03; }
+  .matrix-column:nth-child(30) { left: 47%; animation-duration: 20s; animation-delay: -13s; opacity: 0.03; }
+
+  /* ========== CRT SCANLINE OVERLAY ========== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.12) 2px,
+      rgba(0, 0, 0, 0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Vignette / CRT curvature effect */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes scanline {
+    0%   { top: -5%; }
+    100% { top: 105%; }
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    97% { opacity: 1; }
+    97.5% { opacity: 0.7; }
+    98% { opacity: 1; }
+    98.5% { opacity: 0.85; }
+    99% { opacity: 1; }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { text-shadow: 0 0 5px #00ff41, 0 0 10px rgba(0,255,65,0.3); }
+    50%      { text-shadow: 0 0 10px #00ff41, 0 0 25px rgba(0,255,65,0.5), 0 0 40px rgba(0,255,65,0.2); }
+  }
+
+  /* Moving scanline bar */
+  .scanline-bar {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(180deg, transparent, rgba(0,255,65,0.06), transparent);
+    animation: scanline 6s linear infinite;
+    pointer-events: none;
+    z-index: 9997;
+  }
+
+  /* Screen flicker */
+  .terminal-wrapper {
+    animation: flicker 10s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Phosphor glow on all text */
+  .terminal-wrapper {
+    text-shadow: 0 0 5px rgba(0,255,65,0.4);
+  }
+
+  /* ========== LAYOUT ========== */
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 4rem;
+  }
+
+  /* ========== ASCII ART HEADER ========== */
+  .ascii-banner {
+    text-align: center;
+    color: var(--green);
+    font-size: 0.55rem;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    white-space: pre;
+    animation: glow-pulse 4s ease-in-out infinite;
+    overflow-x: auto;
+  }
+
+  /* ========== HEADER / SESSION INFO ========== */
+  .session-info {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--green-dark);
+    padding-bottom: 1rem;
+  }
+
+  .prompt {
+    color: var(--green);
+  }
+
+  .prompt-user {
+    color: var(--green);
+  }
+
+  .prompt-path {
+    color: var(--green-dim);
+  }
+
+  .cmd {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .output-line {
+    color: var(--green-dim);
+    margin-left: 0;
+  }
+
+  .output-line .label {
+    color: var(--green-dim);
+  }
+
+  .output-line .val {
+    color: var(--green);
+  }
+
+  /* ========== NAV / COMMAND MENU ========== */
+  .nav-menu {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--green-dark);
+    padding-bottom: 1rem;
+  }
+
+  .nav-options {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-opt {
+    color: var(--green-dim);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .nav-opt:hover {
+    color: var(--green);
+    text-shadow: 0 0 8px rgba(0,255,65,0.6);
+  }
+
+  .nav-opt.active {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .nav-opt .num {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .cursor-char {
+    display: inline-block;
+    background: var(--green);
+    color: #000;
+    width: 0.6em;
+    height: 1.15em;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* ========== OPERATION SUMMARY BOX ========== */
+  .ascii-box {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .ascii-box .box-border {
+    color: var(--green-dim);
+  }
+
+  .ascii-box .box-title {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .ascii-box .box-label {
+    color: var(--green-dim);
+  }
+
+  .ascii-box .box-value {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .ascii-box .box-value.red {
+    color: var(--red);
+  }
+
+  .ascii-box .box-pct {
+    color: var(--green-dim);
+  }
+
+  /* ========== PROGRESS BAR ========== */
+  .progress-section {
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .progress-bar {
+    margin: 0.25rem 0;
+  }
+
+  .progress-filled {
+    color: var(--green);
+  }
+
+  .progress-empty {
+    color: var(--green-dark);
+  }
+
+  .progress-meta {
+    color: var(--green-dim);
+  }
+
+  /* ========== ACTIVITY LOG ========== */
+  .log-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header {
+    font-size: 0.85rem;
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--green-dark);
+    padding-bottom: 0.25rem;
+  }
+
+  .log-line {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    padding: 0.1rem 0;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+
+  .log-time {
+    color: var(--green-dim);
+  }
+
+  .log-tag {
+    font-weight: 700;
+  }
+
+  .log-tag.sent { color: var(--green); }
+  .log-tag.conf { color: var(--green); }
+  .log-tag.fail { color: var(--red); }
+  .log-tag.scan { color: var(--green-dim); }
+  .log-tag.info { color: var(--green-dim); }
+
+  .log-target {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .log-detail {
+    color: var(--green-dim);
+  }
+
+  .log-line.fail-line .log-target {
+    color: var(--red);
+  }
+
+  .log-line.fail-line .log-detail {
+    color: var(--red);
+  }
+
+  /* ========== ASCII TABLES ========== */
+  .ascii-table {
+    margin-bottom: 1.5rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .ascii-table .tbl-border {
+    color: var(--green-dim);
+  }
+
+  .ascii-table .tbl-header {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .ascii-table .tbl-data {
+    color: var(--green-dim);
+  }
+
+  .ascii-table .tbl-red {
+    color: var(--red);
+  }
+
+  .ascii-table .tbl-green {
+    color: var(--green);
+  }
+
+  /* ========== FOOTER ========== */
+  .footer-prompt {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--green-dark);
+    font-size: 0.85rem;
+  }
+
+  .footer-info {
+    font-size: 0.7rem;
+    color: var(--green-dark);
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ========== SCROLLBAR ========== */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--green-dark); }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    html { font-size: 12px; }
+    .ascii-banner { font-size: 0.4rem; }
+    .nav-options { gap: 0.75rem; }
+    .container { padding: 0.5rem 0.75rem 3rem; }
+    .footer-info { flex-direction: column; }
+  }
+
+  @media (max-width: 480px) {
+    html { font-size: 11px; }
+    .ascii-banner { font-size: 0.3rem; }
+    .ascii-box, .ascii-table { font-size: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanline-bar"></div>
+
+<!-- Matrix Rain Background -->
+<div class="matrix-rain">
+  <div class="matrix-column">01001010110100101101001011101010110010110100101010011011010101001101001011010</div>
+  <div class="matrix-column">10110100101010110010110010101101001011010100101011010010110101001011010010110</div>
+  <div class="matrix-column">01101001011010010110100110010110100101101001011010010110100101101001011010011</div>
+  <div class="matrix-column">10010110100101101001011010100110010110100101101010010110101001011010010110100</div>
+  <div class="matrix-column">01011010010110100101101001101001011010010110100101010011010010110100101101001</div>
+  <div class="matrix-column">11010010110100101101001011010010110101001011010010110100101101001011010010110</div>
+  <div class="matrix-column">00101101001011010010110100101101001010110100101101001011010010110100101101001</div>
+  <div class="matrix-column">10110010110100101101001011010010110100101011010010110100101101001011010010110</div>
+  <div class="matrix-column">01001011010010110100101101001011010010110100101101010010110100101101001011010</div>
+  <div class="matrix-column">11010010110100101101001011010010101101001011010010110100101101001011010100101</div>
+  <div class="matrix-column">00110100101101001011010010110100101101001011010010110100101011010010110100101</div>
+  <div class="matrix-column">10100101101001011010010110100101101001011010010110101001011010010110100101101</div>
+  <div class="matrix-column">01010011010010110100101101001011010010110100101101001011010010110100101101001</div>
+  <div class="matrix-column">10010110100101101001011010010110100101101010010110100101101001011010010110100</div>
+  <div class="matrix-column">01101001011010010110100101011010010110100101101001011010010110100101101001011</div>
+  <div class="matrix-column">10100101101001011010010110100101101001011010100101101001011010010110100101101</div>
+  <div class="matrix-column">01010110100101101001011010010110100101101001011010010110100101101001011010010</div>
+  <div class="matrix-column">10010110100101101001011010010110100101101001011010010101101001011010010110100</div>
+  <div class="matrix-column">01101001011010010110100101101001011010010110100101101001011010100101101001011</div>
+  <div class="matrix-column">10100101101001011010010110100101101001010110100101101001011010010110100101101</div>
+  <div class="matrix-column">01010110010110100101101001011010010110100101101001011010010110100101101001011</div>
+  <div class="matrix-column">10010110100101101001011010010110100101101001011010010110100101101010010110100</div>
+  <div class="matrix-column">01101001011010010110100101101001011010010110100101101001011010010110100101011</div>
+  <div class="matrix-column">10100101101001011010010110100101101001011010010110100101101001011010010110100</div>
+  <div class="matrix-column">01010110100101101001011010010110100101101001011010100101101001011010010110100</div>
+  <div class="matrix-column">10010110100101101001011010010110100101101001011010010110100101101001010110100</div>
+  <div class="matrix-column">01101001011010010110100101101001011010010101101001011010010110100101101001011</div>
+  <div class="matrix-column">10100101101001011010010110100101101001011010010110100101101001011010010110100</div>
+  <div class="matrix-column">01011010010110100101101001011010010110100101101001011010010110101001011010010</div>
+  <div class="matrix-column">10010110100101101001011010010110100101101001011010010110100101101001011010010</div>
+</div>
+
+<div class="terminal-wrapper">
+<div class="container">
+
+  <!-- ============ ASCII ART HEADER ============ -->
+  <div class="ascii-banner">
+ ____            _             ____
+| __ ) _ __ ___ | | _____ _ __| __ )  __ _ _ __   ___
+|  _ \| '__/ _ \| |/ / _ \ '__|  _ \ / _` | '_ \ / _ \
+| |_) | | | (_) |   &lt;  __/ |  | |_) | (_| | | | |  __/
+|____/|_|  \___/|_|\_\___|_|  |____/ \__,_|_| |_|\___|
+                                                v1.0.0
+  </div>
+
+  <!-- ============ SESSION INFO ============ -->
+  <div class="session-info">
+    <div><span class="prompt">root@brokerbane:~#</span> <span class="cmd">./status --verbose</span></div>
+    <div class="output-line"><span class="label">[*] Session:</span> <span class="val">BB-2026-0304-001</span></div>
+    <div class="output-line"><span class="label">[*] Profile:</span> <span class="val">j.doe@proton.me</span></div>
+    <div class="output-line"><span class="label">[*] Uptime:</span>  <span class="val">4h 23m 17s</span></div>
+    <div class="output-line"><span class="label">[*] SMTP:</span>   <span class="val">CONNECTED (tls/587)</span></div>
+    <div class="output-line"><span class="label">[*] IMAP:</span>   <span class="val">IDLE (proton.me:993)</span></div>
+    <div class="output-line"><span class="label">[*] DB:</span>     <span class="val">brokerbane.sqlite3 (2.4 MB)</span></div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <div class="nav-menu">
+    <div class="nav-options">
+      <span class="nav-opt active">[<span class="num">1</span>] STATUS</span>
+      <span class="nav-opt">[<span class="num">2</span>] TARGETS</span>
+      <span class="nav-opt">[<span class="num">3</span>] OPS</span>
+      <span class="nav-opt">[<span class="num">4</span>] INTEL</span>
+      <span class="nav-opt">[<span class="num">5</span>] CONFIG</span>
+    </div>
+    <div>Select: <span class="cursor-char">&nbsp;</span></div>
+  </div>
+
+  <!-- ============ OPERATION SUMMARY ============ -->
+  <div class="ascii-box"><span class="box-border">&#x2554;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2557;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-title">OPERATION SUMMARY</span>                              <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x2560;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2563;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-label">Total targets:</span>    <span class="box-value">1,103</span>                       <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-label">Neutralized:</span>        <span class="box-value">793</span>  <span class="box-pct">[72.1%]</span>               <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-label">In progress:</span>        <span class="box-value">142</span>                        <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-label">Failed:</span>              <span class="box-value red">47</span>                        <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x2551;</span>  <span class="box-label">Queued:</span>             <span class="box-value">121</span>                        <span class="box-border">&#x2551;</span>
+<span class="box-border">&#x255a;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x255d;</span></div>
+
+  <!-- ============ PROGRESS BAR ============ -->
+  <div class="progress-section">
+    <div><span class="prompt">root@brokerbane:~#</span> <span class="cmd">./progress</span></div>
+    <div class="progress-bar">Progress: [<span class="progress-filled">&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;</span><span class="progress-empty">&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;&#x2591;</span>] <span class="progress-meta">72% | ETA: 2h 14m</span></div>
+  </div>
+
+  <!-- ============ ACTIVITY LOG ============ -->
+  <div class="log-section">
+    <div class="section-header">[root@brokerbane:~# tail -f /var/log/brokerbane.log]</div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:47:12]</span> <span class="log-tag sent">[SENT]</span> <span class="log-target">spokeo.com</span> <span class="log-detail">&rarr; GDPR request dispatched (smtp/tls)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:46:58]</span> <span class="log-tag conf">[CONF]</span> <span class="log-target">whitepages.com</span> <span class="log-detail">&larr; deletion confirmed (imap/idle)</span></div>
+
+    <div class="log-line fail-line"><span class="log-time">[2026-03-04 03:46:31]</span> <span class="log-tag fail">[FAIL]</span> <span class="log-target">radaris.com</span> <span class="log-detail">&rarr; circuit breaker OPEN (3/3 failures)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:45:19]</span> <span class="log-tag scan">[SCAN]</span> <span class="log-target">beenverified.com</span> <span class="log-detail">&rarr; profile not found, skipping</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:44:47]</span> <span class="log-tag sent">[SENT]</span> <span class="log-target">intelius.com</span> <span class="log-detail">&rarr; CCPA request dispatched (smtp/tls)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:44:02]</span> <span class="log-tag conf">[CONF]</span> <span class="log-target">mylife.com</span> <span class="log-detail">&larr; deletion confirmed (imap/idle)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:43:38]</span> <span class="log-tag sent">[SENT]</span> <span class="log-target">truepeoplesearch.com</span> <span class="log-detail">&rarr; GDPR request dispatched (smtp/tls)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:42:55]</span> <span class="log-tag info">[INFO]</span> <span class="log-target">peoplefinders.com</span> <span class="log-detail">&rarr; rate limit cooldown (60s)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:42:11]</span> <span class="log-tag conf">[CONF]</span> <span class="log-target">pipl.com</span> <span class="log-detail">&larr; deletion confirmed (imap/idle)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:41:28]</span> <span class="log-tag scan">[SCAN]</span> <span class="log-target">publicrecordsnow.com</span> <span class="log-detail">&rarr; scanning...</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:40:52]</span> <span class="log-tag sent">[SENT]</span> <span class="log-target">thatsthem.com</span> <span class="log-detail">&rarr; GDPR request dispatched (smtp/tls)</span></div>
+
+    <div class="log-line fail-line"><span class="log-time">[2026-03-04 03:40:14]</span> <span class="log-tag fail">[FAIL]</span> <span class="log-target">ussearch.com</span> <span class="log-detail">&rarr; SMTP 550 rejected</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:39:30]</span> <span class="log-tag conf">[CONF]</span> <span class="log-target">zabasearch.com</span> <span class="log-detail">&larr; deletion confirmed (imap/idle)</span></div>
+
+    <div class="log-line"><span class="log-time">[2026-03-04 03:38:59]</span> <span class="log-tag sent">[SENT]</span> <span class="log-target">peekyou.com</span> <span class="log-detail">&rarr; CCPA request dispatched (smtp/tls)</span></div>
+  </div>
+
+  <!-- ============ CIRCUIT BREAKERS ============ -->
+  <div class="ascii-table"><span class="section-header">CIRCUIT BREAKERS (OPEN):</span>
+<span class="tbl-border">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-header">BROKER</span>               <span class="tbl-border">&#x2502;</span> <span class="tbl-header">FAILURES</span> <span class="tbl-border">&#x2502;</span> <span class="tbl-header">COOLDOWN</span>  <span class="tbl-border">&#x2502;</span> <span class="tbl-header">RETRY AT</span> <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x251c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-red">radaris.com</span>          <span class="tbl-border">&#x2502;</span> <span class="tbl-red">3/3</span>      <span class="tbl-border">&#x2502;</span> <span class="tbl-data">12h 04m</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-data">15:51:00</span> <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-red">ussearch.com</span>         <span class="tbl-border">&#x2502;</span> <span class="tbl-red">3/3</span>      <span class="tbl-border">&#x2502;</span> <span class="tbl-data">06h 22m</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-data">10:09:00</span> <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-red">instantcheckmate</span>     <span class="tbl-border">&#x2502;</span> <span class="tbl-red">3/3</span>      <span class="tbl-border">&#x2502;</span> <span class="tbl-data">02h 11m</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-data">05:58:00</span> <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</span>
+
+<span class="section-header">RECENTLY RECOVERED:</span>
+<span class="tbl-border">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-green">peoplefinders.com</span>    <span class="tbl-border">&#x2502;</span> <span class="tbl-green">0/3</span>      <span class="tbl-border">&#x2502;</span> <span class="tbl-green">CLOSED</span>    <span class="tbl-border">&#x2502;</span> <span class="tbl-green">12m ago</span>  <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-green">familytreenow.com</span>    <span class="tbl-border">&#x2502;</span> <span class="tbl-green">0/3</span>      <span class="tbl-border">&#x2502;</span> <span class="tbl-green">CLOSED</span>    <span class="tbl-border">&#x2502;</span> <span class="tbl-green">47m ago</span>  <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</span></div>
+
+  <!-- ============ MANUAL TASKS ============ -->
+  <div class="log-section">
+    <div class="section-header">[root@brokerbane:~# cat /var/spool/brokerbane/tasks.queue]</div>
+    <div class="log-line"><span class="log-time">[TASK-001]</span> <span class="log-tag fail">[CAPTCHA]</span> <span class="log-target">beenverified.com</span> <span class="log-detail">&rarr; solve hCaptcha on opt-out form (NopeCHA unavailable)</span></div>
+    <div class="log-line"><span class="log-time">[TASK-002]</span> <span class="log-tag scan">[VERIFY]</span>  <span class="log-target">lexisnexis.com</span> <span class="log-detail">&rarr; upload government ID for identity verification</span></div>
+    <div class="log-line"><span class="log-time">[TASK-003]</span> <span class="log-tag info">[POSTAL]</span>  <span class="log-target">acxiom.com</span> <span class="log-detail">&rarr; send physical mail opt-out (no email/web option)</span></div>
+    <div class="log-line"><span class="log-time">[TASK-004]</span> <span class="log-tag fail">[CAPTCHA]</span> <span class="log-target">peoplefinders.com</span> <span class="log-detail">&rarr; solve reCAPTCHA v3 (score below threshold)</span></div>
+    <div class="log-line"><span class="log-time">[TASK-005]</span> <span class="log-tag scan">[VERIFY]</span>  <span class="log-target">truthfinder.com</span> <span class="log-detail">&rarr; confirm phone via SMS verification code</span></div>
+  </div>
+
+  <!-- ============ BROKER INTEL ============ -->
+  <div class="ascii-table"><span class="section-header">[root@brokerbane:~# ./intel --top 10]</span>
+<span class="tbl-border">&#x250c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x252c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2510;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-header">BROKER</span>                 <span class="tbl-border">&#x2502;</span> <span class="tbl-header">METHOD</span>  <span class="tbl-border">&#x2502;</span> <span class="tbl-header">STATUS</span>   <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x251c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x253c;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2524;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">spokeo.com</span>             <span class="tbl-border">&#x2502;</span> <span class="tbl-data">EMAIL</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-green">SENT</span>     <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">whitepages.com</span>         <span class="tbl-border">&#x2502;</span> <span class="tbl-data">WEB</span>     <span class="tbl-border">&#x2502;</span> <span class="tbl-green">DONE</span>     <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">radaris.com</span>            <span class="tbl-border">&#x2502;</span> <span class="tbl-data">EMAIL</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-red">BLOCKED</span>  <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">beenverified.com</span>       <span class="tbl-border">&#x2502;</span> <span class="tbl-data">WEB</span>     <span class="tbl-border">&#x2502;</span> <span class="tbl-data">PENDING</span>  <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">intelius.com</span>           <span class="tbl-border">&#x2502;</span> <span class="tbl-data">EMAIL</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-green">SENT</span>     <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">mylife.com</span>             <span class="tbl-border">&#x2502;</span> <span class="tbl-data">EMAIL</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-green">DONE</span>     <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">lexisnexis.com</span>         <span class="tbl-border">&#x2502;</span> <span class="tbl-data">WEB</span>     <span class="tbl-border">&#x2502;</span> <span class="tbl-data">VERIFY</span>   <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">acxiom.com</span>             <span class="tbl-border">&#x2502;</span> <span class="tbl-data">MAIL</span>    <span class="tbl-border">&#x2502;</span> <span class="tbl-data">QUEUED</span>   <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">ussearch.com</span>           <span class="tbl-border">&#x2502;</span> <span class="tbl-data">EMAIL</span>   <span class="tbl-border">&#x2502;</span> <span class="tbl-red">BLOCKED</span>  <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2502;</span> <span class="tbl-data">truthfinder.com</span>        <span class="tbl-border">&#x2502;</span> <span class="tbl-data">WEB</span>     <span class="tbl-border">&#x2502;</span> <span class="tbl-data">VERIFY</span>   <span class="tbl-border">&#x2502;</span>
+<span class="tbl-border">&#x2514;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2534;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2518;</span></div>
+
+  <!-- ============ FOOTER ============ -->
+  <div class="footer-prompt">
+    <div><span class="prompt">root@brokerbane:~#</span> <span class="cursor-char">&nbsp;</span></div>
+    <div class="footer-info">
+      <span>[ BROKERBANE v1.0.0 ] -- PII never leaves this machine</span>
+      <span>NODE v20.11.0 | SQLite 3.45 | SMTP OK | IMAP IDLE</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>

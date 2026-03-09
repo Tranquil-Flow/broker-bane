@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BROKERBANE // OPS CENTER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0c1117;--bg2:#111820;--bg3:#161e28;--bg4:#1c2633;
+    --blue:#0ea5e9;--amber:#f59e0b;--red:#ef4444;--green:#22c55e;
+    --blue-dim:rgba(14,165,233,.15);--amber-dim:rgba(245,158,11,.12);
+    --red-dim:rgba(239,68,68,.12);--green-dim:rgba(34,197,94,.12);
+    --text:#c9d1d9;--text-dim:#6e7681;--border:#21262d;
+    --mono:'Share Tech Mono',monospace;--sans:'Inter',system-ui,sans-serif;
+  }
+  html{font-size:14px;-webkit-font-smoothing:antialiased}
+  body{
+    background:var(--bg);color:var(--text);font-family:var(--sans);
+    min-height:100vh;overflow-x:hidden;
+    background-image:
+      linear-gradient(rgba(14,165,233,.03) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(14,165,233,.03) 1px,transparent 1px);
+    background-size:40px 40px;
+  }
+
+  /* ── CLASSIFICATION BANNER ── */
+  .classification-banner{
+    background:repeating-linear-gradient(90deg,var(--red) 0,var(--red) 20px,#b91c1c 20px,#b91c1c 40px);
+    text-align:center;padding:4px 0;font-family:var(--mono);font-size:.7rem;
+    color:#fff;letter-spacing:.25em;font-weight:700;
+    text-shadow:0 1px 2px rgba(0,0,0,.5);
+  }
+
+  /* ── HEADER ── */
+  .header{
+    display:flex;align-items:center;gap:1.5rem;
+    padding:1.25rem 2rem;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(14,165,233,.06) 0%,transparent 100%);
+  }
+  .agency-seal{
+    width:68px;height:68px;border-radius:50%;position:relative;flex-shrink:0;
+    border:2px solid var(--blue);
+    background:radial-gradient(circle,var(--bg) 40%,var(--blue-dim) 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 20px rgba(14,165,233,.2),inset 0 0 15px rgba(14,165,233,.1);
+  }
+  .agency-seal::before{
+    content:'';position:absolute;inset:4px;border-radius:50%;
+    border:1px solid rgba(14,165,233,.4);
+  }
+  .agency-seal::after{
+    content:'';position:absolute;inset:8px;border-radius:50%;
+    border:1px dashed rgba(14,165,233,.25);
+  }
+  .seal-icon{
+    font-size:1.6rem;font-family:var(--mono);color:var(--blue);font-weight:700;
+    text-shadow:0 0 10px rgba(14,165,233,.5);letter-spacing:-1px;z-index:1;
+  }
+  .header-text h1{
+    font-family:var(--mono);font-size:1.8rem;letter-spacing:.35em;
+    color:#fff;font-weight:700;
+    text-shadow:0 0 30px rgba(14,165,233,.3);
+  }
+  .header-text .subtitle{
+    font-family:var(--mono);font-size:.75rem;color:var(--blue);
+    letter-spacing:.2em;margin-top:2px;opacity:.85;
+  }
+  .header-text .classification{
+    font-family:var(--mono);font-size:.6rem;color:var(--amber);
+    letter-spacing:.15em;margin-top:4px;
+    padding:2px 8px;border:1px solid rgba(245,158,11,.3);
+    display:inline-block;background:var(--amber-dim);
+  }
+  .header-right{margin-left:auto;text-align:right}
+  .header-right .clock{
+    font-family:var(--mono);font-size:1.4rem;color:var(--blue);
+    text-shadow:0 0 10px rgba(14,165,233,.4);
+  }
+  .header-right .clock-label{
+    font-family:var(--mono);font-size:.55rem;color:var(--text-dim);
+    letter-spacing:.15em;margin-top:2px;
+  }
+
+  /* ── MISSION BRIEFING BAR ── */
+  .mission-bar{
+    display:flex;flex-wrap:wrap;gap:0;
+    border-bottom:1px solid var(--border);
+    background:var(--bg2);
+  }
+  .mission-item{
+    flex:1 1 auto;min-width:180px;padding:.65rem 1.25rem;
+    border-right:1px solid var(--border);font-family:var(--mono);
+    display:flex;align-items:center;gap:.6rem;font-size:.75rem;
+  }
+  .mission-item:last-child{border-right:none}
+  .mission-label{color:var(--text-dim);letter-spacing:.1em;white-space:nowrap}
+  .mission-value{color:#fff;font-weight:700;white-space:nowrap}
+  .mission-value.active{color:var(--green)}
+  .mission-value.targets{color:var(--blue)}
+  .mission-value.neutralized{color:var(--green)}
+  .mission-value.threat{color:var(--amber)}
+  .status-dot{
+    width:7px;height:7px;border-radius:50%;flex-shrink:0;
+    animation:blink 2s infinite;
+  }
+  .status-dot.green{background:var(--green);box-shadow:0 0 6px var(--green)}
+  .status-dot.amber{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ── NAV TABS ── */
+  .nav{
+    display:flex;border-bottom:1px solid var(--border);
+    background:var(--bg);overflow-x:auto;
+  }
+  .nav-tab{
+    padding:.7rem 1.5rem;font-family:var(--mono);font-size:.72rem;
+    letter-spacing:.18em;color:var(--text-dim);cursor:pointer;
+    border-bottom:2px solid transparent;transition:all .2s;
+    white-space:nowrap;position:relative;
+  }
+  .nav-tab:hover{color:var(--text);background:rgba(14,165,233,.04)}
+  .nav-tab.active{
+    color:var(--blue);border-bottom-color:var(--blue);
+    background:rgba(14,165,233,.06);
+  }
+  .nav-tab.active::before{
+    content:'>';margin-right:.5rem;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto auto;
+    gap:1px;padding:1px;
+    background:var(--border);
+    max-width:1600px;margin:0 auto;
+  }
+  @media(max-width:1100px){.main{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--bg);padding:1.25rem;position:relative;
+  }
+  .panel-header{
+    display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;
+    padding-bottom:.6rem;border-bottom:1px solid var(--border);
+  }
+  .panel-header h2{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;
+    color:var(--blue);font-weight:400;
+  }
+  .panel-header .stamp{
+    margin-left:auto;font-family:var(--mono);font-size:.55rem;
+    letter-spacing:.12em;padding:2px 7px;
+    border:1px solid;transform:rotate(-2deg);font-weight:700;
+  }
+  .stamp.classified{color:var(--red);border-color:var(--red)}
+  .stamp.secret{color:var(--amber);border-color:var(--amber)}
+  .stamp.secure{color:var(--green);border-color:var(--green)}
+
+  /* ── RADAR ── */
+  .radar-container{
+    display:flex;align-items:center;justify-content:center;
+    gap:2rem;flex-wrap:wrap;
+  }
+  .radar{
+    width:300px;height:300px;border-radius:50%;position:relative;
+    background:radial-gradient(circle,rgba(14,165,233,.08) 0%,var(--bg) 70%);
+    border:1px solid rgba(14,165,233,.25);
+    box-shadow:0 0 40px rgba(14,165,233,.08);
+    flex-shrink:0;
+  }
+  .radar::before{
+    content:'';position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(14,165,233,.18) 15deg,
+      transparent 60deg
+    );
+    animation:radarSweep 4s linear infinite;
+  }
+  @keyframes radarSweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+  /* Radar rings */
+  .radar-ring{
+    position:absolute;border-radius:50%;
+    border:1px solid rgba(14,165,233,.12);
+  }
+  .radar-ring.r1{inset:25%}
+  .radar-ring.r2{inset:42%}
+  .radar-ring.r3{inset:60%}
+  /* Crosshairs */
+  .radar-cross-h,.radar-cross-v{position:absolute;background:rgba(14,165,233,.08)}
+  .radar-cross-h{left:0;right:0;top:50%;height:1px}
+  .radar-cross-v{top:0;bottom:0;left:50%;width:1px}
+  /* Blips */
+  .blip{
+    position:absolute;width:6px;height:6px;border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 6px currentColor;z-index:2;
+  }
+  .blip.green{background:var(--green);color:var(--green)}
+  .blip.amber{background:var(--amber);color:var(--amber);animation:blipPulse 1.5s infinite}
+  .blip.red{background:var(--red);color:var(--red);animation:blipPulse 1s infinite}
+  @keyframes blipPulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.5;transform:translate(-50%,-50%) scale(1.6)}}
+
+  .radar-legend{font-family:var(--mono);font-size:.7rem}
+  .radar-legend .legend-item{
+    display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;
+  }
+  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .legend-dot.g{background:var(--green);box-shadow:0 0 4px var(--green)}
+  .legend-dot.a{background:var(--amber);box-shadow:0 0 4px var(--amber)}
+  .legend-dot.r{background:var(--red);box-shadow:0 0 4px var(--red)}
+
+  .radar-stats{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--border)}
+  .radar-stats .stat{
+    display:flex;justify-content:space-between;margin-bottom:.35rem;
+    font-family:var(--mono);font-size:.7rem;
+  }
+  .stat .s-label{color:var(--text-dim)}
+  .stat .s-val{color:#fff}
+
+  /* ── SECTOR GRID ── */
+  .sectors{display:flex;flex-direction:column;gap:.5rem}
+  .sector{
+    background:var(--bg2);border:1px solid var(--border);
+    padding:.75rem 1rem;border-left:3px solid var(--blue);
+    transition:border-color .2s;
+  }
+  .sector:hover{border-left-color:var(--green)}
+  .sector-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:.45rem;
+  }
+  .sector-name{
+    font-family:var(--mono);font-size:.72rem;color:var(--blue);
+    letter-spacing:.1em;
+  }
+  .sector-stats{
+    font-family:var(--mono);font-size:.65rem;color:var(--text-dim);
+  }
+  .sector-bar{
+    height:4px;background:var(--bg);border-radius:2px;overflow:hidden;
+    position:relative;
+  }
+  .sector-fill{
+    height:100%;border-radius:2px;
+    background:linear-gradient(90deg,var(--green),var(--blue));
+    transition:width .8s ease;
+    box-shadow:0 0 6px rgba(34,197,94,.3);
+  }
+  .sector-pct{
+    font-family:var(--mono);font-size:.6rem;color:var(--green);
+    margin-top:.25rem;text-align:right;
+  }
+
+  /* ── OPS LOG ── */
+  .ops-log{
+    max-height:380px;overflow-y:auto;
+    scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  }
+  .ops-log::-webkit-scrollbar{width:4px}
+  .ops-log::-webkit-scrollbar-track{background:transparent}
+  .ops-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+  .log-entry{
+    padding:.4rem 0;border-bottom:1px solid rgba(33,38,45,.6);
+    font-family:var(--mono);font-size:.68rem;line-height:1.5;
+    display:flex;gap:.5rem;align-items:flex-start;
+    animation:logFadeIn .4s ease;
+  }
+  @keyframes logFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .log-time{color:var(--text-dim);white-space:nowrap;flex-shrink:0}
+  .log-sep{color:var(--border)}
+  .log-type{white-space:nowrap;flex-shrink:0;font-weight:700}
+  .log-type.intercept{color:var(--green)}
+  .log-type.asset{color:var(--blue)}
+  .log-type.hostile{color:var(--red)}
+  .log-type.recon{color:var(--amber)}
+  .log-type.sigint{color:var(--green)}
+  .log-msg{color:var(--text)}
+  .log-tag{
+    padding:1px 5px;font-size:.6rem;border:1px solid;
+    margin-left:auto;white-space:nowrap;flex-shrink:0;
+  }
+  .log-tag.sigint{color:var(--green);border-color:rgba(34,197,94,.4)}
+  .log-tag.gdpr{color:var(--blue);border-color:rgba(14,165,233,.4)}
+  .log-tag.ccpa{color:var(--blue);border-color:rgba(14,165,233,.4)}
+  .log-tag.alert{color:var(--red);border-color:rgba(239,68,68,.4)}
+  .log-tag.recon{color:var(--amber);border-color:rgba(245,158,11,.4)}
+
+  /* ── FIELD OPS ── */
+  .field-ops{display:flex;flex-direction:column;gap:.5rem}
+  .field-op{
+    background:var(--bg2);border:1px solid var(--border);
+    padding:.7rem 1rem;display:flex;align-items:center;gap:.75rem;
+  }
+  .op-urgency{
+    width:5px;height:36px;border-radius:2px;flex-shrink:0;
+  }
+  .op-urgency.critical{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,.4)}
+  .op-urgency.high{background:var(--amber);box-shadow:0 0 6px rgba(245,158,11,.3)}
+  .op-urgency.medium{background:var(--blue)}
+  .op-urgency.low{background:var(--text-dim)}
+  .op-content{flex:1;min-width:0}
+  .op-title{font-family:var(--mono);font-size:.72rem;color:#fff;margin-bottom:.2rem}
+  .op-detail{font-size:.65rem;color:var(--text-dim);font-family:var(--mono)}
+  .op-badge{
+    font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;
+    padding:3px 8px;border:1px solid;flex-shrink:0;
+  }
+  .op-badge.critical{color:var(--red);border-color:var(--red);animation:blink 1.5s infinite}
+  .op-badge.high{color:var(--amber);border-color:var(--amber)}
+  .op-badge.medium{color:var(--blue);border-color:var(--blue)}
+  .op-badge.low{color:var(--text-dim);border-color:var(--text-dim)}
+
+  /* ── TOP SECRET WATERMARK ── */
+  .panel::before{
+    content:'';position:absolute;top:8px;right:8px;
+    width:6px;height:6px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 4px var(--green);
+    opacity:.6;
+  }
+
+  /* ── FOOTER ── */
+  .footer{
+    text-align:center;padding:.75rem 1rem;
+    font-family:var(--mono);font-size:.6rem;
+    color:var(--text-dim);letter-spacing:.2em;
+    border-top:1px solid var(--border);
+    background:var(--bg2);
+  }
+  .footer span{color:var(--green)}
+
+  /* ── SCANLINE OVERLAY ── */
+  body::after{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+    background:repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,.03) 2px,
+      rgba(0,0,0,.03) 4px
+    );
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .header{flex-wrap:wrap;padding:1rem}
+    .header-text h1{font-size:1.2rem;letter-spacing:.2em}
+    .header-right{margin-left:0;margin-top:.5rem;text-align:left;width:100%}
+    .radar{width:220px;height:220px}
+    .mission-item{min-width:140px;padding:.5rem .75rem}
+    .panel{padding:1rem}
+  }
+  @media(max-width:500px){
+    .radar{width:180px;height:180px}
+    .nav-tab{padding:.6rem .8rem;font-size:.65rem;letter-spacing:.1em}
+  }
+
+  /* ── SCROLLING TICKER ── */
+  .ticker{
+    background:var(--bg2);border-bottom:1px solid var(--border);
+    overflow:hidden;height:22px;position:relative;
+  }
+  .ticker-track{
+    display:flex;white-space:nowrap;
+    animation:ticker 40s linear infinite;
+    position:absolute;top:3px;
+  }
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{
+    font-family:var(--mono);font-size:.6rem;color:var(--text-dim);
+    padding:0 2rem;letter-spacing:.05em;
+  }
+  .ticker-item .t-hl{color:var(--blue)}
+  .ticker-item .t-g{color:var(--green)}
+  .ticker-item .t-r{color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- CLASSIFICATION BANNER -->
+<div class="classification-banner">TOP SECRET // BROKERBANE // LOCAL EYES ONLY</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">ENCRYPTED CHANNEL ACTIVE <span class="t-g">&#9679;</span></span>
+    <span class="ticker-item">BROKER DB UPDATED <span class="t-hl">2026-03-04 14:42 UTC</span></span>
+    <span class="ticker-item">GDPR REQUESTS DISPATCHED: <span class="t-hl">47</span> TODAY</span>
+    <span class="ticker-item">CCPA REQUESTS DISPATCHED: <span class="t-hl">23</span> TODAY</span>
+    <span class="ticker-item">CONFIRMATION LINKS PROCESSED: <span class="t-g">31</span></span>
+    <span class="ticker-item">HOSTILE COUNTERMEASURES DETECTED: <span class="t-r">4</span></span>
+    <span class="ticker-item">CIRCUIT BREAKER STATUS: NOMINAL</span>
+    <span class="ticker-item">NEXT SCHEDULED SWEEP: <span class="t-hl">18:00 UTC</span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">ENCRYPTED CHANNEL ACTIVE <span class="t-g">&#9679;</span></span>
+    <span class="ticker-item">BROKER DB UPDATED <span class="t-hl">2026-03-04 14:42 UTC</span></span>
+    <span class="ticker-item">GDPR REQUESTS DISPATCHED: <span class="t-hl">47</span> TODAY</span>
+    <span class="ticker-item">CCPA REQUESTS DISPATCHED: <span class="t-hl">23</span> TODAY</span>
+    <span class="ticker-item">CONFIRMATION LINKS PROCESSED: <span class="t-g">31</span></span>
+    <span class="ticker-item">HOSTILE COUNTERMEASURES DETECTED: <span class="t-r">4</span></span>
+    <span class="ticker-item">CIRCUIT BREAKER STATUS: NOMINAL</span>
+    <span class="ticker-item">NEXT SCHEDULED SWEEP: <span class="t-hl">18:00 UTC</span></span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="agency-seal">
+    <span class="seal-icon">BB</span>
+  </div>
+  <div class="header-text">
+    <h1>BROKERBANE</h1>
+    <div class="subtitle">OPERATION: DIGITAL GHOST</div>
+    <div class="classification">CLASSIFICATION: LOCAL ONLY // EYES ONLY</div>
+  </div>
+  <div class="header-right">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="clock-label">ZULU TIME // SECURE SYNC</div>
+  </div>
+</header>
+
+<!-- MISSION BRIEFING BAR -->
+<div class="mission-bar">
+  <div class="mission-item">
+    <div class="status-dot green"></div>
+    <span class="mission-label">MISSION STATUS:</span>
+    <span class="mission-value active">ACTIVE</span>
+  </div>
+  <div class="mission-item">
+    <span class="mission-label">TARGETS IDENTIFIED:</span>
+    <span class="mission-value targets">1,103</span>
+  </div>
+  <div class="mission-item">
+    <span class="mission-label">NEUTRALIZED:</span>
+    <span class="mission-value neutralized">793 (72%)</span>
+  </div>
+  <div class="mission-item">
+    <div class="status-dot amber"></div>
+    <span class="mission-label">THREAT LEVEL:</span>
+    <span class="mission-value threat">MODERATE</span>
+  </div>
+  <div class="mission-item">
+    <span class="mission-label">UPTIME:</span>
+    <span class="mission-value" id="uptime">47d 13h 22m</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-tab active">OPS CENTER</div>
+  <div class="nav-tab">TARGET DATABASE</div>
+  <div class="nav-tab">FIELD OPS</div>
+  <div class="nav-tab">BRIEFING</div>
+  <div class="nav-tab">DEPLOY</div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- PANEL 1: RADAR / THREAT ASSESSMENT -->
+  <div class="panel">
+    <div class="panel-header">
+      <h2>// THREAT ASSESSMENT MATRIX</h2>
+      <span class="stamp classified">CLASSIFIED</span>
+    </div>
+    <div class="radar-container">
+      <div class="radar">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <div class="radar-cross-h"></div>
+        <div class="radar-cross-v"></div>
+        <!-- Neutralized (green) blips -->
+        <div class="blip green" style="top:22%;left:35%"></div>
+        <div class="blip green" style="top:18%;left:58%"></div>
+        <div class="blip green" style="top:30%;left:72%"></div>
+        <div class="blip green" style="top:42%;left:20%"></div>
+        <div class="blip green" style="top:60%;left:28%"></div>
+        <div class="blip green" style="top:68%;left:65%"></div>
+        <div class="blip green" style="top:75%;left:42%"></div>
+        <div class="blip green" style="top:38%;left:80%"></div>
+        <div class="blip green" style="top:52%;left:74%"></div>
+        <div class="blip green" style="top:82%;left:55%"></div>
+        <div class="blip green" style="top:25%;left:48%"></div>
+        <div class="blip green" style="top:55%;left:38%"></div>
+        <div class="blip green" style="top:65%;left:80%"></div>
+        <div class="blip green" style="top:45%;left:55%"></div>
+        <!-- In-progress (amber) blips -->
+        <div class="blip amber" style="top:33%;left:42%"></div>
+        <div class="blip amber" style="top:58%;left:60%"></div>
+        <div class="blip amber" style="top:70%;left:35%"></div>
+        <div class="blip amber" style="top:28%;left:65%"></div>
+        <div class="blip amber" style="top:48%;left:30%"></div>
+        <!-- Hostile (red) blips -->
+        <div class="blip red" style="top:40%;left:48%"></div>
+        <div class="blip red" style="top:55%;left:52%"></div>
+        <div class="blip red" style="top:35%;left:55%"></div>
+      </div>
+      <div class="radar-legend">
+        <div class="legend-item"><div class="legend-dot g"></div><span>NEUTRALIZED (793)</span></div>
+        <div class="legend-item"><div class="legend-dot a"></div><span>IN PROGRESS (241)</span></div>
+        <div class="legend-item"><div class="legend-dot r"></div><span>HOSTILE / RESISTANT (69)</span></div>
+
+        <div class="radar-stats">
+          <div class="stat"><span class="s-label">EMAIL REMOVALS</span><span class="s-val">847</span></div>
+          <div class="stat"><span class="s-label">WEB FORM REMOVALS</span><span class="s-val">198</span></div>
+          <div class="stat"><span class="s-label">MANUAL REQUIRED</span><span class="s-val">58</span></div>
+          <div class="stat"><span class="s-label">CONFIRMATION RATE</span><span class="s-val">91.3%</span></div>
+          <div class="stat"><span class="s-label">AVG RESPONSE TIME</span><span class="s-val">4.2d</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: TARGET STATUS BY SECTOR -->
+  <div class="panel">
+    <div class="panel-header">
+      <h2>// TARGET STATUS BY SECTOR</h2>
+      <span class="stamp secret">TOP SECRET</span>
+    </div>
+    <div class="sectors">
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR A: PEOPLE SEARCH ENGINES</span>
+          <span class="sector-stats">312 / 423 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:73.8%"></div></div>
+        <div class="sector-pct">73.8%</div>
+      </div>
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR B: DATA AGGREGATORS</span>
+          <span class="sector-stats">201 / 287 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:70%"></div></div>
+        <div class="sector-pct">70.0%</div>
+      </div>
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR C: MARKETING DATABASES</span>
+          <span class="sector-stats">142 / 178 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:79.8%"></div></div>
+        <div class="sector-pct">79.8%</div>
+      </div>
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR D: BACKGROUND CHECK SVCS</span>
+          <span class="sector-stats">89 / 132 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:67.4%"></div></div>
+        <div class="sector-pct">67.4%</div>
+      </div>
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR E: PUBLIC RECORDS</span>
+          <span class="sector-stats">34 / 52 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:65.4%"></div></div>
+        <div class="sector-pct">65.4%</div>
+      </div>
+      <div class="sector">
+        <div class="sector-header">
+          <span class="sector-name">SECTOR F: SOCIAL MEDIA SCRAPERS</span>
+          <span class="sector-stats">15 / 31 NEUTRALIZED</span>
+        </div>
+        <div class="sector-bar"><div class="sector-fill" style="width:48.4%"></div></div>
+        <div class="sector-pct">48.4%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: OPS LOG -->
+  <div class="panel">
+    <div class="panel-header">
+      <h2>// OPERATIONS LOG [LIVE FEED]</h2>
+      <span class="stamp secure">SECURE</span>
+    </div>
+    <div class="ops-log" id="opsLog">
+      <div class="log-entry">
+        <span class="log-time">14:47:12</span>
+        <span class="log-sep">//</span>
+        <span class="log-type intercept">INTERCEPT</span>
+        <span class="log-msg">spokeo.com removal confirmed via email</span>
+        <span class="log-tag sigint">SIGINT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:46:58</span>
+        <span class="log-sep">//</span>
+        <span class="log-type asset">ASSET DEPLOYED</span>
+        <span class="log-msg">whitepages.com opt-out request dispatched</span>
+        <span class="log-tag gdpr">GDPR</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:46:31</span>
+        <span class="log-sep">//</span>
+        <span class="log-type hostile">TARGET HOSTILE</span>
+        <span class="log-msg">radaris.com CAPTCHA countermeasure detected</span>
+        <span class="log-tag alert">ALERT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:45:44</span>
+        <span class="log-sep">//</span>
+        <span class="log-type intercept">INTERCEPT</span>
+        <span class="log-msg">beenverified.com confirmation link processed</span>
+        <span class="log-tag sigint">SIGINT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:44:19</span>
+        <span class="log-sep">//</span>
+        <span class="log-type recon">RECON</span>
+        <span class="log-msg">truepeoplesearch.com scanning profile matches</span>
+        <span class="log-tag recon">RECON</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:43:55</span>
+        <span class="log-sep">//</span>
+        <span class="log-type asset">ASSET DEPLOYED</span>
+        <span class="log-msg">intelius.com web form submission complete</span>
+        <span class="log-tag ccpa">CCPA</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:42:38</span>
+        <span class="log-sep">//</span>
+        <span class="log-type intercept">INTERCEPT</span>
+        <span class="log-msg">mylife.com removal verified — profile delisted</span>
+        <span class="log-tag sigint">SIGINT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:41:12</span>
+        <span class="log-sep">//</span>
+        <span class="log-type hostile">TARGET HOSTILE</span>
+        <span class="log-msg">peoplefinder.com request rejected — retry queued</span>
+        <span class="log-tag alert">ALERT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:40:47</span>
+        <span class="log-sep">//</span>
+        <span class="log-type asset">ASSET DEPLOYED</span>
+        <span class="log-msg">fastpeoplesearch.com GDPR Article 17 request sent</span>
+        <span class="log-tag gdpr">GDPR</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:39:33</span>
+        <span class="log-sep">//</span>
+        <span class="log-type recon">RECON</span>
+        <span class="log-msg">thatsthem.com — 3 profile matches found (score: 0.94)</span>
+        <span class="log-tag recon">RECON</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:38:21</span>
+        <span class="log-sep">//</span>
+        <span class="log-type intercept">INTERCEPT</span>
+        <span class="log-msg">zabasearch.com opt-out acknowledgement received</span>
+        <span class="log-tag sigint">SIGINT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:37:05</span>
+        <span class="log-sep">//</span>
+        <span class="log-type asset">ASSET DEPLOYED</span>
+        <span class="log-msg">dataveria.com automated form submission initiated</span>
+        <span class="log-tag ccpa">CCPA</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:35:48</span>
+        <span class="log-sep">//</span>
+        <span class="log-type hostile">TARGET HOSTILE</span>
+        <span class="log-msg">ussearch.com circuit breaker tripped — cooling down</span>
+        <span class="log-tag alert">ALERT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:34:22</span>
+        <span class="log-sep">//</span>
+        <span class="log-type intercept">INTERCEPT</span>
+        <span class="log-msg">peekyou.com listing removed — IMAP confirmation parsed</span>
+        <span class="log-tag sigint">SIGINT</span>
+      </div>
+      <div class="log-entry">
+        <span class="log-time">14:33:01</span>
+        <span class="log-sep">//</span>
+        <span class="log-type recon">RECON</span>
+        <span class="log-msg">addresses.com profile enumeration complete — 1 match</span>
+        <span class="log-tag recon">RECON</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 4: FIELD OPS REQUIRED -->
+  <div class="panel">
+    <div class="panel-header">
+      <h2>// PENDING FIELD OPERATIONS</h2>
+      <span class="stamp classified">CLASSIFIED</span>
+    </div>
+    <div class="field-ops">
+      <div class="field-op">
+        <div class="op-urgency critical"></div>
+        <div class="op-content">
+          <div class="op-title">MANUAL ID VERIFICATION — radaris.com</div>
+          <div class="op-detail">Target requires government-issued ID upload for removal. Secure document scan needed. Deadline: 48h</div>
+        </div>
+        <div class="op-badge critical">CRITICAL</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency critical"></div>
+        <div class="op-content">
+          <div class="op-title">CAPTCHA BYPASS FAILED — peoplefinder.com</div>
+          <div class="op-detail">NopeCHA solver returned error on hCaptcha v2. Manual form completion required.</div>
+        </div>
+        <div class="op-badge critical">CRITICAL</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency high"></div>
+        <div class="op-content">
+          <div class="op-title">NOTARIZED LETTER REQUIRED — lexisnexis.com</div>
+          <div class="op-detail">Target demands notarized written request via postal mail. Template generated at /out/lexis-letter.pdf</div>
+        </div>
+        <div class="op-badge high">HIGH</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency high"></div>
+        <div class="op-content">
+          <div class="op-title">PHONE VERIFICATION — ussearch.com</div>
+          <div class="op-detail">Automated removal blocked. Target requires phone call to 1-800-xxx-xxxx to confirm identity.</div>
+        </div>
+        <div class="op-badge high">HIGH</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency medium"></div>
+        <div class="op-content">
+          <div class="op-title">REVIEW PARTIAL MATCH — thatsthem.com</div>
+          <div class="op-detail">3 profiles matched with confidence 0.91-0.97. Confirm which listings belong to subject before removal.</div>
+        </div>
+        <div class="op-badge medium">MEDIUM</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency medium"></div>
+        <div class="op-content">
+          <div class="op-title">SMTP BOUNCE — familytreenow.com</div>
+          <div class="op-detail">GDPR removal email bounced (550 mailbox not found). Locate alternate contact for privacy officer.</div>
+        </div>
+        <div class="op-badge medium">MEDIUM</div>
+      </div>
+      <div class="field-op">
+        <div class="op-urgency low"></div>
+        <div class="op-content">
+          <div class="op-title">RE-VERIFICATION SWEEP — Sector A</div>
+          <div class="op-detail">72 previously neutralized targets due for 90-day re-verification scan. Schedule at next maintenance window.</div>
+        </div>
+        <div class="op-badge low">LOW</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>&#9679;</span> SECURE CHANNEL // ALL OPERATIONS LOCAL // NO EXTERNAL TRANSMISSION // BROKERBANE v3.1.0 // PII NEVER LEAVES THIS MACHINE <span>&#9679;</span>
+</footer>
+
+<script>
+// Live clock
+function updateClock(){
+  var now=new Date();
+  var h=String(now.getUTCHours()).padStart(2,'0');
+  var m=String(now.getUTCMinutes()).padStart(2,'0');
+  var s=String(now.getUTCSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent=h+':'+m+':'+s;
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// Simulated live ops log entries using safe DOM methods
+var logData=[
+  {type:'INTERCEPT',cls:'intercept',msg:'spokeo.com profile scrubbed from cache',tag:'SIGINT',tagCls:'sigint'},
+  {type:'ASSET DEPLOYED',cls:'asset',msg:'instantcheckmate.com CCPA deletion request sent',tag:'CCPA',tagCls:'ccpa'},
+  {type:'RECON',cls:'recon',msg:'pipl.com scanning for new profile appearances',tag:'RECON',tagCls:'recon'},
+  {type:'INTERCEPT',cls:'intercept',msg:'truepeoplesearch.com removal confirmed by IMAP monitor',tag:'SIGINT',tagCls:'sigint'},
+  {type:'TARGET HOSTILE',cls:'hostile',msg:'publicrecordsnow.com rate limit triggered — backing off',tag:'ALERT',tagCls:'alert'},
+  {type:'ASSET DEPLOYED',cls:'asset',msg:'yellowpages.com automated opt-out form submitted',tag:'GDPR',tagCls:'gdpr'},
+  {type:'INTERCEPT',cls:'intercept',msg:'clustrmaps.com profile successfully delisted',tag:'SIGINT',tagCls:'sigint'},
+  {type:'RECON',cls:'recon',msg:'nuwber.com — 2 potential profile matches detected (score: 0.88)',tag:'RECON',tagCls:'recon'},
+  {type:'ASSET DEPLOYED',cls:'asset',msg:'cyberbackgroundchecks.com removal form completed via Stagehand',tag:'CCPA',tagCls:'ccpa'},
+  {type:'TARGET HOSTILE',cls:'hostile',msg:'checkpeople.com blocking automated access — manual required',tag:'ALERT',tagCls:'alert'}
+];
+var logIdx=0;
+
+function createSpan(className, text){
+  var el=document.createElement('span');
+  el.className=className;
+  el.textContent=text;
+  return el;
+}
+
+function addLogEntry(){
+  var log=document.getElementById('opsLog');
+  var d=logData[logIdx%logData.length];
+  var now=new Date();
+  var t=String(now.getUTCHours()).padStart(2,'0')+':'+String(now.getUTCMinutes()).padStart(2,'0')+':'+String(now.getUTCSeconds()).padStart(2,'0');
+
+  var entry=document.createElement('div');
+  entry.className='log-entry';
+  entry.appendChild(createSpan('log-time',t));
+  entry.appendChild(createSpan('log-sep','//'));
+  entry.appendChild(createSpan('log-type '+d.cls,d.type));
+  entry.appendChild(createSpan('log-msg',d.msg));
+  entry.appendChild(createSpan('log-tag '+d.tagCls,d.tag));
+
+  log.insertBefore(entry,log.firstChild);
+  if(log.children.length>50)log.removeChild(log.lastChild);
+  logIdx++;
+}
+setInterval(addLogEntry,6000);
+
+// Nav tab interaction
+document.querySelectorAll('.nav-tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active')});
+    tab.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

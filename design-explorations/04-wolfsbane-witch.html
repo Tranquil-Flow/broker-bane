@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrokerBane — An Apothecary for Digital Privacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep-purple: #1a0a2e;
+  --midnight: #0d1b2a;
+  --midnight-light: #132238;
+  --gold: #c9a94e;
+  --gold-dim: #9a7d3a;
+  --gold-bright: #e2c563;
+  --herb-green: #5a7247;
+  --herb-light: #7a9462;
+  --violet: #7b2d8e;
+  --violet-dim: #5a1f68;
+  --violet-glow: #a044b8;
+  --parchment: #d4c5a0;
+  --parchment-dim: #b0a27e;
+  --text-primary: #e8e0d0;
+  --text-secondary: #9e9688;
+  --text-dim: #6b6560;
+  --danger: #a83232;
+  --danger-light: #c44a4a;
+  --success: #4a8a4a;
+  --surface: rgba(13, 27, 42, 0.6);
+  --surface-raised: rgba(26, 10, 46, 0.5);
+  --border-subtle: rgba(201, 169, 78, 0.15);
+  --border-medium: rgba(201, 169, 78, 0.25);
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-weight: 300;
+  color: var(--text-primary);
+  background: var(--deep-purple);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   ATMOSPHERIC BACKGROUND
+   ═══════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(123, 45, 142, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(90, 114, 71, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(13, 27, 42, 0.9) 0%, transparent 100%),
+    linear-gradient(170deg, var(--deep-purple) 0%, var(--midnight) 40%, #0a0f18 100%);
+  z-index: -2;
+}
+
+/* Candlelight flicker overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 40% 30% at 15% 5%, rgba(201, 169, 78, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 25% at 85% 15%, rgba(201, 169, 78, 0.03) 0%, transparent 70%);
+  z-index: -1;
+  animation: candleFlicker 4s ease-in-out infinite alternate;
+}
+
+@keyframes candleFlicker {
+  0%   { opacity: 0.7; }
+  25%  { opacity: 1; }
+  50%  { opacity: 0.85; }
+  75%  { opacity: 0.95; }
+  100% { opacity: 0.75; }
+}
+
+/* ═══════════════════════════════════════════
+   VINE / BRANCH BORDER UTILITY
+   ═══════════════════════════════════════════ */
+.vine-border {
+  border: 1px solid var(--border-subtle);
+  position: relative;
+}
+.vine-border::before,
+.vine-border::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.vine-border::before {
+  top: -1px; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--gold-dim) 15%,
+    var(--gold) 30%,
+    var(--gold-dim) 50%,
+    var(--gold) 70%,
+    var(--gold-dim) 85%,
+    transparent
+  );
+  opacity: 0.4;
+}
+.vine-border::after {
+  bottom: -1px; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--gold-dim) 20%,
+    var(--gold) 50%,
+    var(--gold-dim) 80%,
+    transparent
+  );
+  opacity: 0.25;
+}
+
+/* Corner ornaments */
+.vine-corners {
+  position: relative;
+}
+.vine-corners .corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0.35;
+}
+.vine-corners .corner--tl { top: -1px; left: -1px; border-top: 2px solid var(--gold-dim); border-left: 2px solid var(--gold-dim); border-radius: 3px 0 0 0; }
+.vine-corners .corner--tr { top: -1px; right: -1px; border-top: 2px solid var(--gold-dim); border-right: 2px solid var(--gold-dim); border-radius: 0 3px 0 0; }
+.vine-corners .corner--bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--gold-dim); border-left: 2px solid var(--gold-dim); border-radius: 0 0 0 3px; }
+.vine-corners .corner--br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--gold-dim); border-right: 2px solid var(--gold-dim); border-radius: 0 0 3px 0; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════ */
+.header {
+  padding: 48px 0 32px;
+  text-align: center;
+  position: relative;
+}
+
+.header__brand {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__sigil {
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--violet-glow);
+  filter: drop-shadow(0 0 8px rgba(160, 68, 184, 0.4));
+  animation: sigilPulse 6s ease-in-out infinite;
+}
+
+@keyframes sigilPulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(160, 68, 184, 0.3)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(160, 68, 184, 0.5)); }
+}
+
+.header__title {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 40px rgba(201, 169, 78, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.1;
+}
+
+.header__subtitle {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+
+.header__divider {
+  width: 280px;
+  max-width: 80%;
+  height: 1px;
+  margin: 24px auto 0;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold), var(--gold-dim), transparent);
+  opacity: 0.3;
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION — SPELLBOOK TABS
+   ═══════════════════════════════════════════ */
+.spellbook-nav {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 24px 0 32px;
+  flex-wrap: wrap;
+}
+
+.spellbook-nav__tab {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  padding: 10px 22px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.spellbook-nav__tab:hover {
+  color: var(--gold);
+  background: var(--surface-raised);
+  border-color: var(--border-medium);
+}
+
+.spellbook-nav__tab--active {
+  color: var(--gold);
+  background: linear-gradient(180deg, rgba(26, 10, 46, 0.7) 0%, rgba(13, 27, 42, 0.4) 100%);
+  border-color: var(--border-medium);
+}
+
+.spellbook-nav__tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.spellbook-nav__label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  margin-top: 2px;
+  text-transform: lowercase;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT GRID
+   ═══════════════════════════════════════════ */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 24px;
+  padding-bottom: 48px;
+}
+
+.dashboard__potion   { grid-column: 1 / -1; }
+.dashboard__cabinet  { grid-column: 1 / -1; }
+.dashboard__rituals  { grid-column: 1; }
+.dashboard__pending  { grid-column: 2; }
+
+@media (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  .dashboard__rituals,
+  .dashboard__pending {
+    grid-column: 1;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION TITLES
+   ═══════════════════════════════════════════ */
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title::before,
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-medium), transparent);
+}
+
+.section-title::after {
+  background: linear-gradient(270deg, var(--border-medium), transparent);
+}
+
+/* ═══════════════════════════════════════════
+   POTION FLASK — PROGRESS VISUALIZATION
+   ═══════════════════════════════════════════ */
+.potion-section {
+  padding: 32px;
+  background: var(--surface);
+  border-radius: 12px;
+}
+
+.potion-layout {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Flask shape */
+.flask {
+  position: relative;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.flask__neck {
+  width: 40px;
+  height: 24px;
+  margin: 0 auto;
+  background: rgba(201, 169, 78, 0.12);
+  border: 1.5px solid var(--gold-dim);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  z-index: 2;
+}
+
+.flask__neck::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 6px;
+  background: var(--gold-dim);
+  border-radius: 3px 3px 0 0;
+  opacity: 0.6;
+}
+
+.flask__shoulder {
+  width: 40px;
+  height: 20px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.flask__shoulder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50px;
+  right: -50px;
+  height: 100%;
+  border-left: 52px solid transparent;
+  border-right: 52px solid transparent;
+  border-bottom: 20px solid rgba(201, 169, 78, 0.08);
+}
+
+.flask__body {
+  width: 140px;
+  height: 180px;
+  background: rgba(10, 8, 20, 0.6);
+  border: 1.5px solid var(--gold-dim);
+  border-top: none;
+  border-radius: 0 0 24px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Liquid fill */
+.flask__liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72%;
+  background: linear-gradient(
+    180deg,
+    rgba(123, 45, 142, 0.6) 0%,
+    rgba(123, 45, 142, 0.75) 30%,
+    rgba(90, 114, 71, 0.5) 70%,
+    rgba(90, 114, 71, 0.7) 100%
+  );
+  border-radius: 0 0 22px 22px;
+  transition: height 1.5s ease;
+}
+
+/* Surface shimmer */
+.flask__liquid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 10%,
+    rgba(201, 169, 78, 0.4) 30%,
+    rgba(226, 197, 99, 0.6) 50%,
+    rgba(201, 169, 78, 0.4) 70%,
+    transparent 90%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; transform: translateX(-5%); }
+  50%      { opacity: 1; transform: translateX(5%); }
+}
+
+/* Bubbles */
+.flask__bubble {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(160, 68, 184, 0.4);
+  border: 1px solid rgba(201, 169, 78, 0.2);
+  animation: bubbleRise linear infinite;
+}
+
+.flask__bubble:nth-child(1) { left: 25%; bottom: 10%; animation-duration: 3.5s; animation-delay: 0s; width: 5px; height: 5px; }
+.flask__bubble:nth-child(2) { left: 55%; bottom: 5%;  animation-duration: 4.2s; animation-delay: 1.2s; width: 7px; height: 7px; }
+.flask__bubble:nth-child(3) { left: 40%; bottom: 15%; animation-duration: 3.8s; animation-delay: 0.6s; width: 4px; height: 4px; }
+.flask__bubble:nth-child(4) { left: 70%; bottom: 8%;  animation-duration: 4.5s; animation-delay: 2s; width: 5px; height: 5px; }
+.flask__bubble:nth-child(5) { left: 15%; bottom: 12%; animation-duration: 3.2s; animation-delay: 0.3s; width: 3px; height: 3px; }
+
+@keyframes bubbleRise {
+  0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+  50%  { opacity: 0.8; }
+  100% { transform: translateY(-160px) scale(0.3); opacity: 0; }
+}
+
+/* Flask glow */
+.flask__body::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 0 0 28px 28px;
+  background: radial-gradient(ellipse at 50% 70%, rgba(123, 45, 142, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+  animation: flaskGlow 5s ease-in-out infinite alternate;
+}
+
+@keyframes flaskGlow {
+  0%   { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Potion details */
+.potion-details {
+  max-width: 400px;
+}
+
+.potion-details__title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.potion-details__percent {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--violet-glow);
+  line-height: 1;
+  margin-bottom: 4px;
+  text-shadow: 0 0 20px rgba(160, 68, 184, 0.3);
+}
+
+.potion-details__label {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* Ingredients list */
+.ingredients {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.ingredient__marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ingredient__marker--banished  { background: var(--herb-green); box-shadow: 0 0 6px rgba(90, 114, 71, 0.5); }
+.ingredient__marker--dissolving { background: var(--violet-glow); box-shadow: 0 0 6px rgba(160, 68, 184, 0.4); }
+.ingredient__marker--resistant  { background: var(--danger-light); box-shadow: 0 0 6px rgba(196, 74, 74, 0.4); }
+.ingredient__marker--pending    { background: var(--text-dim); }
+
+.ingredient__count {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 32px;
+}
+
+/* ═══════════════════════════════════════════
+   INGREDIENT CABINET — BROKER CATEGORIES
+   ═══════════════════════════════════════════ */
+.cabinet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.jar {
+  background: linear-gradient(180deg, var(--surface-raised) 0%, var(--surface) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.jar:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 1px var(--gold-dim);
+}
+
+/* Subtle label tag */
+.jar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  width: 32px;
+  height: 6px;
+  background: var(--gold-dim);
+  border-radius: 0 0 3px 3px;
+  opacity: 0.3;
+}
+
+.jar__name {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--parchment);
+  margin-bottom: 10px;
+}
+
+.jar__stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.jar__stats span {
+  color: var(--text-secondary);
+}
+
+.jar__bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.jar__bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--herb-green), var(--herb-light));
+  transition: width 1s ease;
+}
+
+.jar__bar-fill--low {
+  background: linear-gradient(90deg, var(--danger), var(--danger-light));
+}
+
+.jar__bar-fill--medium {
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+}
+
+/* ═══════════════════════════════════════════
+   RITUAL LOG — SPELLBOOK ACTIVITY FEED
+   ═══════════════════════════════════════════ */
+.spellbook {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 28px;
+  position: relative;
+}
+
+/* Page edge effect */
+.spellbook::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 0;
+  width: 3px;
+  background: linear-gradient(180deg,
+    transparent,
+    var(--gold-dim) 20%,
+    var(--gold) 50%,
+    var(--gold-dim) 80%,
+    transparent
+  );
+  opacity: 0.2;
+  border-radius: 0 2px 2px 0;
+}
+
+.ritual-log {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ritual-entry {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(201, 169, 78, 0.06);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ritual-entry:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ritual-entry:first-child {
+  padding-top: 0;
+}
+
+.ritual-entry__icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.ritual-entry__icon--success {
+  color: var(--herb-light);
+  background: rgba(90, 114, 71, 0.15);
+}
+
+.ritual-entry__icon--pending {
+  color: var(--gold);
+  background: rgba(201, 169, 78, 0.1);
+}
+
+.ritual-entry__icon--failed {
+  color: var(--danger-light);
+  background: rgba(168, 50, 50, 0.15);
+}
+
+.ritual-entry__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ritual-entry__text {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--parchment-dim);
+  line-height: 1.5;
+}
+
+.ritual-entry__text em {
+  color: var(--parchment);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.ritual-entry__time {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+/* ═══════════════════════════════════════════
+   PENDING RITUALS — INCOMPLETE INCANTATIONS
+   ═══════════════════════════════════════════ */
+.incantations {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.incantation-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.incantation {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(201, 169, 78, 0.06);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.incantation:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.incantation:first-child {
+  padding-top: 0;
+}
+
+.incantation__check {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border-medium);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.incantation__check:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(201, 169, 78, 0.2);
+}
+
+.incantation__body {
+  flex: 1;
+}
+
+.incantation__text {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--parchment-dim);
+  line-height: 1.45;
+}
+
+.incantation__text em {
+  color: var(--parchment);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.incantation__meta {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  display: flex;
+  gap: 12px;
+}
+
+.incantation__tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-top: 6px;
+}
+
+.incantation__tag--urgent {
+  color: var(--danger-light);
+  background: rgba(168, 50, 50, 0.12);
+  border: 1px solid rgba(168, 50, 50, 0.2);
+}
+
+.incantation__tag--manual {
+  color: var(--gold);
+  background: rgba(201, 169, 78, 0.08);
+  border: 1px solid rgba(201, 169, 78, 0.15);
+}
+
+.incantation__tag--waiting {
+  color: var(--violet-glow);
+  background: rgba(160, 68, 184, 0.1);
+  border: 1px solid rgba(160, 68, 184, 0.2);
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  opacity: 0.4;
+}
+
+.footer__sigil {
+  font-size: 1.2rem;
+  color: var(--violet-dim);
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.footer__text {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+
+.footer__privacy {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE REFINEMENTS
+   ═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .potion-layout { gap: 32px; }
+  .flask { transform: scale(0.85); }
+  .potion-details__percent { font-size: 2.4rem; }
+  .cabinet { grid-template-columns: 1fr; }
+  .spellbook-nav__tab { padding: 8px 14px; font-size: 0.72rem; }
+  .spellbook, .incantations { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="container">
+    <div class="header__brand">
+      <div class="header__sigil">&#10047;</div>
+      <h1 class="header__title">BrokerBane</h1>
+      <p class="header__subtitle">Warding Off Data Brokers Since 2026</p>
+    </div>
+    <div class="header__divider"></div>
+  </div>
+</header>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="container">
+  <div class="spellbook-nav">
+    <div class="spellbook-nav__tab spellbook-nav__tab--active">
+      Grimoire
+      <span class="spellbook-nav__label">dashboard</span>
+    </div>
+    <div class="spellbook-nav__tab">
+      Ingredients
+      <span class="spellbook-nav__label">brokers</span>
+    </div>
+    <div class="spellbook-nav__tab">
+      Rituals
+      <span class="spellbook-nav__label">tasks</span>
+    </div>
+    <div class="spellbook-nav__tab">
+      Lore
+      <span class="spellbook-nav__label">about</span>
+    </div>
+    <div class="spellbook-nav__tab">
+      Brew
+      <span class="spellbook-nav__label">setup</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ DASHBOARD ═══ -->
+<main class="container">
+  <div class="dashboard">
+
+    <!-- ─── POTION BREWING PROGRESS ─── -->
+    <section class="dashboard__potion potion-section vine-border vine-corners">
+      <span class="corner corner--tl"></span>
+      <span class="corner corner--tr"></span>
+      <span class="corner corner--bl"></span>
+      <span class="corner corner--br"></span>
+
+      <div class="potion-layout">
+        <div class="flask">
+          <div class="flask__neck"></div>
+          <div class="flask__shoulder"></div>
+          <div class="flask__body">
+            <div class="flask__liquid">
+              <div class="flask__bubble"></div>
+              <div class="flask__bubble"></div>
+              <div class="flask__bubble"></div>
+              <div class="flask__bubble"></div>
+              <div class="flask__bubble"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="potion-details">
+          <div class="potion-details__title">Privacy Potion</div>
+          <div class="potion-details__percent">72%</div>
+          <div class="potion-details__label">Brewed &amp; Strengthening</div>
+
+          <ul class="ingredients">
+            <li class="ingredient">
+              <span class="ingredient__marker ingredient__marker--banished"></span>
+              <span class="ingredient__count">793</span>
+              brokers banished
+            </li>
+            <li class="ingredient">
+              <span class="ingredient__marker ingredient__marker--dissolving"></span>
+              <span class="ingredient__count">142</span>
+              dissolving
+            </li>
+            <li class="ingredient">
+              <span class="ingredient__marker ingredient__marker--resistant"></span>
+              <span class="ingredient__count">47</span>
+              resistant
+            </li>
+            <li class="ingredient">
+              <span class="ingredient__marker ingredient__marker--pending"></span>
+              <span class="ingredient__count">121</span>
+              yet to brew
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── INGREDIENT CABINET ─── -->
+    <section class="dashboard__cabinet">
+      <h2 class="section-title">Ingredient Cabinet</h2>
+      <div class="cabinet">
+
+        <div class="jar">
+          <div class="jar__name">People Search Essence</div>
+          <div class="jar__stats">
+            <span>423</span> brokers &middot; <span>312</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill" style="width: 73.8%"></div>
+          </div>
+        </div>
+
+        <div class="jar">
+          <div class="jar__name">Data Broker Extract</div>
+          <div class="jar__stats">
+            <span>287</span> brokers &middot; <span>201</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill" style="width: 70%"></div>
+          </div>
+        </div>
+
+        <div class="jar">
+          <div class="jar__name">Marketing List Tincture</div>
+          <div class="jar__stats">
+            <span>156</span> brokers &middot; <span>139</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill" style="width: 89.1%"></div>
+          </div>
+        </div>
+
+        <div class="jar">
+          <div class="jar__name">Background Check Salve</div>
+          <div class="jar__stats">
+            <span>98</span> brokers &middot; <span>84</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill" style="width: 85.7%"></div>
+          </div>
+        </div>
+
+        <div class="jar">
+          <div class="jar__name">Financial Record Philtre</div>
+          <div class="jar__stats">
+            <span>82</span> brokers &middot; <span>41</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill jar__bar-fill--medium" style="width: 50%"></div>
+          </div>
+        </div>
+
+        <div class="jar">
+          <div class="jar__name">Social Media Distillate</div>
+          <div class="jar__stats">
+            <span>57</span> brokers &middot; <span>16</span> banished
+          </div>
+          <div class="jar__bar">
+            <div class="jar__bar-fill jar__bar-fill--low" style="width: 28%"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── RITUAL LOG ─── -->
+    <section class="dashboard__rituals">
+      <h2 class="section-title">Ritual Log</h2>
+      <div class="spellbook">
+        <ul class="ritual-log">
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--success">&#10003;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text">The ward against <em>Spokeo</em> has been cast. Profile removed and confirmed.</div>
+              <div class="ritual-entry__time">Today, 14:32</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--success">&#10003;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text"><em>Whitepages</em> has acknowledged the binding. Removal in progress.</div>
+              <div class="ritual-entry__time">Today, 13:07</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--failed">!</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text"><em>Radaris</em> resists! The circle must be redrawn. Retry scheduled.</div>
+              <div class="ritual-entry__time">Today, 12:48</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--success">&#10003;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text"><em>BeenVerified</em> yielded to the incantation. Three listings dissolved.</div>
+              <div class="ritual-entry__time">Today, 11:15</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--pending">&#8987;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text">The binding for <em>Intelius</em> has been sent. Awaiting their response.</div>
+              <div class="ritual-entry__time">Today, 10:42</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--success">&#10003;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text"><em>TruePeopleSearch</em> has been banished from the registry. Ward holds firm.</div>
+              <div class="ritual-entry__time">Yesterday, 22:18</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--success">&#10003;</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text">The <em>FastPeopleSearch</em> sigil has faded. Removal confirmed by their scrying glass.</div>
+              <div class="ritual-entry__time">Yesterday, 19:06</div>
+            </div>
+          </li>
+
+          <li class="ritual-entry">
+            <div class="ritual-entry__icon ritual-entry__icon--failed">!</div>
+            <div class="ritual-entry__body">
+              <div class="ritual-entry__text"><em>MyLife</em> has warded against our approach. Manual intervention required.</div>
+              <div class="ritual-entry__time">Yesterday, 16:33</div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── PENDING RITUALS ─── -->
+    <section class="dashboard__pending">
+      <h2 class="section-title">Incomplete Incantations</h2>
+      <div class="incantations">
+        <ul class="incantation-list">
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Complete identity verification for <em>MyLife</em> removal portal</div>
+              <div class="incantation__meta">Requires photo ID upload</div>
+              <span class="incantation__tag incantation__tag--urgent">Urgent</span>
+            </div>
+          </li>
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Answer <em>Radaris</em> security challenge &mdash; they require a signed letter</div>
+              <div class="incantation__meta">Physical mail required</div>
+              <span class="incantation__tag incantation__tag--manual">Manual</span>
+            </div>
+          </li>
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Confirm email from <em>Acxiom</em> opt-out request &mdash; link expires in 48h</div>
+              <div class="incantation__meta">Sent to inbox Mar 3</div>
+              <span class="incantation__tag incantation__tag--urgent">Urgent</span>
+            </div>
+          </li>
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Re-submit <em>PeopleFinder</em> form &mdash; CAPTCHA failed on last attempt</div>
+              <div class="incantation__meta">Retry #3</div>
+              <span class="incantation__tag incantation__tag--manual">Manual</span>
+            </div>
+          </li>
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Await <em>Epsilon</em> confirmation &mdash; 30-day processing window</div>
+              <div class="incantation__meta">Submitted Feb 14 &middot; Due by Mar 16</div>
+              <span class="incantation__tag incantation__tag--waiting">Awaiting</span>
+            </div>
+          </li>
+
+          <li class="incantation">
+            <div class="incantation__check"></div>
+            <div class="incantation__body">
+              <div class="incantation__text">Review <em>LexisNexis</em> partial removal &mdash; 2 of 5 records remain</div>
+              <div class="incantation__meta">Follow-up needed</div>
+              <span class="incantation__tag incantation__tag--manual">Manual</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__sigil">&#10047;</div>
+    <p class="footer__text">All magic performed locally. No familiar spirits consulted.</p>
+    <p class="footer__privacy">Your personal data never leaves this machine. BrokerBane v0.9.0</p>
+  </div>
+</footer>
+
+</body>
+</html>
