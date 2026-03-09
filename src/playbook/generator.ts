@@ -7,6 +7,7 @@ import { logger } from "../util/logger.js";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { waitForChallenge } from "../browser/block-detector.js";
+import { loadProfileCookies, saveProfileCookies } from "../browser/session.js";
 
 export interface FormField {
   selector: string;
@@ -139,7 +140,14 @@ export class PlaybookGenerator {
 
     logger.info({ brokerId: broker.id }, "Generating playbook");
 
-    // 1. Navigate to opt-out page
+    // 1. Navigate to opt-out page (load saved cookies first)
+    try {
+      const domain = new URL(broker.opt_out_url).hostname;
+      await loadProfileCookies(this.browser.page, domain);
+    } catch {
+      // Cookie loading failed — continue
+    }
+
     try {
       await this.browser.page.goto(broker.opt_out_url, { waitUntil: "domcontentloaded", timeout: 30_000 });
     } catch (err) {
@@ -192,7 +200,15 @@ export class PlaybookGenerator {
     // 5. Auto-test (dry run — execute all steps except the last click/submit)
     const verified = await this.autoTest(playbook);
 
-    // 6. Save
+    // 6. Save cookies after successful generation
+    try {
+      const domain = new URL(broker.opt_out_url).hostname;
+      await saveProfileCookies(this.browser.page, domain);
+    } catch {
+      // Cookie save failed — not critical
+    }
+
+    // 7. Save
     const filePath = join(this.playbookDir, `${broker.id}.yaml`);
     writeFileSync(filePath, yaml.dump(playbook, { lineWidth: 140 }));
     logger.info({ brokerId: broker.id, verified, path: filePath }, "Playbook generated and saved");
