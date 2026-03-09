@@ -27,10 +27,22 @@ export async function loadEncrypted<T>(
   key: CryptoKey,
   storeKey: string
 ): Promise<T | null> {
-  const blob = await db.get(STORE_NAME, storeKey) as EncryptedBlob | undefined
-  if (!blob) return null
-  const json = await decrypt(key, blob)
-  return JSON.parse(json) as T
+  const raw = await db.get(STORE_NAME, storeKey)
+  if (raw == null) return null
+  // Runtime shape guard
+  if (typeof raw !== 'object' || typeof raw.iv !== 'string' || typeof raw.data !== 'string') {
+    throw new Error(`Corrupted vault entry for key "${storeKey}"`)
+  }
+  const blob = raw as EncryptedBlob
+  try {
+    const json = await decrypt(key, blob)
+    return JSON.parse(json) as T
+  } catch (err) {
+    if (err instanceof Error && err.message.startsWith('Decryption failed')) {
+      throw err // re-throw typed error so UI can show "wrong passphrase"
+    }
+    throw new Error(`Failed to load vault entry "${storeKey}": ${err}`)
+  }
 }
 
 export async function deleteEntry(db: IDBPDatabase, storeKey: string): Promise<void> {
