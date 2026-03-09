@@ -209,6 +209,57 @@ describe("PlaybookExecutor cookie integration", () => {
   });
 });
 
+describe("PlaybookExecutor Cloudflare block detection", () => {
+  it("returns blocked when Cloudflare challenge persists after a step fails", async () => {
+    // Use fake timers so waitForChallenge's Date.now()-based deadline advances
+    // when waitForTimeout is called, preventing the test from running for 12 real seconds.
+    vi.useFakeTimers();
+
+    try {
+      const blockedPage = {
+        goto: vi.fn().mockResolvedValue(undefined),
+        fill: vi.fn().mockRejectedValue(new Error("Element not found")),
+        click: vi.fn().mockResolvedValue(undefined),
+        waitForTimeout: vi.fn().mockImplementation((ms: number) => {
+          vi.advanceTimersByTime(ms);
+          return Promise.resolve();
+        }),
+        waitForSelector: vi.fn().mockResolvedValue(undefined),
+        screenshot: vi.fn().mockResolvedValue(Buffer.from("img")),
+        selectOption: vi.fn().mockResolvedValue(undefined),
+        check: vi.fn().mockResolvedValue(undefined),
+        // Cloudflare challenge signals
+        title: vi.fn().mockResolvedValue("Just a moment..."),
+        url: vi.fn().mockReturnValue("https://example.com/cdn-cgi/challenge"),
+        content: vi.fn().mockResolvedValue("<html>challenge-platform</html>"),
+      };
+
+      const executor = new PlaybookExecutor(blockedPage as any, testProfile, undefined, {
+        detectCaptcha: vi.fn().mockResolvedValue({ type: "turnstile", siteKey: "0x4AAA" }),
+        solveCaptcha: vi.fn().mockResolvedValue({ token: "tok", type: "turnstile" }),
+      });
+
+      const result = await executor.execute({
+        broker_id: "cf-test",
+        version: 1,
+        last_verified: "2026-01-01",
+        phases: [{
+          name: "submit",
+          steps: [
+            { action: "goto", url: "https://example.com/optout" },
+            { action: "fill", selector: "input[name=email]", value: "{{email}}" },
+          ],
+        }],
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.blocked).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
 describe("PlaybookExecutor CAPTCHA handling", () => {
   it("detects CAPTCHA on step failure and returns captchaBlocked when no solver", async () => {
     const page = mockPage();

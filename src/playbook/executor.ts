@@ -66,6 +66,37 @@ export class PlaybookExecutor {
           try {
             const blockResult = await waitForChallenge(this.page as any);
             if (blockResult.blocked) {
+              // For Cloudflare challenges, try NopeCHA Turnstile solve before giving up
+              if (
+                blockResult.reason === "cloudflare_challenge" &&
+                this.captchaHooks?.detectCaptcha &&
+                this.captchaHooks?.solveCaptcha
+              ) {
+                try {
+                  const captchaDetection = await this.captchaHooks.detectCaptcha(this.page);
+                  if (captchaDetection.type !== "none") {
+                    const pageUrl = typeof (this.page as any).url === "function"
+                      ? (this.page as any).url()
+                      : "";
+                    const solved = await this.captchaHooks.solveCaptcha(captchaDetection, pageUrl);
+                    if (solved) {
+                      await this.page.waitForTimeout(3_000);
+                      const recheck = await waitForChallenge(this.page as any, { maxWaitMs: 5_000, pollIntervalMs: 1_000 });
+                      if (!recheck.blocked) {
+                        try {
+                          await this.executeStep(step, playbook.broker_id);
+                          continue; // Step succeeded after Turnstile solve
+                        } catch {
+                          // Retry failed — fall through to blocked return
+                        }
+                      }
+                    }
+                  }
+                } catch {
+                  // Turnstile solve attempt failed — fall through to blocked return
+                }
+              }
+
               let screenshotPath: string | undefined;
               try {
                 screenshotPath = await this.captureScreenshot(playbook.broker_id, "blocked");
