@@ -1,0 +1,16 @@
+broker_id: truecaller
+version: 1
+last_verified: '2025-01-01'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.truecaller.com/unlisting
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button:has-text("No, I want to unlist")
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

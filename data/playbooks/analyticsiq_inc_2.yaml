@@ -1,0 +1,46 @@
+broker_id: analyticsiq_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://privacyportal.onetrust.com/webform/f6a59500-f900-4652-b030-0cd51afe15a5/87ca07e4-e06c-4ad8-9aa6-ccbbaa8750c1
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: div[role="listbox"]
+      - action: click
+        selector: div[role="option"]:has-text("Opt-Out of Targeted Advertising")
+      - action: wait
+        ms: 1000
+      - action: fill
+        selector: input[name="firstName"], input[placeholder*="first name"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"], input[placeholder*="last name"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="address"]
+        value: '{{address}}'
+      - action: fill
+        selector: input[name="city"]
+        value: '{{city}}'
+      - action: fill
+        selector: input[name="zip"]
+        value: '{{zip}}'
+      - action: fill
+        selector: input[name="email"], input[placeholder*="email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="phoneNumber"]
+        value: '{{phone}}'
+      - action: fill
+        selector: input[name="captcha"]
+        value: '{{captcha}}'
+      - action: click
+        selector: button[type="submit"], button:has-text("Submit")
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

@@ -1,0 +1,37 @@
+broker_id: cision_us_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://privacyportal-uk.onetrust.com/webform/d2cb5e2f-e4f8-4ada-be9f-38f2e699fd45/3216c7cb-cf10-465b-84f8-867628ba5273
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="firstName"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="city"]
+        value: '{{city}}'
+      - action: fill
+        selector: input[name="postalCode"]
+        value: '{{zip}}'
+      - action: fill
+        selector: input[name="phoneNumber"]
+        value: '{{phone}}'
+      - action: fill
+        selector: textarea[name="additionalInfo"]
+        value: '{{address}}'
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

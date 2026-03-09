@@ -1,0 +1,16 @@
+broker_id: deloitte_consulting_llp_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.deloitte.com/us/en/legal/privacy/predictrisk-privacy-notice.html
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button:contains("Decline all optional cookies"), button:has-text("Decline all optional cookies")
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

@@ -1,0 +1,28 @@
+broker_id: the_alesco_group_llc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://www.mydataprivacy.com/upload-csv
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[placeholder="Email Address *"], input[placeholder="Email Address"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[placeholder="First Name *"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[placeholder="Last Name *"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[placeholder="Phone Number"]
+        value: '{{phone}}'
+      - action: click
+        selector: button:contains("SEARCH")
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

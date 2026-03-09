@@ -1,0 +1,48 @@
+broker_id: dun_bradstreet_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://submit-irm.trustarc.eu/services/validation/ba81b98f-997d-4216-b4cc-d64cf261b082
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="first_middle_name"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="last_name"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email_address"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="phone_number"]
+        value: '{{phone}}'
+      - action: fill
+        selector: input[name="address_company_1"]
+        value: '{{address}}'
+      - action: fill
+        selector: input[name="city_company_1"]
+        value: '{{city}}'
+      - action: fill
+        selector: input[name="state_province_company_1"]
+        value: '{{state}}'
+      - action: fill
+        selector: input[name="zip_postal_code_company_1"]
+        value: '{{zip}}'
+      - action: click
+        selector: input[name="consumer_data"]
+      - action: click
+        selector: input[name="business_data"]
+      - action: click
+        selector: input[name="professional_contact_data"]
+      - action: click
+        selector: input[name="disclaimer"]
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

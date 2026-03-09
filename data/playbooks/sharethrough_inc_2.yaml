@@ -1,0 +1,16 @@
+broker_id: sharethrough_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://privacy-center.sharethrough.com/en/
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button[type='button']:has-text('Manage Options')
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

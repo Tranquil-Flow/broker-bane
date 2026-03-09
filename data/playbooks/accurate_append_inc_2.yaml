@@ -1,0 +1,37 @@
+broker_id: accurate_append_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://clients.accurateappend.com/public/optout/capture
+      - action: wait
+        ms: 2000
+      - action: fill
+        selector: input[name="firstName"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="streetAddress"]
+        value: '{{address}}'
+      - action: fill
+        selector: input[name="city"]
+        value: '{{city}}'
+      - action: fill
+        selector: input[name="postalCode"]
+        value: '{{zip}}'
+      - action: fill
+        selector: input[name="phoneNumber"]
+        value: '{{phone}}'
+      - action: fill
+        selector: input[name="emailAddress"]
+        value: '{{email}}'
+      - action: click
+        selector: button[type="submit"]:has-text("SUBMIT")
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

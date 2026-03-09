@@ -1,0 +1,44 @@
+broker_id: publicnsa_llc
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://optout.bigdbm.com/
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: input[name="optOutType"][value="All"]
+      - action: fill
+        selector: input[name="firstName"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="phone"]
+        value: '{{phone}}'
+      - action: fill
+        selector: input[name="address"]
+        value: '{{address}}'
+      - action: fill
+        selector: input[name="city"]
+        value: '{{city}}'
+      - action: select
+        selector: select[name="state"]
+        value: '{{state}}'
+      - action: fill
+        selector: input[name="zipCode"]
+        value: '{{zip}}'
+      - action: click
+        selector: input[name="confirmation"][type="checkbox"]
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 3000
+      - action: screenshot
+        label: success

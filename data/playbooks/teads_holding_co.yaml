@@ -1,0 +1,16 @@
+broker_id: teads_holding_co
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://dsr.outbrain.com/recommendations-settings/home/en
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: button:has-text("My Data Rights")
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

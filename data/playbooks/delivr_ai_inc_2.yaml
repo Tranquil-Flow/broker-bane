@@ -1,0 +1,40 @@
+broker_id: delivr_ai_inc_2
+version: 1
+last_verified: '2025-01-01'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://dsrp.pii.ai/p/7886d230-6f28-42d6-ba95-7d141f0a6520/submit.html
+      - action: wait
+        ms: 2000
+      - action: click
+        selector: input[type="radio"][value="Consumer"]
+      - action: click
+        selector: input[type="radio"][value="Erase PII Information"]
+      - action: fill
+        selector: input[name="userName"], input[type="text"][name="userName"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="firstName"], input[type="text"][name="firstName"]
+        value: '{{first_name}}'
+      - action: fill
+        selector: input[name="lastName"], input[type="text"][name="lastName"]
+        value: '{{last_name}}'
+      - action: fill
+        selector: input[name="email"], input[type="email"]
+        value: '{{email}}'
+      - action: fill
+        selector: input[name="phoneNumber"], input[type="text"][name="phoneNumber"]
+        value: '{{phone}}'
+      - action: fill
+        selector: textarea[name="comments"]
+        value: Please erase my personal information.
+      - action: click
+        selector: input[name="termsAndConditions"]
+      - action: click
+        selector: button[type="submit"]
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success

@@ -1,0 +1,12 @@
+broker_id: first_direct_inc_2
+version: 1
+last_verified: '2026-03-08'
+phases:
+  - name: submit
+    steps:
+      - action: goto
+        url: https://compliance.firstdirectmarketing.com/
+      - action: wait
+        ms: 2000
+      - action: screenshot
+        label: success
