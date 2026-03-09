@@ -166,6 +166,47 @@ describe("PlaybookExecutor cookie integration", () => {
       expect.any(Object),
     );
   });
+
+  it("completes goto step when context is a property (Stagehand-style)", async () => {
+    // Stagehand exposes context as a getter property, not a method
+    const ctxObject = {
+      addCookies: vi.fn().mockResolvedValue(undefined),
+      storageState: vi.fn().mockResolvedValue({ cookies: [], origins: [] }),
+    };
+    const mockPageWithCtxProperty = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      fill: vi.fn().mockResolvedValue(undefined),
+      click: vi.fn().mockResolvedValue(undefined),
+      waitForTimeout: vi.fn().mockResolvedValue(undefined),
+      waitForSelector: vi.fn().mockResolvedValue(undefined),
+      screenshot: vi.fn().mockResolvedValue(Buffer.from("img")),
+      selectOption: vi.fn().mockResolvedValue(undefined),
+      check: vi.fn().mockResolvedValue(undefined),
+      context: ctxObject, // property, not a function
+    };
+
+    const executor = new PlaybookExecutor(mockPageWithCtxProperty as any, {
+      first_name: "Test",
+      last_name: "User",
+      email: "test@example.com",
+      country: "US",
+      aliases: [],
+    });
+
+    const result = await executor.execute({
+      broker_id: "test-broker",
+      version: 1,
+      last_verified: "2026-01-01",
+      phases: [{
+        name: "submit",
+        steps: [{ action: "goto", url: "https://example.com/optout" }],
+      }],
+    });
+
+    expect(result.success).toBe(true);
+    // storageState should be called to save cookies on completion
+    expect(ctxObject.storageState).toHaveBeenCalled();
+  });
 });
 
 describe("PlaybookExecutor CAPTCHA handling", () => {

@@ -33,13 +33,22 @@ export function getProfileStore(): BrowserProfileStore {
   return profileStore;
 }
 
+function getBrowserContext(page: unknown): unknown {
+  // Stagehand pages expose `context` as a getter property (EnhancedContext).
+  // Raw Playwright pages expose `context` as a method: page.context().
+  // Handle both so cookie helpers work regardless of which page type is passed.
+  const contextProp = (page as any).context;
+  if (typeof contextProp === "function") return contextProp.call(page);
+  return contextProp ?? null;
+}
+
 export async function loadProfileCookies(page: unknown, domain: string): Promise<void> {
   const store = getProfileStore();
   const state = store.load(domain);
   if (!state || state.cookies.length === 0) return;
 
   try {
-    const ctx = (page as any).context?.();
+    const ctx = getBrowserContext(page) as any;
     if (ctx?.addCookies) {
       await ctx.addCookies(state.cookies);
       logger.debug({ domain, count: state.cookies.length }, "Loaded saved cookies");
@@ -52,8 +61,8 @@ export async function loadProfileCookies(page: unknown, domain: string): Promise
 export async function saveProfileCookies(page: unknown, domain: string): Promise<void> {
   const store = getProfileStore();
   try {
-    const ctx = (page as any).context?.();
-    if (ctx?.cookies && ctx?.storageState) {
+    const ctx = getBrowserContext(page) as any;
+    if (ctx?.storageState) {
       const state = await ctx.storageState();
       store.save(domain, { cookies: state.cookies ?? [], origins: state.origins ?? [] });
       logger.debug({ domain }, "Saved profile cookies");
