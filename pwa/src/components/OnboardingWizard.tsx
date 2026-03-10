@@ -9,7 +9,7 @@ interface Props {
 
 export default function OnboardingWizard({ onComplete }: Props) {
   const { save } = useVault()
-  const { connectGmail, connectOutlook, provider } = useEmail()
+  const { connectGmail, connectOutlook, setProvider, provider } = useEmail()
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [connectError, setConnectError] = useState('')
@@ -65,7 +65,9 @@ export default function OnboardingWizard({ onComplete }: Props) {
   async function handleUseMailto() {
     setConnectError('')
     try {
-      await save('email-provider', { type: 'mailto' })
+      const mailtoProvider = { type: 'mailto' as const }
+      await save('email-provider', mailtoProvider)
+      setProvider(mailtoProvider)
       setStep(3)
     } catch (e) {
       setConnectError(e instanceof Error ? e.message : 'Failed to save settings')

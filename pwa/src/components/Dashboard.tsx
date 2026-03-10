@@ -28,25 +28,24 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       .catch(() => {})
   }, [load])
 
+  useEffect(() => {
+    if (Object.keys(statuses).length > 0) {
+      save('statuses', statuses).catch(() => {})
+    }
+  }, [statuses, save])
+
   const updateStatus = useCallback(
     (brokerId: string, status: BrokerStatus['status']) => {
-      setStatuses(prev => {
-        const updated = {
-          ...prev,
-          [brokerId]: {
-            brokerId,
-            status,
-            lastUpdated: new Date().toISOString(),
-          },
-        }
-        // Schedule save outside the state updater
-        setTimeout(() => {
-          save('statuses', updated).catch(() => {})
-        }, 0)
-        return updated
-      })
+      setStatuses(prev => ({
+        ...prev,
+        [brokerId]: {
+          brokerId,
+          status,
+          lastUpdated: new Date().toISOString(),
+        },
+      }))
     },
-    [save]
+    []
   )
 
   async function startRemovals() {
@@ -62,7 +61,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         if (!broker.removalEmail) continue
         const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail)
         openMailto(message)
-        updateStatus(broker.id, 'sent')
+        // Mark as manual — user must confirm they actually sent the email
+        updateStatus(broker.id, 'manual')
         // Small delay between opening mailto links
         await new Promise(r => setTimeout(r, 200))
       }

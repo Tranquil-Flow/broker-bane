@@ -10,6 +10,7 @@ interface EmailContextValue {
   loaded: boolean
   connectGmail: () => Promise<void>
   connectOutlook: () => Promise<void>
+  setProvider: (p: EmailProvider | null) => void
   sendEmail: (message: EmailMessage) => Promise<void>
   openMailto: (message: EmailMessage) => void
 }
@@ -33,14 +34,16 @@ export function EmailProvider({ children }: { children: ReactNode }) {
     const accessToken = await requestGmailToken()
     const p: EmailProvider = { type: 'gmail', accessToken }
     setProvider(p)
-    await save('email-provider', p)
+    // Only persist the provider type, never the access token
+    await save('email-provider', { type: p.type })
   }, [save])
 
   const connectOutlook = useCallback(async () => {
     const accessToken = await requestOutlookToken()
     const p: EmailProvider = { type: 'outlook', accessToken }
     setProvider(p)
-    await save('email-provider', p)
+    // Only persist the provider type, never the access token
+    await save('email-provider', { type: p.type })
   }, [save])
 
   const sendEmail = useCallback(async (message: EmailMessage) => {
@@ -61,7 +64,7 @@ export function EmailProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <EmailContext.Provider value={{ provider, loaded, connectGmail, connectOutlook, sendEmail, openMailto }}>
+    <EmailContext.Provider value={{ provider, loaded, connectGmail, connectOutlook, setProvider, sendEmail, openMailto }}>
       {children}
     </EmailContext.Provider>
   )

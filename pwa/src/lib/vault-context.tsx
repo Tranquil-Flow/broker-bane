@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 import type { IDBPDatabase } from 'idb'
 import { deriveKey } from './crypto'
 import { openStore, saveEncrypted, loadEncrypted } from './storage'
-import { getOrCreateSalt, hasSalt } from './salt'
+import { getOrCreateSalt } from './salt'
 
 interface VaultContextValue {
   key: CryptoKey | null
@@ -25,8 +25,7 @@ export function VaultProvider({ children }: { children: ReactNode }) {
   const CANARY_VALUE = 'brokerbane-vault-v1'
 
   const unlock = useCallback(async (passphrase: string) => {
-    const firstRun = !(await hasSalt())
-    const salt = await getOrCreateSalt()
+    const { salt, created: firstRun } = await getOrCreateSalt()
     const derivedKey = await deriveKey(passphrase, salt)
     const database = await openStore()
 
