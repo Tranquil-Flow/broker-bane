@@ -1,0 +1,26 @@
+Subject: Data Erasure Request - {{FullName}}
+
+Dear Data Controller,
+
+I am submitting this formal erasure request under Article 17 of the EU General Data Protection Regulation (Regulation 2016/679). This request is directed to {{BrokerName}} as the data controller.
+
+I request that all personal data you hold, process, or control in relation to me be erased without undue delay.
+
+Subject Identification:
+| Field | Value |
+|-------|-------|
+| Full Name | {{FullName}} |
+| Email | {{Email}} |
+{{#if Address}}| Address | {{Address}}, {{City}}, {{State}} {{ZipCode}}, {{Country}} |
+{{/if}}{{#if Phone}}| Phone | {{Phone}} |
+{{/if}}{{#if DateOfBirth}}| Date of Birth | {{DateOfBirth}} |
+{{/if}}
+
+Legal basis for this request: Article 17(1)(a) — data no longer necessary; Article 17(1)(b) — withdrawal of consent; Article 21 — right to object.
+
+Your obligations under GDPR Article 17(2) require you to inform third-party recipients of this erasure request.
+
+Statutory response deadline: 30 days from receipt (Article 12(3)).
+
+Yours faithfully,
+{{FullName}}
