@@ -129,7 +129,7 @@ export function renderTemplate(
   const lines = rendered.split("\n");
   const subjectLine = lines[0] ?? "";
   const subject = subjectLine.replace(/^Subject:\s*/, "").trim();
-  const body = lines.slice(1).join("\n").trim();
+  const body = lines.slice(1).join("\n").trimEnd();
 
   if (!subject) {
     throw new EmailError(`Template ${templateName}-${variant} rendered with empty subject`);
