@@ -125,7 +125,10 @@ describe("TemplateEngine", () => {
 
     it("does not throw for any variant index within discovered count", () => {
       const vars = buildTemplateVariables(testProfile, "Test");
-      expect(() => renderTemplate("gdpr", vars, "seed-that-maps-to-1")).not.toThrow();
+      // Test 60 different seeds to exercise all possible variant indices
+      for (let i = 0; i < 60; i++) {
+        expect(() => renderTemplate("gdpr", vars, `test-seed-${i}`)).not.toThrow();
+      }
     });
   });
 });
