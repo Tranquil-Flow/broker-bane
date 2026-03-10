@@ -66,6 +66,7 @@ export class Orchestrator {
 
   async run(options: OrchestratorOptions = {}): Promise<PipelineSummary> {
     const dryRun = options.dryRun ?? this.config.options.dry_run;
+    let limitReached = false;
 
     // Initialize database
     this.db = createDatabase(this.config.database.path);
@@ -304,11 +305,7 @@ export class Orchestrator {
                 { sentToday, dailyLimit },
                 `Daily send limit reached (${sentToday}/${dailyLimit}). Run 'brokerbane resume' tomorrow to continue.`
               );
-              pipelineRunRepo.finish(
-                pipelineRun.id,
-                "interrupted",
-                { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
-              );
+              limitReached = true;
               break;
             }
           }
@@ -396,7 +393,7 @@ export class Orchestrator {
     // Finish pipeline run
     pipelineRunRepo.finish(
       pipelineRun.id,
-      this.aborted ? "interrupted" : "completed",
+      this.aborted || limitReached ? "interrupted" : "completed",
       { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
     );
 
