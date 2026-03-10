@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import Handlebars from "handlebars";
@@ -26,20 +26,56 @@ export interface TemplateVariables {
   Month: string;
 }
 
+// Cache: templateKey (e.g. "gdpr", "gdpr-2") -> compiled template
 const templateCache = new Map<string, HandlebarsTemplateDelegate>();
+// Cache: template base name -> variant count
+const variantCountCache = new Map<string, number>();
 
-function getTemplate(name: string): HandlebarsTemplateDelegate {
-  const cached = templateCache.get(name);
+function discoverVariantCount(name: string): number {
+  const cached = variantCountCache.get(name);
+  if (cached !== undefined) return cached;
+
+  let count = 1;
+  while (existsSync(resolve(TEMPLATE_DIR, `${name}-${count + 1}.hbs`))) {
+    count++;
+  }
+  variantCountCache.set(name, count);
+  return count;
+}
+
+/** djb2-style hash of a string -> unsigned 32-bit int */
+function hashString(s: string): number {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) {
+    h = (Math.imul(h, 33) ^ s.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
+/** Pick a 1-indexed variant number deterministically from a seed string. */
+export function pickVariantIndex(seed: string, variantCount: number): number {
+  if (variantCount <= 1) return 1;
+  return (hashString(seed) % variantCount) + 1;
+}
+
+function templateKey(name: string, variant: number): string {
+  return variant === 1 ? name : `${name}-${variant}`;
+}
+
+function getTemplate(name: string, variant: number): HandlebarsTemplateDelegate {
+  const key = templateKey(name, variant);
+  const cached = templateCache.get(key);
   if (cached) return cached;
 
-  const templatePath = resolve(TEMPLATE_DIR, `${name}.hbs`);
+  const fileName = variant === 1 ? `${name}.hbs` : `${name}-${variant}.hbs`;
+  const templatePath = resolve(TEMPLATE_DIR, fileName);
   try {
     const source = readFileSync(templatePath, "utf-8");
     const compiled = Handlebars.compile(source);
-    templateCache.set(name, compiled);
+    templateCache.set(key, compiled);
     return compiled;
   } catch (err) {
-    throw new EmailError(`Failed to load template: ${name}`, err);
+    throw new EmailError(`Failed to load template: ${key}`, err);
   }
 }
 
@@ -72,11 +108,21 @@ export interface RenderedEmail {
   body: string;
 }
 
+/**
+ * Render a template, optionally selecting a variant by seed.
+ * @param templateName - "gdpr" | "ccpa" | "generic"
+ * @param variables - Handlebars variables
+ * @param variantSeed - broker ID or any string; same seed always picks same variant
+ */
 export function renderTemplate(
   templateName: string,
-  variables: TemplateVariables
+  variables: TemplateVariables,
+  variantSeed?: string
 ): RenderedEmail {
-  const template = getTemplate(templateName);
+  const variantCount = discoverVariantCount(templateName);
+  const variant = variantSeed ? pickVariantIndex(variantSeed, variantCount) : 1;
+
+  const template = getTemplate(templateName, variant);
   const rendered = template(variables);
 
   // First line is "Subject: ...", rest is body
@@ -86,7 +132,7 @@ export function renderTemplate(
   const body = lines.slice(1).join("\n").trim();
 
   if (!subject) {
-    throw new EmailError(`Template ${templateName} rendered with empty subject`);
+    throw new EmailError(`Template ${templateName}-${variant} rendered with empty subject`);
   }
 
   return { subject, body };
@@ -94,4 +140,5 @@ export function renderTemplate(
 
 export function clearTemplateCache(): void {
   templateCache.clear();
+  variantCountCache.clear();
 }

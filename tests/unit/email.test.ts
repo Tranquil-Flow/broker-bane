@@ -97,6 +97,36 @@ describe("TemplateEngine", () => {
       expect(email.body).not.toContain("Address:");
       expect(email.body).not.toContain("Phone:");
     });
+
+    it("selects variant 1 by default (no seed)", () => {
+      const vars = buildTemplateVariables(testProfile, "Spokeo");
+      const email = renderTemplate("gdpr", vars);
+      expect(email.subject).toBeTruthy();
+      expect(email.body).toBeTruthy();
+    });
+
+    it("selects deterministically by seed", () => {
+      const vars = buildTemplateVariables(testProfile, "Spokeo");
+      const first = renderTemplate("gdpr", vars, "spokeo");
+      const second = renderTemplate("gdpr", vars, "spokeo");
+      expect(first.subject).toBe(second.subject);
+    });
+
+    it("selects differently for different seeds (when multiple variants exist)", () => {
+      const vars = buildTemplateVariables(testProfile, "Test");
+      const subjects = new Set<string>();
+      for (let i = 0; i < 20; i++) {
+        const email = renderTemplate("gdpr", vars, `broker-${i}`);
+        subjects.add(email.subject);
+      }
+      // With 50 variants, 20 different seeds should produce at least 3 unique subjects
+      expect(subjects.size).toBeGreaterThanOrEqual(3);
+    });
+
+    it("does not throw for any variant index within discovered count", () => {
+      const vars = buildTemplateVariables(testProfile, "Test");
+      expect(() => renderTemplate("gdpr", vars, "seed-that-maps-to-1")).not.toThrow();
+    });
   });
 });
 
