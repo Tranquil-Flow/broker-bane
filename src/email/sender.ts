@@ -101,6 +101,10 @@ export class EmailSender {
         to: params.to,
         subject: params.subject,
         text: params.text,
+        headers: {
+          "X-Mailer": false,
+          "Reply-To": params.from,
+        },
       });
 
       logger.info(

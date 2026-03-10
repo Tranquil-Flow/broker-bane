@@ -212,4 +212,34 @@ describe("EmailSender", () => {
     expect(result.rejected).toHaveLength(0);
     await sender.close();
   });
+
+  it("suppresses X-Mailer header and adds Reply-To in sendMail args", async () => {
+    let capturedOptions: any = null;
+    const mockTransport = {
+      sendMail: vi.fn().mockImplementation((opts: any) => {
+        capturedOptions = opts;
+        return Promise.resolve({
+          messageId: "test-id",
+          accepted: ["to@example.com"],
+          rejected: [],
+        });
+      }),
+      verify: vi.fn().mockResolvedValue(true),
+      close: vi.fn(),
+    };
+
+    const sender = new EmailSender(dryRunConfig, false);
+    (sender as any).transporter = mockTransport;
+
+    await sender.send({
+      from: "me@example.com",
+      to: "to@example.com",
+      subject: "Test",
+      text: "Body",
+    });
+
+    expect(capturedOptions.headers?.["X-Mailer"]).toBe(false);
+    expect(capturedOptions.headers?.["Reply-To"]).toBe("me@example.com");
+    await sender.close();
+  });
 });
