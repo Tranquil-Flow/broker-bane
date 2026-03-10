@@ -27,6 +27,7 @@ import type { Playbook } from "../playbook/schema.js";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import Handlebars from "handlebars";
 import type Database from "better-sqlite3";
 
 export interface OrchestratorOptions {
@@ -417,7 +418,11 @@ export class Orchestrator {
     }
 
     const variables = buildTemplateVariables(this.config.profile, broker.name);
-    const rendered = renderTemplate(this.config.options.template, variables);
+    const rendered = renderTemplate(this.config.options.template, variables, broker.id);
+
+    if (broker.subject_template) {
+      rendered.subject = Handlebars.compile(broker.subject_template)(variables);
+    }
 
     const retryOptions = configToRetryOptions(this.config.retry);
 

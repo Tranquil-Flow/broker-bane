@@ -48,6 +48,7 @@ export const BrokerSchema = z.object({
   public_directory: z.boolean().default(false),
   verify_before_send: z.boolean().default(false),
   form_hints: z.string().optional(),
+  subject_template: z.string().optional(),
   opt_out_url: z.string().url().optional(),
   opt_out_validity_days: z.number().int().positive().default(180),
   country: z.string().length(2).optional(),
