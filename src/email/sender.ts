@@ -102,10 +102,9 @@ export class EmailSender {
         subject: params.subject,
         text: params.text,
         headers: {
-          "X-Mailer": false,
           "Reply-To": params.from,
         },
-      });
+      }) as SMTPTransport.SentMessageInfo;
 
       logger.info(
         { messageId: info.messageId, to: params.to },
