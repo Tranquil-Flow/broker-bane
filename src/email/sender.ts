@@ -96,15 +96,19 @@ export class EmailSender {
 
     try {
       const transport = await this.getTransport();
-      const info = await transport.sendMail({
+      const mailOptions = {
         from: params.from,
         to: params.to,
         subject: params.subject,
         text: params.text,
+        xMailer: false as false | string,   // suppress X-Mailer header (nodemailer runtime supports this)
         headers: {
           "Reply-To": params.from,
         },
-      }) as SMTPTransport.SentMessageInfo;
+      };
+      const info = await transport.sendMail(
+        mailOptions as Parameters<typeof transport.sendMail>[0]
+      ) as SMTPTransport.SentMessageInfo;
 
       logger.info(
         { messageId: info.messageId, to: params.to },

@@ -238,7 +238,7 @@ describe("EmailSender", () => {
       text: "Body",
     });
 
-    expect(capturedOptions.headers?.["X-Mailer"]).toBe(false);
+    expect(capturedOptions.xMailer).toBe(false);
     expect(capturedOptions.headers?.["Reply-To"]).toBe("me@example.com");
     await sender.close();
   });
