@@ -115,6 +115,7 @@ export const OptionsConfigSchema = z.object({
   delay_max_ms: z.number().default(15_000),
   verify_before_send: z.boolean().default(false),
   scan_interval_days: z.number().int().positive().default(30),
+  daily_limit: z.number().int().positive().optional(),
 });
 
 export const AppConfigSchema = z.object({

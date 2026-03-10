@@ -73,6 +73,7 @@ export class Orchestrator {
 
     const requestRepo = new RemovalRequestRepo(this.db);
     const emailLogRepo = new EmailLogRepo(this.db);
+    const dailyLimit = this.config.options.daily_limit;
     const circuitBreakerRepo = new CircuitBreakerRepo(this.db);
     const pipelineRunRepo = new PipelineRunRepo(this.db);
     const pendingTaskRepo = new PendingTaskRepo(this.db);
@@ -295,6 +296,23 @@ export class Orchestrator {
           broker.removal_method === "email" ||
           broker.removal_method === "hybrid"
         ) {
+          // Enforce daily send limit before each email
+          if (dailyLimit !== undefined) {
+            const sentToday = emailLogRepo.countSentToday();
+            if (sentToday >= dailyLimit) {
+              logger.info(
+                { sentToday, dailyLimit },
+                `Daily send limit reached (${sentToday}/${dailyLimit}). Run 'brokerbane resume' tomorrow to continue.`
+              );
+              pipelineRunRepo.finish(
+                pipelineRun.id,
+                "interrupted",
+                { sent: summary.sent, failed: summary.failed, skipped: summary.skipped }
+              );
+              break;
+            }
+          }
+
           await this.processEmailRemoval(
             broker,
             request.id,

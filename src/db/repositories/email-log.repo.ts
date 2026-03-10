@@ -46,4 +46,15 @@ export class EmailLogRepo {
       .prepare("SELECT * FROM email_log WHERE message_id = ?")
       .get(messageId) as EmailLogRow | undefined;
   }
+
+  countSentToday(): number {
+    const row = this.db
+      .prepare(
+        `SELECT COUNT(*) as count FROM email_log
+         WHERE direction = 'outbound' AND status = 'sent'
+         AND date(created_at) = date('now')`
+      )
+      .get() as { count: number };
+    return row.count;
+  }
 }
