@@ -116,6 +116,44 @@ brokerbane export --format csv > results.csv
 
 Validates your config file, broker database, SQLite connection, and SMTP credentials.
 
+### `brokerbane backup`
+
+Create an encrypted portable backup of your removal data.
+
+```bash
+brokerbane backup create                           # prompts for passphrase
+brokerbane backup create --output mybackup.brokerbane
+brokerbane backup create --exclude email_log,pipeline_runs
+brokerbane backup info mybackup.brokerbane         # show contents without decrypting
+```
+
+### `brokerbane import-backup`
+
+Import a `.brokerbane` backup file.
+
+```bash
+brokerbane import-backup mybackup.brokerbane       # prompts for passphrase and mode
+brokerbane import-backup mybackup.brokerbane --dry-run  # preview without applying
+```
+
+### `brokerbane settings`
+
+View and edit your configuration.
+
+```bash
+brokerbane settings show    # display current profile and options
+brokerbane settings edit    # interactive editor
+```
+
+### `brokerbane debug-report`
+
+Generate a redacted diagnostic report for troubleshooting.
+
+```bash
+brokerbane debug-report           # prints to terminal
+brokerbane debug-report --json    # machine-readable JSON
+```
+
 ## Configuration
 
 Config lives at `~/.brokerbane/config.yaml` (permissions: `0600`).
@@ -260,6 +298,23 @@ Current coverage: **59 brokers** across:
 - Business data (ZoomInfo, Clearbit, FullContact)
 - Data aggregators (LexisNexis, CoreLogic, Verisk)
 - EU/GDPR targets (Acxiom UK, Experian UK, Equifax UK)
+
+## Data Portability
+
+BrokerBane uses an encrypted `.brokerbane` file format to transfer data between:
+- CLI ↔ Dashboard (both use the same SQLite database — no transfer needed)
+- CLI/Dashboard ↔ PWA (different storage backends — use backup/import)
+- Device A ↔ Device B (transfer your removal history to a new machine)
+
+```bash
+# On the source machine
+brokerbane backup create --output transfer.brokerbane
+
+# On the destination machine
+brokerbane import-backup transfer.brokerbane
+```
+
+The `.brokerbane` format uses AES-256-GCM encryption with PBKDF2 key derivation (200,000 iterations). Credentials and screenshots are never included.
 
 ## Contributing
 
