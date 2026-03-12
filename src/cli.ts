@@ -16,6 +16,8 @@ import { verifyEvidenceCommand } from "./commands/verify-evidence.cmd.js";
 import { generatePlaybookCommand } from "./commands/generate-playbook.cmd.js";
 import { backupCommand, backupInfoCommand } from "./commands/backup.cmd.js";
 import { importPortableCommand } from "./commands/import-portable.cmd.js";
+import { settingsShowCommand, settingsEditCommand } from "./commands/settings.cmd.js";
+import { debugReportCommand } from "./commands/debug-report.cmd.js";
 
 const program = new Command();
 
@@ -188,6 +190,35 @@ program
   .option("-c, --config <path>", "Config file path")
   .action(async (file, opts) => {
     await importPortableCommand(file, opts);
+  });
+
+program
+  .command("debug-report")
+  .description("Generate a redacted diagnostic report for troubleshooting")
+  .option("--json", "Output as JSON")
+  .option("-c, --config <path>", "Config file path")
+  .action(async (opts) => {
+    await debugReportCommand(opts);
+  });
+
+const settingsCmd = program
+  .command("settings")
+  .description("View and edit your BrokerBane configuration");
+
+settingsCmd
+  .command("show")
+  .description("Show current settings")
+  .option("-c, --config <path>", "Config file path")
+  .action(async (opts) => {
+    await settingsShowCommand(opts);
+  });
+
+settingsCmd
+  .command("edit")
+  .description("Interactively edit settings")
+  .option("-c, --config <path>", "Config file path")
+  .action(async (opts) => {
+    await settingsEditCommand(opts);
   });
 
 // Global error handler
