@@ -295,6 +295,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/about", label: "INTEL" },
   { href: "/compare", label: "COMPARE" },
   { href: "/setup", label: "SETUP" },
+  { href: "/settings", label: "SETTINGS" },
 ];
 
 export function layout(title: string, activeNav: string, bodyHtml: string): string {

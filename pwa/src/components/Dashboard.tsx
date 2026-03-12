@@ -9,11 +9,10 @@ import {
 import { buildRemovalEmail } from '../lib/email-templates'
 import BrokerCard from './BrokerCard'
 import UpgradeCallout from './UpgradeCallout'
-import { exportBackup } from '../lib/backup'
 import type { UserProfile, BrokerStatus } from '../types'
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
-  const { save, load, db } = useVault()
+  const { save, load } = useVault()
   const { sendEmail, provider, openMailto } = useEmail()
   const runningRef = useRef(false)
   const [statuses, setStatuses] = useState<Record<string, BrokerStatus>>({})
@@ -153,15 +152,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           </div>
         </div>
 
-        {/* Export */}
-        <div className="pt-2 border-t border-slate-800">
-          <button
-            onClick={() => db && exportBackup(db).catch(() => {})}
-            className="text-sm text-slate-500 hover:text-slate-300 transition"
-          >
-            Export encrypted backup
-          </button>
-        </div>
+        {/* Export — available in Settings tab */}
       </div>
     </div>
   )

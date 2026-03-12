@@ -1,34 +1,17 @@
 import type { IDBPDatabase } from 'idb'
+import { exportFromVault } from './portable-adapter'
+import { serialize } from '@brokerbane/portable/serialize.js'
 
-const STORE_NAME = 'vault'
-
-export async function exportBackup(db: IDBPDatabase): Promise<void> {
-  const tx = db.transaction(STORE_NAME, 'readonly')
-  const store = tx.objectStore(STORE_NAME)
-  const keys = await store.getAllKeys()
-  const entries: Record<string, unknown> = {}
-
-  for (const key of keys) {
-    entries[String(key)] = await store.get(key)
-  }
-
-  const payload = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    note: 'This backup is encrypted. Your passphrase is required to restore it.',
-    entries,
-  }
-
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: 'application/json',
-  })
+export async function exportBackup(db: IDBPDatabase, vaultKey: CryptoKey, passphrase: string): Promise<void> {
+  const payload = await exportFromVault(db, vaultKey)
+  const json = await serialize(payload, passphrase, { source: 'pwa', appVersion: '0.1.0' })
+  const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `brokerbane-backup-${new Date().toISOString().slice(0, 10)}.json`
+  a.download = `brokerbane-${new Date().toISOString().slice(0, 10)}.brokerbane`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  // Revoke after browser has time to initiate the download
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+  URL.revokeObjectURL(url)
 }
