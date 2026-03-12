@@ -38,13 +38,16 @@ export const PortableRemovalRequestSchema = z.object({
   status: z.string(),
   template_used: z.string(),
   email_sent_to: z.string().nullable(),
-  confidence_score: z.number().nullable(),
-  attempt_count: z.number(),
+  confidence_score: z.number().min(0).max(1).nullable(),
+  attempt_count: z.number().int().nonnegative(),
   last_error: z.string().nullable(),
+  /** JSON-encoded string or null — parse with JSON.parse() */
   metadata: z.string().nullable(),
   created_at: z.string(),
   updated_at: z.string(),
 });
+
+export type PortableRemovalRequest = z.infer<typeof PortableRemovalRequestSchema>;
 
 export const PortableBrokerResponseSchema = z.object({
   _export_id: z.string(),
@@ -59,6 +62,8 @@ export const PortableBrokerResponseSchema = z.object({
   created_at: z.string(),
 });
 
+export type PortableBrokerResponse = z.infer<typeof PortableBrokerResponseSchema>;
+
 export const PortableEmailLogSchema = z.object({
   _export_id: z.string(),
   _request_ref: z.string(),
@@ -71,6 +76,8 @@ export const PortableEmailLogSchema = z.object({
   created_at: z.string(),
 });
 
+export type PortableEmailLog = z.infer<typeof PortableEmailLogSchema>;
+
 export const PortableEvidenceChainSchema = z.object({
   _export_id: z.string(),
   _request_ref: z.string().nullable(),
@@ -81,9 +88,12 @@ export const PortableEvidenceChainSchema = z.object({
   prev_hash: z.string(),
   page_text_hash: z.string().nullable(),
   broker_url: z.string().nullable(),
+  /** JSON-encoded string or null — parse with JSON.parse() */
   metadata: z.string().nullable(),
   created_at: z.string(),
 });
+
+export type PortableEvidenceChain = z.infer<typeof PortableEvidenceChainSchema>;
 
 export const PortablePendingTaskSchema = z.object({
   _export_id: z.string(),
@@ -96,6 +106,8 @@ export const PortablePendingTaskSchema = z.object({
   completed_at: z.string().nullable(),
 });
 
+export type PortablePendingTask = z.infer<typeof PortablePendingTaskSchema>;
+
 export const PortableScanRunSchema = z.object({
   _export_id: z.string(),
   started_at: z.string(),
@@ -107,16 +119,20 @@ export const PortableScanRunSchema = z.object({
   error_count: z.number(),
 });
 
+export type PortableScanRun = z.infer<typeof PortableScanRunSchema>;
+
 export const PortableScanResultSchema = z.object({
   _export_id: z.string(),
   _scan_run_ref: z.string(),
   broker_id: z.string(),
   found: z.boolean(),
-  confidence: z.number().nullable(),
+  confidence: z.number().min(0).max(1).nullable(),
   profile_data: z.string().nullable(),
   error: z.string().nullable(),
   created_at: z.string(),
 });
+
+export type PortableScanResult = z.infer<typeof PortableScanResultSchema>;
 
 export const PortablePipelineRunSchema = z.object({
   _export_id: z.string(),
@@ -129,11 +145,15 @@ export const PortablePipelineRunSchema = z.object({
   skipped_count: z.number(),
 });
 
+export type PortablePipelineRun = z.infer<typeof PortablePipelineRunSchema>;
+
 export const PortableWarningsSchema = z.object({
   screenshots_excluded: z.boolean().default(true),
   credentials_excluded: z.boolean().default(true),
   extra_profile_data_truncated: z.boolean().optional(),
 });
+
+export type PortableWarnings = z.infer<typeof PortableWarningsSchema>;
 
 export const PortablePayloadSchema = z.object({
   profile: PortableProfileSchema,
@@ -161,6 +181,8 @@ export const CryptoParamsSchema = z.object({
   checksum: z.string(),
 });
 
+export type CryptoParams = z.infer<typeof CryptoParamsSchema>;
+
 export const SummarySchema = z.object({
   removal_requests: z.number(),
   broker_responses: z.number(),
@@ -171,6 +193,8 @@ export const SummarySchema = z.object({
   scan_results: z.number(),
   pipeline_runs: z.number(),
 });
+
+export type Summary = z.infer<typeof SummarySchema>;
 
 export const ExportEnvelopeSchema = z.object({
   format: z.literal("brokerbane-export"),

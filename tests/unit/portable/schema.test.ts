@@ -186,6 +186,54 @@ describe("PortableRemovalRequestSchema", () => {
     const { _export_id, ...rest } = validRequest;
     expect(() => PortableRemovalRequestSchema.parse(rest)).toThrow();
   });
+
+  it("rejects negative attempt_count", () => {
+    expect(() =>
+      PortableRemovalRequestSchema.parse({
+        ...validRequest,
+        attempt_count: -1,
+      })
+    ).toThrow();
+  });
+
+  it("accepts zero attempt_count", () => {
+    const result = PortableRemovalRequestSchema.parse({
+      ...validRequest,
+      attempt_count: 0,
+    });
+    expect(result.attempt_count).toBe(0);
+  });
+
+  it("rejects confidence_score > 1", () => {
+    expect(() =>
+      PortableRemovalRequestSchema.parse({
+        ...validRequest,
+        confidence_score: 1.5,
+      })
+    ).toThrow();
+  });
+
+  it("accepts confidence_score of 0.95", () => {
+    const result = PortableRemovalRequestSchema.parse({
+      ...validRequest,
+      confidence_score: 0.95,
+    });
+    expect(result.confidence_score).toBe(0.95);
+  });
+
+  it("accepts confidence_score of 0 and 1", () => {
+    const min = PortableRemovalRequestSchema.parse({
+      ...validRequest,
+      confidence_score: 0,
+    });
+    expect(min.confidence_score).toBe(0);
+
+    const max = PortableRemovalRequestSchema.parse({
+      ...validRequest,
+      confidence_score: 1,
+    });
+    expect(max.confidence_score).toBe(1);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -358,6 +406,30 @@ describe("CryptoParamsSchema", () => {
     expect(() =>
       CryptoParamsSchema.parse({ ...validCrypto, hash: "SHA-512" })
     ).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SummarySchema
+// ---------------------------------------------------------------------------
+describe("SummarySchema", () => {
+  it("parses valid summary with all counts", () => {
+    const result = SummarySchema.parse({
+      removal_requests: 5,
+      broker_responses: 3,
+      email_log: 10,
+      evidence_chain: 2,
+      pending_tasks: 1,
+      scan_runs: 4,
+      scan_results: 20,
+      pipeline_runs: 7,
+    });
+    expect(result.removal_requests).toBe(5);
+    expect(result.pipeline_runs).toBe(7);
+  });
+
+  it("rejects missing fields", () => {
+    expect(() => SummarySchema.parse({ removal_requests: 5 })).toThrow();
   });
 });
 
