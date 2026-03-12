@@ -16,6 +16,7 @@ import { registerCompareRoutes } from "./routes/compare.js";
 import { registerSetupRoutes } from "./routes/setup.js";
 import { registerScanRoutes } from "./routes/scan.js";
 import { registerEvidenceRoutes } from "./routes/evidence.js";
+import { registerSettingsRoutes } from "./routes/settings.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -40,6 +41,7 @@ export function createDashboardApp(config: AppConfig, existingDb?: Database, por
   registerSetupRoutes(app, db, config, port);
   registerScanRoutes(app, db, config);
   registerEvidenceRoutes(app, db);
+  registerSettingsRoutes(app, db, config);
 
   return { app, db };
 }
