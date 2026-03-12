@@ -16,12 +16,17 @@ describe("portable crypto", () => {
     const key1 = await deriveKey("correct", salt);
     const key2 = await deriveKey("wrong", salt);
     const { iv, ciphertext } = await encrypt(key1, "secret");
-    await expect(decrypt(key2, iv, ciphertext)).rejects.toThrow();
+    await expect(decrypt(key2, iv, ciphertext)).rejects.toThrow("Decryption failed — wrong passphrase or corrupted data");
   });
 
   it("rejects salt shorter than 32 bytes", async () => {
     const shortSalt = new Uint8Array(16);
     await expect(deriveKey("pass", shortSalt)).rejects.toThrow("Salt must be at least 32 bytes");
+  });
+
+  it("rejects all-zero salt", async () => {
+    const zeroSalt = new Uint8Array(32); // all zeros by default
+    await expect(deriveKey("pass", zeroSalt)).rejects.toThrow("Salt must not be all zeros");
   });
 
   it("computes deterministic SHA-256 checksum", async () => {
