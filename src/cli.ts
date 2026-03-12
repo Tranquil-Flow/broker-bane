@@ -14,6 +14,8 @@ import { dashboardCommand } from "./commands/dashboard.cmd.js";
 import { scanCommand } from "./commands/scan.cmd.js";
 import { verifyEvidenceCommand } from "./commands/verify-evidence.cmd.js";
 import { generatePlaybookCommand } from "./commands/generate-playbook.cmd.js";
+import { backupCommand, backupInfoCommand } from "./commands/backup.cmd.js";
+import { importPortableCommand } from "./commands/import-portable.cmd.js";
 
 const program = new Command();
 
@@ -152,6 +154,40 @@ program
   .option("-c, --config <path>", "Override config file path")
   .action(async (opts) => {
     await generatePlaybookCommand(opts);
+  });
+
+const backupCmd = program
+  .command("backup")
+  .description("Create an encrypted portable backup of your data");
+
+backupCmd
+  .command("create")
+  .description("Create a new backup")
+  .option("-o, --output <path>", "Output file path")
+  .option("--exclude <sections>", "Comma-separated sections to exclude (email_log, pipeline_runs)")
+  .option("-c, --config <path>", "Config file path")
+  .action(async (opts) => {
+    await backupCommand({
+      output: opts.output,
+      exclude: opts.exclude?.split(","),
+      config: opts.config,
+    });
+  });
+
+backupCmd
+  .command("info <file>")
+  .description("Show backup file contents without decrypting")
+  .action(async (file) => {
+    await backupInfoCommand(file);
+  });
+
+program
+  .command("import-backup <file>")
+  .description("Import a .brokerbane backup file")
+  .option("--dry-run", "Preview what would be imported without applying")
+  .option("-c, --config <path>", "Config file path")
+  .action(async (file, opts) => {
+    await importPortableCommand(file, opts);
   });
 
 // Global error handler
