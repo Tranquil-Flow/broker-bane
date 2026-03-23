@@ -204,6 +204,29 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (5);
     `,
   },
+  {
+    version: 6,
+    sql: `
+      -- Retry queue for transient failures
+      CREATE TABLE IF NOT EXISTS retry_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        broker_id TEXT NOT NULL,
+        task_type TEXT NOT NULL CHECK (task_type IN ('email', 'web_form', 'confirm_link')),
+        payload TEXT NOT NULL,
+        error_message TEXT NOT NULL,
+        error_code TEXT,
+        attempt_count INTEGER NOT NULL DEFAULT 1,
+        next_retry_at TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_retry_queue_next_retry ON retry_queue(next_retry_at);
+      CREATE INDEX IF NOT EXISTS idx_retry_queue_broker_id ON retry_queue(broker_id);
+
+      INSERT INTO schema_version (version) VALUES (6);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

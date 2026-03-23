@@ -129,3 +129,16 @@ export interface EvidenceChainRow {
   metadata: string | null;
   created_at: string;
 }
+
+export interface RetryQueueRow {
+  id: number;
+  broker_id: string;
+  task_type: string;
+  payload: string;
+  error_message: string;
+  error_code: string | null;
+  attempt_count: number;
+  next_retry_at: string;
+  created_at: string;
+  updated_at: string;
+}
