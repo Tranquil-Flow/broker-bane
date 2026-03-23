@@ -56,6 +56,17 @@ export interface CircuitBreakerRow {
   failure_count: number;
   last_failure_at: string | null;
   cooldown_until: string | null;
+  domain: string | null;
+  updated_at: string;
+}
+
+export interface DomainCircuitBreakerRow {
+  domain: string;
+  state: string;
+  failure_count: number;
+  consecutive_opens: number;
+  last_failure_at: string | null;
+  cooldown_until: string | null;
   updated_at: string;
 }
 

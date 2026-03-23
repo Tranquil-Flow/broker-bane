@@ -182,6 +182,28 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (4);
     `,
   },
+  {
+    version: 5,
+    sql: `
+      -- Domain-level circuit breaker with exponential backoff
+      CREATE TABLE IF NOT EXISTS domain_circuit_breaker (
+        domain TEXT PRIMARY KEY,
+        state TEXT NOT NULL DEFAULT 'closed' CHECK (state IN ('closed', 'open', 'half_open')),
+        failure_count INTEGER NOT NULL DEFAULT 0,
+        consecutive_opens INTEGER NOT NULL DEFAULT 0,
+        last_failure_at TEXT,
+        cooldown_until TEXT,
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      -- Add domain column to existing circuit_breaker_state for reference
+      ALTER TABLE circuit_breaker_state ADD COLUMN domain TEXT;
+
+      CREATE INDEX IF NOT EXISTS idx_circuit_breaker_domain ON circuit_breaker_state(domain);
+
+      INSERT INTO schema_version (version) VALUES (5);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

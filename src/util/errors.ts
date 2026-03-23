@@ -59,9 +59,14 @@ export class StateTransitionError extends BrokerBaneError {
 }
 
 export class CircuitBreakerOpenError extends BrokerBaneError {
-  constructor(brokerId: string, cooldownUntil: Date) {
+  constructor(
+    public readonly identifier: string,
+    public readonly cooldownUntil: Date,
+    customMessage?: string
+  ) {
     super(
-      `Circuit breaker open for broker ${brokerId} until ${cooldownUntil.toISOString()}`,
+      customMessage ??
+        `Circuit breaker open for ${identifier} until ${cooldownUntil.toISOString()}`,
       "CIRCUIT_BREAKER_OPEN"
     );
     this.name = "CircuitBreakerOpenError";

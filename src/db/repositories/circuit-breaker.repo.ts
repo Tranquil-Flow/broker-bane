@@ -16,16 +16,18 @@ export class CircuitBreakerRepo {
     failureCount: number;
     lastFailureAt?: string;
     cooldownUntil?: string;
+    domain?: string;
   }): void {
     this.db
       .prepare(
-        `INSERT INTO circuit_breaker_state (broker_id, state, failure_count, last_failure_at, cooldown_until, updated_at)
-         VALUES (?, ?, ?, ?, ?, datetime('now'))
+        `INSERT INTO circuit_breaker_state (broker_id, state, failure_count, last_failure_at, cooldown_until, domain, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
          ON CONFLICT(broker_id) DO UPDATE SET
            state = excluded.state,
            failure_count = excluded.failure_count,
            last_failure_at = excluded.last_failure_at,
            cooldown_until = excluded.cooldown_until,
+           domain = excluded.domain,
            updated_at = datetime('now')`
       )
       .run(
@@ -33,8 +35,16 @@ export class CircuitBreakerRepo {
         params.state,
         params.failureCount,
         params.lastFailureAt ?? null,
-        params.cooldownUntil ?? null
+        params.cooldownUntil ?? null,
+        params.domain ?? null
       );
+  }
+
+  /** Get all broker circuit breakers for a specific domain */
+  getByDomain(domain: string): CircuitBreakerRow[] {
+    return this.db
+      .prepare("SELECT * FROM circuit_breaker_state WHERE domain = ?")
+      .all(domain) as CircuitBreakerRow[];
   }
 
   reset(brokerId: string): void {
