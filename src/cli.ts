@@ -18,6 +18,8 @@ import { backupCommand, backupInfoCommand } from "./commands/backup.cmd.js";
 import { importPortableCommand } from "./commands/import-portable.cmd.js";
 import { settingsShowCommand, settingsEditCommand } from "./commands/settings.cmd.js";
 import { debugReportCommand } from "./commands/debug-report.cmd.js";
+import { reportCommand } from "./commands/report.cmd.js";
+import { rescanCommand } from "./commands/rescan.cmd.js";
 
 const program = new Command();
 
@@ -219,6 +221,28 @@ settingsCmd
   .option("-c, --config <path>", "Config file path")
   .action(async (opts) => {
     await settingsEditCommand(opts);
+  });
+
+program
+  .command("report")
+  .description("Summary report of broker removal status")
+  .option("-f, --format <format>", "Output format: text, json", "text")
+  .option("-v, --verbose", "Include per-broker status history")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await reportCommand(opts);
+  });
+
+program
+  .command("rescan")
+  .description("Manage re-scanning of brokers after removal")
+  .option("--run", "Re-queue all due brokers for rescan")
+  .option("--broker <id>", "Force rescan a specific broker regardless of schedule")
+  .option("--list", "Show full rescan schedule for all brokers")
+  .option("--interval <days>", "Rescan interval in days (default: 90)")
+  .option("-c, --config <path>", "Override config file path")
+  .action(async (opts) => {
+    await rescanCommand(opts);
   });
 
 // Global error handler

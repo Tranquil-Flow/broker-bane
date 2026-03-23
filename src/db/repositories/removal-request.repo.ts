@@ -111,4 +111,19 @@ export class RemovalRequestRepo {
       .get(brokerId) as { updated_at: string } | undefined;
     return row?.updated_at ?? null;
   }
+
+  /**
+   * Returns requests that are in 'sent' or 'awaiting_confirmation' status
+   * and have not been updated in more than daysWithoutConfirmation days.
+   */
+  getStale(daysWithoutConfirmation: number): RemovalRequestRow[] {
+    return this.db
+      .prepare(
+        `SELECT * FROM removal_requests
+         WHERE status IN ('sent', 'awaiting_confirmation')
+           AND updated_at <= datetime('now', ? || ' days')
+         ORDER BY updated_at ASC`
+      )
+      .all(`-${daysWithoutConfirmation}`) as RemovalRequestRow[];
+  }
 }

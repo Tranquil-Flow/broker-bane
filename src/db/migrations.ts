@@ -167,6 +167,21 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (3);
     `,
   },
+  {
+    version: 4,
+    sql: `
+      CREATE TABLE IF NOT EXISTS rescan_schedule (
+        broker_id TEXT PRIMARY KEY,
+        next_rescan_at TEXT NOT NULL,
+        interval_days INTEGER NOT NULL DEFAULT 90,
+        last_rescan_at TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+
+      INSERT INTO schema_version (version) VALUES (4);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

@@ -94,6 +94,15 @@ export interface ScanResultRow {
   created_at: string;
 }
 
+export interface RescanScheduleRow {
+  broker_id: string;
+  next_rescan_at: string;
+  interval_days: number;
+  last_rescan_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface EvidenceChainRow {
   id: number;
   request_id: number | null;
