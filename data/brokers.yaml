@@ -1,5 +1,5 @@
-version: 1.1.0
-updated: "2026-03-05"
+version: 1.2.0
+updated: "2026-03-24"
 brokers:
   - id: spokeo
     name: Spokeo
@@ -18146,3 +18146,131 @@ brokers:
     verify_before_send: true
     parent_company: Eycon
     search_url: https://www.eycon.com
+  # 2026 additions - major brokers previously missing
+  - id: vericast
+    name: Vericast
+    domain: vericast.com
+    email: privacy@vericast.com
+    region: us
+    category: marketing_data
+    privacy_policy_url: https://www.vericast.com/privacy-policy/
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: easy
+    tier: 1
+    parent_company: Vericast Corp
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Navigate to vericast.com/ccpa-opt-out or submit a request via their OneTrust privacy portal.
+      Select 'Do Not Sell My Personal Information' option. Provide name and email address.
+      Vericast also honors Global Privacy Control (GPC) signal.
+    opt_out_url: https://www.vericast.com/ccpa-opt-out/
+  - id: certn
+    name: Certn
+    domain: certn.co
+    email: privacy@certn.co
+    region: ca
+    category: background_check
+    privacy_policy_url: https://certn.co/privacy-policy/
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: true
+    difficulty: medium
+    tier: 2
+    parent_company: Certn Holdings Inc
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Send data deletion request to privacy@certn.co with subject 'Data Deletion Request'.
+      Include your full name and any associated email addresses. They may require ID verification.
+      GDPR and CCPA compliant. Processing time: 30 days.
+  - id: socure
+    name: Socure
+    domain: socure.com
+    email: privacy@socure.com
+    region: us
+    category: identity_verification
+    privacy_policy_url: https://www.socure.com/privacy-policy
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: medium
+    tier: 1
+    parent_company: Socure Inc
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Submit a CCPA request via socure.com/ccpa or through their OneTrust privacy portal.
+      Select 'Delete My Data' or 'Do Not Sell My Personal Information' as appropriate.
+      Socure provides identity verification for banks and fintechs — data deletion may not affect
+      records already shared with their business customers.
+    opt_out_url: https://www.socure.com/ccpa
+  - id: persona
+    name: Persona
+    domain: withpersona.com
+    email: privacy@withpersona.com
+    region: us
+    category: identity_verification
+    privacy_policy_url: https://withpersona.com/privacy
+    removal_method: email
+    requires_captcha: false
+    requires_email_confirm: false
+    requires_id_upload: false
+    difficulty: hard
+    tier: 2
+    parent_company: Persona Identities Inc
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Send deletion request to privacy@withpersona.com. Note: Persona acts as a data processor
+      for businesses using their service. For data held by those businesses, contact them directly.
+      Persona maintains a DPA and is EU-US Data Privacy Framework certified.
+  - id: idme
+    name: ID.me
+    domain: id.me
+    email: support@id.me
+    region: us
+    category: identity_verification
+    privacy_policy_url: https://www.id.me/privacy
+    removal_method: hybrid
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: hard
+    tier: 1
+    parent_company: ID.me Inc
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Account deletion requires logging in at wallet.id.me/settings/account/deactivate.
+      For data deletion without an account, email support@id.me with a data deletion request.
+      ID.me is used by government agencies; deletion may not affect records already shared with
+      state or federal systems. Processing time: up to 45 days.
+    opt_out_url: https://wallet.id.me/settings/account/deactivate
+  - id: plaid
+    name: Plaid
+    domain: plaid.com
+    email: privacy@plaid.com
+    region: us
+    category: data_aggregator
+    privacy_policy_url: https://plaid.com/legal/privacy-statement/
+    removal_method: web_form
+    requires_captcha: false
+    requires_email_confirm: true
+    requires_id_upload: false
+    difficulty: easy
+    tier: 1
+    parent_company: Plaid Inc
+    public_directory: false
+    verify_before_send: false
+    form_hints: >-
+      Use the consumer portal at my.plaid.com to view and manage financial data connections.
+      Disconnect linked apps and request data deletion. Plaid also accepts CCPA/GDPR requests
+      via their privacy portal. Note: deleting Plaid data does not delete data already shared
+      with connected financial apps.
+    opt_out_url: https://my.plaid.com/
