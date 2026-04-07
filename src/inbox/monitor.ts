@@ -11,13 +11,15 @@ import { exponentialBackoff, sleep } from "../util/delay.js";
 
 export async function resolveImapAuth(
   auth: EmailAuth,
+  identityId = "default",
 ): Promise<{ user: string; pass: string } | { user: string; accessToken: string }> {
-  if (auth.type === "password") {
+  // Backwards compat: if type is absent, assume password (matches EmailAuthSchema preprocessing)
+  if ((auth as { type?: string }).type === undefined || auth.type === "password") {
     return { user: auth.user, pass: auth.pass };
   }
 
   // OAuth2
-  let tokens = await loadTokens(auth.provider);
+  let tokens = await loadTokens(auth.provider, identityId);
   if (!tokens) {
     throw new Error(`No OAuth tokens found for ${auth.provider}. Run 'brokerbane init' to set up.`);
   }
@@ -25,8 +27,8 @@ export async function resolveImapAuth(
   if (isExpired(tokens)) {
     tokens =
       auth.provider === "google"
-        ? await refreshGoogleToken(tokens.refreshToken)
-        : await refreshMicrosoftToken(auth.user);
+        ? await refreshGoogleToken(tokens.refreshToken, identityId)
+        : await refreshMicrosoftToken(auth.user, identityId);
   }
 
   return { user: auth.user, accessToken: tokens.accessToken };
@@ -92,6 +94,7 @@ export class InboxMonitor {
   private reconnecting = false;
   private reconnectAttempt = 0;
   private readonly imapConfig: ImapConfig;
+  private readonly identityId: string;
   private readonly monitorConfig: MonitorConfig;
   private readonly brokers: readonly Broker[];
   private readonly callbacks: MonitorCallbacks;
@@ -100,9 +103,11 @@ export class InboxMonitor {
     imapConfig: ImapConfig,
     brokers: readonly Broker[],
     callbacks: MonitorCallbacks = {},
-    monitorConfig: Partial<MonitorConfig> = {}
+    monitorConfig: Partial<MonitorConfig> = {},
+    identityId = "default",
   ) {
     this.imapConfig = imapConfig;
+    this.identityId = identityId;
     this.brokers = brokers;
     this.callbacks = callbacks;
     this.monitorConfig = { ...DEFAULT_MONITOR_CONFIG, ...monitorConfig };
@@ -118,7 +123,7 @@ export class InboxMonitor {
     try {
       const { ImapFlow } = await import("imapflow");
 
-      const imapAuth = await resolveImapAuth(this.imapConfig.auth);
+      const imapAuth = await resolveImapAuth(this.imapConfig.auth, this.identityId);
 
       this.client = new ImapFlow({
         host: this.imapConfig.host,

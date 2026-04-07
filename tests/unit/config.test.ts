@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { writeFileSync, mkdirSync, rmSync, chmodSync, statSync } from "node:fs";
+import { writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import yaml from "js-yaml";
@@ -58,6 +58,45 @@ describe("Config loader", () => {
       expect(config.logging.redact_pii).toBe(true);
     });
 
+    it("synthesizes a default broker identity from legacy email config", () => {
+      const configPath = join(tmpDir, "config.yaml");
+      const legacyConfig = makeMinimalConfig();
+      writeFileSync(configPath, yaml.dump(legacyConfig), { mode: 0o600 });
+
+      const config = loadConfig(configPath);
+      expect(config.broker_identity).toBeDefined();
+      expect(config.broker_identity!.id).toBe("default");
+      expect(config.broker_identity!.email).toBe("jane@example.com");
+      expect(config.broker_identity!.mode).toBe("same_mailbox");
+      expect(config.broker_identity!.smtp.host).toBe("smtp.gmail.com");
+    });
+
+    it("preserves explicit broker identity config", () => {
+      const configPath = join(tmpDir, "config.yaml");
+      const cfg = {
+        ...makeMinimalConfig(),
+        broker_identity: {
+          id: "privacy-mailbox",
+          label: "Dedicated removal mailbox",
+          mode: "dedicated_mailbox",
+          email: "removals@example.net",
+          privacy_level: "maximum",
+          smtp: {
+            host: "smtp.example.net",
+            port: 587,
+            secure: false,
+            auth: { user: "removals@example.net", pass: "secret" },
+          },
+        },
+      };
+      writeFileSync(configPath, yaml.dump(cfg), { mode: 0o600 });
+
+      const config = loadConfig(configPath);
+      expect(config.broker_identity!.id).toBe("privacy-mailbox");
+      expect(config.broker_identity!.email).toBe("removals@example.net");
+      expect(config.broker_identity!.privacy_level).toBe("maximum");
+    });
+
     it("throws ConfigError when file does not exist", () => {
       expect(() => loadConfig(join(tmpDir, "nonexistent.yaml"))).toThrow("Config file not found");
     });
@@ -113,7 +152,6 @@ describe("Config loader", () => {
 
   describe("init config output format", () => {
     it("written config is parseable and validates correctly", () => {
-      // Simulate what init writes
       const initConfig = {
         profile: {
           first_name: "Alice",
@@ -147,14 +185,13 @@ describe("Config loader", () => {
       const configPath = join(tmpDir, "config.yaml");
       writeFileSync(configPath, yaml.dump(initConfig, { lineWidth: 120 }), { mode: 0o600 });
 
-      // Verify permissions
       const mode = statSync(configPath).mode & 0o777;
       expect(mode).toBe(0o600);
 
-      // Verify it loads cleanly
       const config = loadConfig(configPath);
       expect(config.profile.first_name).toBe("Alice");
       expect(config.options.template).toBe("gdpr");
+      expect(config.broker_identity!.email).toBe("alice@example.com");
     });
 
     it("written config with IMAP section validates correctly", () => {
@@ -175,7 +212,8 @@ describe("Config loader", () => {
       expect(config.inbox?.host).toBe("imap.gmail.com");
       expect(config.inbox?.port).toBe(993);
       expect(config.inbox?.secure).toBe(true);
-      expect(config.inbox?.mailbox).toBe("INBOX"); // default
+      expect(config.inbox?.mailbox).toBe("INBOX");
+      expect(config.broker_identity?.inbox?.host).toBe("imap.gmail.com");
     });
   });
 });
@@ -184,13 +222,33 @@ describe("Config schema — new fields", () => {
   it("accepts email.provider and email.alias as optional fields", () => {
     const cfg = makeMinimalConfig();
     cfg.email = {
-      ...cfg.email as Record<string, unknown>,
+      ...(cfg.email as Record<string, unknown>),
       provider: "gmail",
       alias: "jane+brokerbane@gmail.com",
     };
     const parsed = AppConfigSchema.parse(cfg);
     expect(parsed.email.provider).toBe("gmail");
     expect(parsed.email.alias).toBe("jane+brokerbane@gmail.com");
+  });
+
+  it("accepts explicit broker identity config", () => {
+    const cfg = makeMinimalConfig();
+    cfg.broker_identity = {
+      id: "default",
+      label: "Dedicated removal mailbox",
+      mode: "dedicated_mailbox",
+      email: "privacy@example.net",
+      privacy_level: "maximum",
+      smtp: {
+        host: "smtp.example.net",
+        port: 587,
+        secure: false,
+        auth: { user: "privacy@example.net", pass: "secret" },
+      },
+    };
+    const parsed = AppConfigSchema.parse(cfg);
+    expect(parsed.broker_identity!.mode).toBe("dedicated_mailbox");
+    expect(parsed.broker_identity!.email).toBe("privacy@example.net");
   });
 
   it("accepts old config without provider/alias fields", () => {

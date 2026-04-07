@@ -1,3 +1,13 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("keytar", () => ({
+  default: {
+    setPassword: vi.fn(async () => undefined),
+    getPassword: vi.fn(async () => null),
+    deletePassword: vi.fn(async () => true),
+  },
+}));
+
 import { validateTransition, transition, isTerminal, getNextStates } from "../../src/pipeline/state-machine.js";
 import { withRetry } from "../../src/pipeline/retry.js";
 import { CircuitBreaker } from "../../src/pipeline/circuit-breaker.js";
@@ -272,6 +282,60 @@ describe("Orchestrator email alias", () => {
     const logs = emailLogRepo.getByRequestId(1);
     expect(logs.length).toBeGreaterThan(0);
     expect(logs[0].from_addr).toBe("jane@example.com");
+    closeDatabase(db);
+
+    await orchestrator.cleanup();
+  });
+
+  it("uses broker_identity.email when a dedicated broker-facing mailbox is configured", async () => {
+    const dbPath = join(tmpDir, "broker-identity-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@personal.example",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@personal.example", pass: "testpass" },
+      },
+      broker_identity: {
+        id: "default",
+        label: "Dedicated removal mailbox",
+        mode: "dedicated_mailbox",
+        email: "removals@example.net",
+        privacy_level: "maximum",
+        smtp: {
+          host: "smtp.example.net",
+          port: 587,
+          secure: false,
+          auth: { user: "removals@example.net", pass: "mailbox-pass" },
+        },
+      },
+      options: {
+        template: "gdpr",
+        dry_run: true,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+      },
+      database: { path: dbPath },
+    });
+
+    const orchestrator = new Orchestrator(config);
+    await orchestrator.run({ dryRun: true, brokerIds: ["zoominfo"] });
+
+    const db = createDatabase(dbPath);
+    runMigrations(db);
+    const emailLogRepo = new EmailLogRepo(db);
+    const logs = emailLogRepo.getByRequestId(1);
+    expect(logs.length).toBeGreaterThan(0);
+    expect(logs[0].from_addr).toBe("removals@example.net");
     closeDatabase(db);
 
     await orchestrator.cleanup();

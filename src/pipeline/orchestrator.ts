@@ -15,6 +15,7 @@ import { EvidenceChainRepo } from "../db/repositories/evidence-chain.repo.js";
 import { EvidenceChainService } from "./evidence-chain.js";
 import { EmailSender } from "../email/sender.js";
 import { buildTemplateVariables, renderTemplate } from "../email/template-engine.js";
+import { getBrokerFacingEmail, getBrokerIdentityImap, getEffectiveBrokerIdentity } from "../types/identity.js";
 import { CircuitBreaker } from "./circuit-breaker.js";
 import { withRetry, configToRetryOptions } from "./retry.js";
 import { scheduleBrokers } from "./scheduler.js";
@@ -160,8 +161,10 @@ export class Orchestrator {
     // Create pipeline run
     const pipelineRun = pipelineRunRepo.create(toProcess.length);
 
+    const brokerIdentity = getEffectiveBrokerIdentity(this.config);
+
     // Initialize email sender
-    this.emailSender = new EmailSender(this.config.email, dryRun);
+    this.emailSender = new EmailSender(brokerIdentity.smtp, dryRun, brokerIdentity.id);
 
     // Try to initialize browser if api_key is configured
     let browser: import("../browser/session.js").StagehandInstance | null = null;
@@ -177,11 +180,12 @@ export class Orchestrator {
 
     // Start inbox monitor in background if configured
     let inboxMonitor: import("../inbox/monitor.js").InboxMonitor | null = null;
-    if (this.config.inbox) {
+    const brokerInbox = getBrokerIdentityImap(this.config);
+    if (brokerInbox) {
       try {
         const { InboxMonitor } = await import("../inbox/monitor.js");
         inboxMonitor = new InboxMonitor(
-          this.config.inbox,
+          brokerInbox,
           toProcess,
           {
             onConfirmation: (brokerId, url, success) => {
@@ -201,7 +205,9 @@ export class Orchestrator {
             onNewEmail: (from, subject) => {
               logger.debug({ from, subject }, "New email received in monitor");
             },
-          }
+          },
+          {},
+          brokerIdentity.id,
         );
         // Non-blocking: monitor runs in background during pipeline
         inboxMonitor.start().catch((err) => {
@@ -432,7 +438,8 @@ export class Orchestrator {
       return;
     }
 
-    const variables = buildTemplateVariables(this.config.profile, broker.name);
+    const brokerFacingEmail = getBrokerFacingEmail(this.config);
+    const variables = buildTemplateVariables(this.config.profile, broker.name, brokerFacingEmail);
     const rendered = renderTemplate(this.config.options.template, variables, broker.id);
 
     if (broker.subject_template) {
@@ -447,7 +454,7 @@ export class Orchestrator {
         requestRepo.incrementAttempt(requestId);
 
         const result = await this.emailSender!.send({
-          from: this.config.email.alias ?? this.config.email.auth.user,
+          from: brokerFacingEmail,
           to: broker.email!,
           subject: rendered.subject,
           text: rendered.body,
@@ -457,7 +464,7 @@ export class Orchestrator {
           requestId,
           direction: "outbound",
           messageId: result.messageId,
-          fromAddr: this.config.email.alias ?? this.config.email.auth.user,
+          fromAddr: brokerFacingEmail,
           toAddr: broker.email!,
           subject: rendered.subject,
           status: result.rejected.length > 0 ? "rejected" : "sent",
@@ -485,6 +492,7 @@ export class Orchestrator {
     requestRepo.incrementAttempt(requestId);
 
     const result = await executeWebRemoval(browser, broker, this.config.profile, {
+      contactEmail: getBrokerFacingEmail(this.config),
       timeoutMs: this.config.browser.timeout_ms,
     });
 

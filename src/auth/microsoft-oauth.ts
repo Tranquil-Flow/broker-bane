@@ -39,7 +39,7 @@ function createPCAWithCache(): PublicClientApplication {
   });
 }
 
-export async function runMicrosoftOAuthFlow(): Promise<OAuthTokens> {
+export async function runMicrosoftOAuthFlow(identityId = "default"): Promise<OAuthTokens> {
   if (!CLIENT_ID) {
     throw new Error("Microsoft OAuth not configured in this build. Use app password instead.");
   }
@@ -80,7 +80,7 @@ export async function runMicrosoftOAuthFlow(): Promise<OAuthTokens> {
     expiresAt: tokenResponse.expiresOn?.getTime() ?? Date.now() + 3600_000,
   };
 
-  await saveTokens("microsoft", tokens);
+  await saveTokens("microsoft", tokens, identityId);
   return tokens;
 }
 
@@ -103,6 +103,7 @@ export async function exchangeMicrosoftCode(
   code: string,
   redirectUri: string,
   verifier: string,
+  identityId = "default",
 ): Promise<OAuthTokens> {
   if (!CLIENT_ID) {
     throw new Error("Microsoft OAuth not configured in this build. Use app password instead.");
@@ -125,11 +126,11 @@ export async function exchangeMicrosoftCode(
     expiresAt: result.expiresOn ? result.expiresOn.getTime() : Date.now() + 3600_000,
   };
 
-  await saveTokens("microsoft", oauthTokens);
+  await saveTokens("microsoft", oauthTokens, identityId);
   return oauthTokens;
 }
 
-export async function refreshMicrosoftToken(user: string): Promise<OAuthTokens> {
+export async function refreshMicrosoftToken(user: string, identityId = "default"): Promise<OAuthTokens> {
   const pca = createPCAWithCache();
 
   const accounts = await pca.getTokenCache().getAllAccounts();
@@ -148,7 +149,7 @@ export async function refreshMicrosoftToken(user: string): Promise<OAuthTokens> 
     refreshToken: "msal-managed",
     expiresAt: result.expiresOn?.getTime() ?? Date.now() + 3600_000,
   };
-  await saveTokens("microsoft", tokens);
+  await saveTokens("microsoft", tokens, identityId);
   return tokens;
 }
 

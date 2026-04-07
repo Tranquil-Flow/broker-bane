@@ -35,12 +35,12 @@ export class RetryQueueRepo {
     return result.lastInsertRowid as number;
   }
 
-  /** Get items ready for retry (next_retry_at <= now) */
+  /** Get items ready for retry (next_retry_at <= now in UTC) */
   getReady(limit = 10): RetryQueueRow[] {
     return this.db
       .prepare(
         `SELECT * FROM retry_queue
-         WHERE next_retry_at <= datetime('now')
+         WHERE next_retry_at <= strftime('%Y-%m-%dT%H:%M:%SZ', 'now', 'utc')
          ORDER BY next_retry_at ASC
          LIMIT ?`
       )
@@ -96,10 +96,13 @@ export class RetryQueueRepo {
     return row.count;
   }
 
-  /** Count items ready for retry now */
+  /** Count items ready for retry now (UTC comparison) */
   countReady(): number {
     const row = this.db
-      .prepare("SELECT COUNT(*) as count FROM retry_queue WHERE next_retry_at <= datetime('now')")
+      .prepare(
+        `SELECT COUNT(*) as count FROM retry_queue
+         WHERE next_retry_at <= strftime('%Y-%m-%dT%H:%M:%SZ', 'now', 'utc')`
+      )
       .get() as { count: number };
     return row.count;
   }

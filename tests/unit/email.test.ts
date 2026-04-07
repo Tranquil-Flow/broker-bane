@@ -1,3 +1,13 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("keytar", () => ({
+  default: {
+    setPassword: vi.fn(async () => undefined),
+    getPassword: vi.fn(async () => null),
+    deletePassword: vi.fn(async () => true),
+  },
+}));
+
 import { buildTemplateVariables, renderTemplate, clearTemplateCache } from "../../src/email/template-engine.js";
 import { isValidEmail, validateBrokerEmail, extractEmailDomain } from "../../src/email/validator.js";
 import { EmailSender } from "../../src/email/sender.js";
@@ -47,6 +57,11 @@ describe("TemplateEngine", () => {
       const vars = buildTemplateVariables(minProfile, "Acxiom");
       expect(vars.Address).toBeUndefined();
       expect(vars.Phone).toBeUndefined();
+    });
+
+    it("uses broker-facing contact email when provided", () => {
+      const vars = buildTemplateVariables(testProfile, "Spokeo", "removals@example.net");
+      expect(vars.Email).toBe("removals@example.net");
     });
   });
 

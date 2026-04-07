@@ -1,6 +1,7 @@
 import keytar from "keytar";
 
 const SERVICE = "brokerbane";
+const DEFAULT_IDENTITY_ID = "default";
 
 export interface OAuthTokens {
   accessToken: string;
@@ -8,12 +9,24 @@ export interface OAuthTokens {
   expiresAt: number; // unix ms
 }
 
-export async function saveTokens(provider: "google" | "microsoft", tokens: OAuthTokens): Promise<void> {
-  await keytar.setPassword(SERVICE, provider, JSON.stringify(tokens));
+function accountKey(provider: "google" | "microsoft", identityId = DEFAULT_IDENTITY_ID): string {
+  return `${provider}:${identityId}`;
 }
 
-export async function loadTokens(provider: "google" | "microsoft"): Promise<OAuthTokens | null> {
-  const raw = await keytar.getPassword(SERVICE, provider);
+export async function saveTokens(
+  provider: "google" | "microsoft",
+  tokens: OAuthTokens,
+  identityId = DEFAULT_IDENTITY_ID,
+): Promise<void> {
+  await keytar.setPassword(SERVICE, accountKey(provider, identityId), JSON.stringify(tokens));
+}
+
+export async function loadTokens(
+  provider: "google" | "microsoft",
+  identityId = DEFAULT_IDENTITY_ID,
+): Promise<OAuthTokens | null> {
+  const raw = await keytar.getPassword(SERVICE, accountKey(provider, identityId))
+    ?? (identityId === DEFAULT_IDENTITY_ID ? await keytar.getPassword(SERVICE, provider) : null);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw);
@@ -30,8 +43,14 @@ export async function loadTokens(provider: "google" | "microsoft"): Promise<OAut
   }
 }
 
-export async function deleteTokens(provider: "google" | "microsoft"): Promise<void> {
-  await keytar.deletePassword(SERVICE, provider);
+export async function deleteTokens(
+  provider: "google" | "microsoft",
+  identityId = DEFAULT_IDENTITY_ID,
+): Promise<void> {
+  await keytar.deletePassword(SERVICE, accountKey(provider, identityId));
+  if (identityId === DEFAULT_IDENTITY_ID) {
+    await keytar.deletePassword(SERVICE, provider);
+  }
 }
 
 export function isExpired(tokens: OAuthTokens): boolean {

@@ -3,18 +3,20 @@ import { dirname, resolve } from "node:path";
 import os from "node:os";
 import yaml from "js-yaml";
 import { loadConfig, resolveConfigPath } from "../config/loader.js";
+import { getEffectiveBrokerIdentity } from "../types/identity.js";
 
 export async function settingsShowCommand(options: { config?: string }): Promise<void> {
   const configPath = resolveConfigPath(options.config);
   const config = loadConfig(options.config);
-  const { profile, email, inbox, browser, options: opts } = config;
+  const { profile, browser, options: opts } = config;
+  const brokerIdentity = getEffectiveBrokerIdentity(config);
 
   console.log("\n  ━━ BrokerBane Settings ━━\n");
 
   // Profile
   console.log("  Profile:");
   console.log(`    Name:           ${profile.first_name} ${profile.last_name}`);
-  console.log(`    Email:          ${profile.email}`);
+  console.log(`    Legal email:    ${profile.email}`);
   console.log(`    Country:        ${profile.country}`);
   console.log(`    Address:        ${profile.address ?? "(not set)"}`);
   console.log(`    City:           ${profile.city ?? "(not set)"}`);
@@ -28,8 +30,9 @@ export async function settingsShowCommand(options: { config?: string }): Promise
 
   // Services
   console.log("\n  Services:");
-  console.log(`    SMTP:               ${email.host}:${email.port} (always configured)`);
-  console.log(`    IMAP monitoring:    ${inbox ? `${inbox.host}:${inbox.port}` : "no"}`);
+  console.log(`    Broker identity:    ${brokerIdentity.email} [${brokerIdentity.privacy_level}]`);
+  console.log(`    SMTP:               ${brokerIdentity.smtp.host}:${brokerIdentity.smtp.port} (broker-facing)`);
+  console.log(`    IMAP monitoring:    ${brokerIdentity.inbox ? `${brokerIdentity.inbox.host}:${brokerIdentity.inbox.port}` : "no"}`);
   console.log(`    Browser automation: ${browser.api_key || browser.browserbase_api_key ? "yes" : "no"}`);
 
   // Options

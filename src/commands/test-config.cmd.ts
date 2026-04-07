@@ -5,6 +5,7 @@ import { EmailSender } from "../email/sender.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
 import { runMigrations } from "../db/migrations.js";
 import { resolveImapAuth } from "../inbox/monitor.js";
+import { getEffectiveBrokerIdentity } from "../types/identity.js";
 
 export async function testConfigCommand(options: {
   config?: string;
@@ -25,6 +26,8 @@ export async function testConfigCommand(options: {
     console.log(`❌ Config error: ${msg}`);
     return;
   }
+
+  const brokerIdentity = getEffectiveBrokerIdentity(config);
 
   // Test broker database
   try {
@@ -48,9 +51,9 @@ export async function testConfigCommand(options: {
 
   // Test SMTP
   try {
-    const sender = new EmailSender(config.email);
+    const sender = new EmailSender(brokerIdentity.smtp, false, brokerIdentity.id);
     await sender.verify();
-    console.log(`✅ SMTP connection verified (${config.email.host}:${config.email.port})`);
+    console.log(`✅ SMTP connection verified (${brokerIdentity.smtp.host}:${brokerIdentity.smtp.port})`);
     await sender.close();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -62,25 +65,25 @@ export async function testConfigCommand(options: {
       console.log("   → Use the generated 16-character code, NOT your regular Gmail password.");
       console.log("   → Tip: 'brokerbane remove --dry-run' works without a real SMTP connection.");
     } else if (msgLower.includes("econnrefused") || msgLower.includes("etimedout") || msgLower.includes("enotfound")) {
-      console.log(`   → Cannot reach ${config.email.host}:${config.email.port}. Check host/port in config.`);
+        console.log(`   → Cannot reach ${brokerIdentity.smtp.host}:${brokerIdentity.smtp.port}. Check host/port in config.`);
     }
   }
 
   // Test IMAP (if configured)
-  if (config.inbox) {
+  if (brokerIdentity.inbox) {
     try {
       const { ImapFlow } = await import("imapflow");
-      const imapAuth = await resolveImapAuth(config.inbox.auth);
+      const imapAuth = await resolveImapAuth(brokerIdentity.inbox.auth, brokerIdentity.id);
       const client = new ImapFlow({
-        host: config.inbox.host,
-        port: config.inbox.port,
-        secure: config.inbox.secure,
+        host: brokerIdentity.inbox.host,
+        port: brokerIdentity.inbox.port,
+        secure: brokerIdentity.inbox.secure,
         auth: imapAuth as { user: string; pass: string },
         logger: false,
       });
       await client.connect();
       await client.logout();
-      console.log(`✅ IMAP connection verified (${config.inbox.host}:${config.inbox.port})`);
+      console.log(`✅ IMAP connection verified (${brokerIdentity.inbox.host}:${brokerIdentity.inbox.port})`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       const msgLower = msg.toLowerCase();
@@ -89,7 +92,7 @@ export async function testConfigCommand(options: {
         console.log("   → Wrong IMAP app password or username. Run 'brokerbane init' to reconfigure.");
         console.log("   → Use the same App Password as SMTP if using the same email account.");
       } else if (msgLower.includes("econnrefused") || msgLower.includes("etimedout") || msgLower.includes("enotfound")) {
-        console.log(`   → Cannot reach ${config.inbox.host}:${config.inbox.port}. Check IMAP host/port.`);
+        console.log(`   → Cannot reach ${brokerIdentity.inbox.host}:${brokerIdentity.inbox.port}. Check IMAP host/port.`);
       }
     }
   }

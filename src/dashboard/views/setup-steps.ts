@@ -23,7 +23,7 @@ export function renderStep1Profile(errors?: Record<string, string>): string {
   return `${renderProgress(1)}
 <div class="wizard-body">
   <h3>Personal Information</h3>
-  <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:1rem;">This information is included in your opt-out requests to data brokers.</p>
+  <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:1rem;">This information is included in your opt-out requests to data brokers. For best privacy, use a separate removal mailbox here instead of your everyday personal inbox.</p>
   <form hx-post="/api/setup/profile" hx-target="#wizard-container" hx-swap="innerHTML">
     <div class="wizard-row">
       <div class="wizard-field">
@@ -38,10 +38,10 @@ export function renderStep1Profile(errors?: Record<string, string>): string {
       </div>
     </div>
     <div class="wizard-field">
-      <label for="email">Email address *</label>
+      <label for="email">Removal mailbox email *</label>
       <input type="email" id="email" name="email" required>
       ${e.email ? `<div class="field-error">${escapeHtml(e.email)}</div>` : ""}
-      <div class="field-hint">Your email provider will be auto-detected from this address.</div>
+      <div class="field-hint">Brokers will see this address. A dedicated removal mailbox is recommended.</div>
     </div>
     <div class="wizard-field">
       <label for="country">Country *</label>
@@ -182,7 +182,7 @@ export function renderStep2Connect(
 
   return `${renderProgress(2)}
 <div class="wizard-body">
-  <h3>Connect to ${escapeHtml(providerName)}</h3>
+  <h3>Connect your removal mailbox (${escapeHtml(providerName)})</h3>
   ${detected}
   ${error ? `<div class="wizard-alert error">${escapeHtml(error)}</div>` : ""}
   ${authHtml}
@@ -202,7 +202,7 @@ export function renderStep3Options(
     aliasHtml = `
       <div class="wizard-section">
         <h3>Sending Address</h3>
-        <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:0.75rem;">To protect your inbox from spam, send requests from an alias.</p>
+        <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:0.75rem;">Optional: add an alias on top of your removal mailbox for extra separation.</p>
         <div class="wizard-radio">
           <input type="radio" id="alias_generated" name="alias_choice" value="generated" checked>
           <label for="alias_generated">${escapeHtml(alias)} <span style="color:var(--green-dim)">(recommended)</span></label>
@@ -222,7 +222,7 @@ export function renderStep3Options(
     aliasHtml = `
       <div class="wizard-section">
         <h3>Sending Address</h3>
-        <div class="wizard-alert warn">Note: ${escapeHtml(provider?.name ?? "Your provider")} doesn't support email aliases. Brokers will see your real address.</div>
+        <div class="wizard-alert warn">Note: ${escapeHtml(provider?.name ?? "Your provider")} doesn't support email aliases. Brokers will see the removal mailbox you connected.</div>
       </div>`;
   }
 

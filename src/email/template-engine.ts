@@ -81,7 +81,8 @@ function getTemplate(name: string, variant: number): HandlebarsTemplateDelegate 
 
 export function buildTemplateVariables(
   profile: Profile,
-  brokerName: string
+  brokerName: string,
+  contactEmail = profile.email,
 ): TemplateVariables {
   const now = new Date();
   return {
@@ -89,7 +90,7 @@ export function buildTemplateVariables(
     FullName: `${profile.first_name} ${profile.last_name}`,
     FirstName: profile.first_name,
     LastName: profile.last_name,
-    Email: profile.email,
+    Email: contactEmail,
     Address: profile.address,
     City: profile.city,
     State: profile.state,

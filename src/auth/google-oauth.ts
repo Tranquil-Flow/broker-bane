@@ -10,7 +10,7 @@ const REDIRECT_PORT = 9234;
 const REDIRECT_URI = `http://localhost:${REDIRECT_PORT}/callback`;
 const SCOPES = ["https://mail.google.com/"];
 
-export async function runGoogleOAuthFlow(): Promise<OAuthTokens> {
+export async function runGoogleOAuthFlow(identityId = "default"): Promise<OAuthTokens> {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     throw new Error("Google OAuth not configured in this build. Use app password instead.");
   }
@@ -42,7 +42,7 @@ export async function runGoogleOAuthFlow(): Promise<OAuthTokens> {
     expiresAt: tokens.expiry_date ?? Date.now() + 3600_000,
   };
 
-  await saveTokens("google", oauthTokens);
+  await saveTokens("google", oauthTokens, identityId);
   return oauthTokens;
 }
 
@@ -94,7 +94,11 @@ export function getGoogleAuthUrl(redirectUri: string): string {
   });
 }
 
-export async function exchangeGoogleCode(code: string, redirectUri: string): Promise<OAuthTokens> {
+export async function exchangeGoogleCode(
+  code: string,
+  redirectUri: string,
+  identityId = "default",
+): Promise<OAuthTokens> {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     throw new Error("Google OAuth not configured in this build. Use app password instead.");
   }
@@ -111,11 +115,11 @@ export async function exchangeGoogleCode(code: string, redirectUri: string): Pro
     expiresAt: tokens.expiry_date ?? Date.now() + 3600_000,
   };
 
-  await saveTokens("google", oauthTokens);
+  await saveTokens("google", oauthTokens, identityId);
   return oauthTokens;
 }
 
-export async function refreshGoogleToken(refreshToken: string): Promise<OAuthTokens> {
+export async function refreshGoogleToken(refreshToken: string, identityId = "default"): Promise<OAuthTokens> {
   const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
   oauth2Client.setCredentials({ refresh_token: refreshToken });
 
@@ -127,6 +131,6 @@ export async function refreshGoogleToken(refreshToken: string): Promise<OAuthTok
     expiresAt: credentials.expiry_date ?? Date.now() + 3600_000,
   };
 
-  await saveTokens("google", tokens);
+  await saveTokens("google", tokens, identityId);
   return tokens;
 }

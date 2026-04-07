@@ -366,6 +366,25 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
         rate_limit: 5,
         rate_delta_ms: 60000,
       },
+      broker_identity: {
+        id: "default",
+        label: "Broker-facing identity",
+        mode: wizardState.alias ? "plus_alias" : "same_mailbox",
+        email: wizardState.alias ?? profile.email,
+        ...(provider && { provider: provider.key }),
+        privacy_level: wizardState.alias ? "balanced" : "legacy",
+        smtp: {
+          host: wizardState.smtpHost,
+          port: wizardState.smtpPort,
+          secure: false,
+          auth: wizardState.smtpAuth,
+          ...(provider && { provider: provider.key }),
+          ...(wizardState.alias && { alias: wizardState.alias }),
+          pool: true,
+          rate_limit: 5,
+          rate_delta_ms: 60000,
+        },
+      },
       options: {
         template: wizardState.template ?? "generic",
         dry_run: false,
@@ -388,6 +407,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
         auth: wizardState.imapAuth,
         mailbox: "INBOX",
       };
+      (config.broker_identity as { inbox?: Record<string, unknown> }).inbox = config.inbox as Record<string, unknown>;
     }
 
     // Write config

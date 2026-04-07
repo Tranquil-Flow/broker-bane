@@ -60,6 +60,6 @@ describe("resolveImapAuth", () => {
     const auth = { type: "oauth2" as const, user: "jane@gmail.com", provider: "google" as const };
     const result = await resolveImapAuth(auth);
     expect(result).toEqual({ user: "jane@gmail.com", accessToken: "fresh" });
-    expect(refreshGoogleToken).toHaveBeenCalledWith("refresh");
+    expect(refreshGoogleToken).toHaveBeenCalledWith("refresh", "default");
   });
 });

@@ -3,7 +3,15 @@
  * These tests use an in-memory SQLite database and dry-run mode to avoid
  * any external network calls.
  */
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+
+vi.mock("keytar", () => ({
+  default: {
+    setPassword: vi.fn(async () => undefined),
+    getPassword: vi.fn(async () => null),
+    deletePassword: vi.fn(async () => true),
+  },
+}));
 import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";

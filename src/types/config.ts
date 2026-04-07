@@ -60,6 +60,17 @@ export const ImapConfigSchema = z.object({
   mailbox: z.string().default("INBOX"),
 });
 
+export const BrokerIdentitySchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  mode: z.enum(["dedicated_mailbox", "masked_alias", "plus_alias", "same_mailbox"]).default("same_mailbox"),
+  email: z.string().email(),
+  provider: z.string().optional(),
+  privacy_level: z.enum(["maximum", "balanced", "legacy"]).default("legacy"),
+  smtp: SmtpConfigSchema,
+  inbox: ImapConfigSchema.optional(),
+});
+
 export const BrowserConfigSchema = z.object({
   headless: z.boolean().default(true),
   model: z.string().default("gpt-4o"),
@@ -122,6 +133,7 @@ export const AppConfigSchema = z.object({
   profile: ProfileSchema,
   email: SmtpConfigSchema,
   inbox: ImapConfigSchema.optional(),
+  broker_identity: BrokerIdentitySchema.optional(),
   options: OptionsConfigSchema.default({}),
   browser: BrowserConfigSchema.default({}),
   captcha: CaptchaConfigSchema.default({}),
@@ -135,6 +147,7 @@ export const AppConfigSchema = z.object({
 export type Profile = z.infer<typeof ProfileSchema>;
 export type SmtpConfig = z.infer<typeof SmtpConfigSchema>;
 export type ImapConfig = z.infer<typeof ImapConfigSchema>;
+export type BrokerIdentityConfig = z.infer<typeof BrokerIdentitySchema>;
 export type BrowserConfig = z.infer<typeof BrowserConfigSchema>;
 export type CaptchaConfig = z.infer<typeof CaptchaConfigSchema>;
 export type RetryConfig = z.infer<typeof RetryConfigSchema>;

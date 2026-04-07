@@ -7,7 +7,15 @@
  * ETHEREAL_USER / ETHEREAL_PASS env vars are set, otherwise they create
  * a fresh Ethereal account on the fly (requires internet access).
  */
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
+
+vi.mock("keytar", () => ({
+  default: {
+    setPassword: vi.fn(async () => undefined),
+    getPassword: vi.fn(async () => null),
+    deletePassword: vi.fn(async () => true),
+  },
+}));
 import nodemailer from "nodemailer";
 import { EmailSender } from "../../src/email/sender.js";
 import type { SmtpConfig } from "../../src/types/config.js";

@@ -85,7 +85,7 @@ export async function executeWebRemoval(
   browser: StagehandInstance,
   broker: Broker,
   profile: Profile,
-  options: { screenshotDir?: string; timeoutMs?: number } = {}
+  options: { screenshotDir?: string; timeoutMs?: number; contactEmail?: string } = {}
 ): Promise<RemovalResult> {
   const { timeoutMs = 30_000 } = options;
 
@@ -100,7 +100,7 @@ export async function executeWebRemoval(
     // Use form_hints if available, otherwise use generic instructions
     const instruction = broker.form_hints
       ? broker.form_hints
-      : buildGenericInstruction(broker, profile);
+      : buildGenericInstruction(broker, profile, options.contactEmail ?? profile.email);
 
     // Execute the removal action
     await withTimeout(browser.page.act(instruction), timeoutMs);
@@ -142,12 +142,12 @@ export async function executeWebRemoval(
   }
 }
 
-function buildGenericInstruction(broker: Broker, profile: Profile): string {
+function buildGenericInstruction(broker: Broker, profile: Profile, contactEmail: string): string {
   const parts = [
     `I need to opt out of ${broker.name}.`,
     `Look for an opt-out, removal, or privacy request form.`,
     `Fill in my name: ${profile.first_name} ${profile.last_name}.`,
-    `Fill in my email: ${profile.email}.`,
+    `Fill in my email: ${contactEmail}.`,
   ];
   if (profile.address) {
     parts.push(`Fill in my address: ${profile.address}, ${profile.city}, ${profile.state} ${profile.zip}.`);

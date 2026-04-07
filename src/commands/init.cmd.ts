@@ -12,11 +12,13 @@ export async function initCommand(): Promise<void> {
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("  BrokerBane Setup Wizard");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("\nEverything stays on your machine — nothing is uploaded or shared.\n");
+  console.log("\nEverything stays on your machine — nothing is uploaded or shared.");
+  console.log("For best privacy, use a separate mailbox just for broker removals.\n");
 
   // ── Step 1: PROFILE ──────────────────────────────────────────────────────
   console.log("── Step 1: Your profile ────────────────────────────");
-  console.log("This is the information included in your opt-out requests.\n");
+  console.log("This is the information included in your opt-out requests.");
+  console.log("Recommended: enter a dedicated removal mailbox here, not your everyday personal inbox.\n");
 
   const coreProfile = await prompt([
     {
@@ -34,7 +36,7 @@ export async function initCommand(): Promise<void> {
     {
       type: "input",
       name: "email",
-      message: "Your email address:",
+      message: "Removal mailbox email address:",
       validate: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Enter a valid email address",
     },
     {
@@ -78,7 +80,8 @@ export async function initCommand(): Promise<void> {
 
   // ── Step 3: AUTHENTICATION ───────────────────────────────────────────────
   console.log("\n── Step 3: Email authentication ────────────────────");
-  console.log("BrokerBane sends opt-out emails on your behalf using your email account.\n");
+  console.log("BrokerBane sends opt-out emails using the mailbox you connect here.");
+  console.log("Brokers will see this address, so a dedicated removal mailbox is safest.\n");
 
   let smtpAuthConfig: Record<string, unknown>;
   let oauthProvider: string | undefined;
@@ -176,10 +179,10 @@ export async function initCommand(): Promise<void> {
 
   if (provider?.generateAlias) {
     const generatedAlias = provider.generateAlias(coreProfile.email);
-    console.log("── Step 4: Spam protection ─────────────────────────");
-    console.log("To protect your inbox from spam, we'll send requests from:");
+    console.log("── Step 4: Alias options ───────────────────────────");
+    console.log("Optional: add an alias on top of your removal mailbox:");
     console.log(`  ${generatedAlias}`);
-    console.log("Replies will still arrive in your inbox.\n");
+    console.log("Replies will still arrive in the removal mailbox you connected.\n");
 
     const { aliasChoice } = await prompt([
       {
@@ -401,6 +404,25 @@ export async function initCommand(): Promise<void> {
       rate_limit: 5,
       rate_delta_ms: 60_000,
     },
+    broker_identity: {
+      id: "default",
+      label: "Broker-facing identity",
+      mode: emailAlias ? "plus_alias" : "same_mailbox",
+      email: emailAlias ?? coreProfile.email,
+      ...(provider && { provider: provider.key }),
+      privacy_level: emailAlias ? "balanced" : "legacy",
+      smtp: {
+        host: smtpHost!,
+        port: smtpPort!,
+        secure: false,
+        auth: smtpAuthConfig!,
+        ...(provider && { provider: provider.key }),
+        ...(emailAlias && { alias: emailAlias }),
+        pool: true,
+        rate_limit: 5,
+        rate_delta_ms: 60_000,
+      },
+    },
     options: {
       template,
       dry_run: false,
@@ -415,6 +437,10 @@ export async function initCommand(): Promise<void> {
       redact_pii: true,
     },
   };
+
+  if (imapConfig) {
+    (config.broker_identity as { inbox?: Record<string, unknown> }).inbox = imapConfig as Record<string, unknown>;
+  }
 
   const configPath = resolveConfigPath();
   mkdirSync(dirname(configPath), { recursive: true });

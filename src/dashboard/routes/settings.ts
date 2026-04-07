@@ -5,11 +5,13 @@ import { redactPii } from "../../util/redact.js";
 import { resolveConfigPath } from "../../config/loader.js";
 import { readFileSync } from "node:fs";
 import { layout } from "../views/layout.js";
+import { getEffectiveBrokerIdentity } from "../../types/identity.js";
 
 export function registerSettingsRoutes(app: Hono, db: Database, config: AppConfig): void {
   app.get("/settings", (c) => {
     const { profile } = config;
-    const hasImap = !!config.inbox;
+    const brokerIdentity = getEffectiveBrokerIdentity(config);
+    const hasImap = !!brokerIdentity.inbox;
     const hasBrowser = !!(config.browser && config.browser.api_key);
 
     // DB stats
@@ -42,7 +44,8 @@ export function registerSettingsRoutes(app: Hono, db: Database, config: AppConfi
   <h2>Profile</h2>
   <table class="broker-table">
     <tr><td>Name</td><td>${redactPii(fullName || "not set", { names: fullName ? [fullName] : undefined })}</td></tr>
-    <tr><td>Email</td><td>${redactPii(profile.email ?? "not set", { names: fullName ? [fullName] : undefined })}</td></tr>
+    <tr><td>Legal email</td><td>${redactPii(profile.email ?? "not set", { names: fullName ? [fullName] : undefined })}</td></tr>
+    <tr><td>Broker identity</td><td>${redactPii(brokerIdentity.email ?? "not set", { names: fullName ? [fullName] : undefined })}</td></tr>
     <tr><td>Country</td><td>${profile.country ?? "US"}</td></tr>
     <tr><td>Config file</td><td>${redactedConfigPath}</td></tr>
   </table>
@@ -51,7 +54,8 @@ export function registerSettingsRoutes(app: Hono, db: Database, config: AppConfi
 <div class="content-section">
   <h2>Services</h2>
   <table class="broker-table">
-    <tr><td>SMTP</td><td class="status-confirmed">✓ configured</td></tr>
+    <tr><td>SMTP</td><td class="status-confirmed">✓ configured (${brokerIdentity.smtp.host}:${brokerIdentity.smtp.port})</td></tr>
+    <tr><td>Privacy level</td><td>${brokerIdentity.privacy_level}</td></tr>
     <tr><td>IMAP</td><td class="${hasImap ? "status-confirmed" : "status-pending"}">${hasImap ? "✓ configured" : "✗ not configured"}</td></tr>
     <tr><td>Browser automation</td><td class="${hasBrowser ? "status-confirmed" : "status-pending"}">${hasBrowser ? "✓ configured" : "✗ not configured"}</td></tr>
   </table>

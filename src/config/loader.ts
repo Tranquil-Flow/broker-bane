@@ -3,7 +3,7 @@ import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import yaml from "js-yaml";
 import { AppConfigSchema } from "../types/config.js";
-import type { AppConfig } from "../types/config.js";
+import type { AppConfig, BrokerIdentityConfig } from "../types/config.js";
 import { ConfigError } from "../util/errors.js";
 import { CONFIG_DIR, CONFIG_FILE } from "./defaults.js";
 
@@ -12,6 +12,26 @@ function expandHome(filepath: string): string {
     return join(homedir(), filepath.slice(2));
   }
   return resolve(filepath);
+}
+
+function inferLegacyBrokerIdentity(config: AppConfig): BrokerIdentityConfig {
+  const visibleEmail = config.email.alias ?? config.profile.email;
+  const mode = config.email.alias
+    ? config.email.alias.includes("+")
+      ? "plus_alias"
+      : "masked_alias"
+    : "same_mailbox";
+
+  return {
+    id: "default",
+    label: "Imported legacy identity",
+    mode,
+    email: visibleEmail,
+    provider: config.email.provider,
+    privacy_level: mode === "same_mailbox" ? "legacy" : "balanced",
+    smtp: config.email,
+    ...(config.inbox ? { inbox: config.inbox } : {}),
+  };
 }
 
 export function resolveConfigPath(overridePath?: string): string {
@@ -64,6 +84,7 @@ export function loadConfig(overridePath?: string): AppConfig {
   // Expand home directory in paths
   const config = result.data;
   config.database.path = expandHome(config.database.path);
+  config.broker_identity ??= inferLegacyBrokerIdentity(config);
 
   return config;
 }

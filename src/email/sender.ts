@@ -25,22 +25,24 @@ export class EmailSender {
   private transporter: Transporter | null = null;
   private readonly config: SmtpConfig;
   private readonly dryRun: boolean;
+  private readonly identityId: string;
 
-  constructor(config: SmtpConfig, dryRun = false) {
+  constructor(config: SmtpConfig, dryRun = false, identityId = "default") {
     this.config = config;
     this.dryRun = dryRun;
+    this.identityId = identityId;
   }
 
   private async resolveAuth(): Promise<object> {
     if (this.config.auth.type === "oauth2") {
-      let tokens = await loadTokens(this.config.auth.provider);
+      let tokens = await loadTokens(this.config.auth.provider, this.identityId);
       if (!tokens) {
         throw new Error("No OAuth tokens found. Run 'brokerbane init' to reconnect your email account.");
       }
       if (isExpired(tokens)) {
         tokens = this.config.auth.provider === "google"
-          ? await refreshGoogleToken(tokens.refreshToken)
-          : await refreshMicrosoftToken(this.config.auth.user);
+          ? await refreshGoogleToken(tokens.refreshToken, this.identityId)
+          : await refreshMicrosoftToken(this.config.auth.user, this.identityId);
       }
       return {
         type: "OAuth2",
@@ -73,7 +75,7 @@ export class EmailSender {
   private async getTransport(): Promise<Transporter> {
     // For OAuth2, check if token expired and invalidate cached transport
     if (this.transporter && this.config.auth.type === "oauth2") {
-      const tokens = await loadTokens(this.config.auth.provider);
+      const tokens = await loadTokens(this.config.auth.provider, this.identityId);
       if (tokens && isExpired(tokens)) {
         this.transporter = null; // force recreation with fresh token
       }
@@ -101,7 +103,7 @@ export class EmailSender {
         to: params.to,
         subject: params.subject,
         text: params.text,
-        xMailer: false as false | string,   // suppress X-Mailer header (nodemailer runtime supports this)
+        xMailer: false as false | string,
         headers: {
           "Reply-To": params.from,
         },
