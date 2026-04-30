@@ -9,12 +9,18 @@ import { refreshGoogleToken } from "../auth/google-oauth.js";
 import { refreshMicrosoftToken } from "../auth/microsoft-oauth.js";
 import { exponentialBackoff, sleep } from "../util/delay.js";
 
+function isPasswordAuth(
+  auth: EmailAuth | { user: string; pass: string; type?: string },
+): auth is { user: string; pass: string; type?: "password" } {
+  return auth.type === undefined || auth.type === "password";
+}
+
 export async function resolveImapAuth(
   auth: EmailAuth,
   identityId = "default",
 ): Promise<{ user: string; pass: string } | { user: string; accessToken: string }> {
   // Backwards compat: if type is absent, assume password (matches EmailAuthSchema preprocessing)
-  if ((auth as { type?: string }).type === undefined || auth.type === "password") {
+  if (isPasswordAuth(auth)) {
     return { user: auth.user, pass: auth.pass };
   }
 
