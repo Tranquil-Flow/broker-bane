@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/broker-bane"
+    "url": "https://github.com/Tranquil-Flow/broker-bane.git"
   },
   "scripts": {
     "build": "tsc",

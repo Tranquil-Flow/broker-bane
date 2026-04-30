@@ -10,7 +10,7 @@ export default function UpgradeCallout() {
       <p className="text-slate-400 text-sm mt-1">
         Web form opt-outs need the desktop app to run automatically.{' '}
         <a
-          href="https://github.com/yourusername/broker-bane/releases"
+          href="https://github.com/Tranquil-Flow/broker-bane/releases"
           className="text-amber-400 underline hover:text-amber-300"
           target="_blank"
           rel="noreferrer"

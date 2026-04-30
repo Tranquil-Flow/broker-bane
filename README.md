@@ -49,7 +49,7 @@ You'll need to download the BrokerBane files to your computer.
 **If you have Git installed** (common on Mac/Linux):
 Open a terminal and run:
 ```
-git clone https://github.com/yourorg/broker-bane
+git clone https://github.com/Tranquil-Flow/broker-bane
 ```
 
 **If you don't have Git:**

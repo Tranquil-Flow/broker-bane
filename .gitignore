@@ -10,3 +10,9 @@ screenshots/
 *.tgz
 coverage/
 .DS_Store
+
+# Internal planning docs (not for public)
+docs/plans/
+CLAUDE.md
+PLAN.md
+TASKS.md
