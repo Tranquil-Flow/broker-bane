@@ -1,6 +1,7 @@
 import type { IDBPDatabase } from 'idb'
-import type { UserProfile, BrokerStatus } from '../types'
-import type { PortablePayload, PortableProfile, PortableRemovalRequest } from '@brokerbane/portable/schema.js'
+import type { UserProfile, BrokerStatus, RemovalPolicy } from '../types'
+import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
+import type { PortablePayload, PortableProfile, PortableRemovalRequest, PortableSettings } from '@brokerbane/portable/schema.js'
 import { loadEncrypted, saveEncrypted } from './storage'
 
 // Map PWA names array → CLI first_name/last_name (take first entry as primary)
@@ -36,6 +37,13 @@ export function cliToPWAProfile(cli: PortableProfile): UserProfile {
   }
 }
 
+function portableSettingsToRemovalPolicy(settings: PortableSettings): RemovalPolicy {
+  return normalizeRemovalPolicy({
+    dailyLimit: settings.daily_limit ?? DEFAULT_REMOVAL_POLICY.dailyLimit,
+    delayMs: settings.delay_min_ms ?? DEFAULT_REMOVAL_POLICY.delayMs,
+  })
+}
+
 // Map BrokerStatus → PortableRemovalRequest
 function statusToRequest(s: BrokerStatus): PortableRemovalRequest {
   return {
@@ -60,6 +68,9 @@ export async function exportFromVault(
 ): Promise<PortablePayload> {
   const profile = await loadEncrypted<UserProfile>(db, vaultKey, 'profile')
   const statuses = await loadEncrypted<Record<string, BrokerStatus>>(db, vaultKey, 'statuses')
+  const policy = normalizeRemovalPolicy(
+    await loadEncrypted<RemovalPolicy>(db, vaultKey, 'removal-policy') ?? DEFAULT_REMOVAL_POLICY
+  )
 
   const portableProfile = profile
     ? pwaToCLIProfile(profile)
@@ -74,8 +85,9 @@ export async function exportFromVault(
       regions: ['us'],
       tiers: [1, 2, 3],
       excluded_brokers: [],
-      delay_min_ms: 5000,
-      delay_max_ms: 15000,
+      daily_limit: policy.dailyLimit,
+      delay_min_ms: policy.delayMs,
+      delay_max_ms: policy.delayMs,
       dry_run: false,
       verify_before_send: false,
       scan_interval_days: 30,
@@ -102,6 +114,7 @@ export async function importToVault(
 
   if (mode === 'replace') {
     await saveEncrypted(db, vaultKey, 'profile', pwaProfile)
+    await saveEncrypted(db, vaultKey, 'removal-policy', portableSettingsToRemovalPolicy(payload.settings))
     const newStatuses: Record<string, BrokerStatus> = {}
     for (const rr of payload.removal_requests) {
       newStatuses[rr.broker_id] = {
