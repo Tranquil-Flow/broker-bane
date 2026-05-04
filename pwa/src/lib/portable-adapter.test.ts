@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { exportFromVault, importToVault } from './portable-adapter'
 import type { PortablePayload } from '@brokerbane/portable/schema.js'
-import type { BrokerStatus, RemovalPolicy, UserProfile } from '../types'
+import type { BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '../types'
 
 const loadEncrypted = vi.fn()
 const saveEncrypted = vi.fn()
@@ -27,6 +27,12 @@ const statuses: Record<string, BrokerStatus> = {
     sentAt: '2026-05-04T12:00:00.000Z',
     lastUpdated: '2026-05-04T12:05:00.000Z',
   },
+}
+
+const brokerIdentity: BrokerIdentity = {
+  mode: 'dedicated_mailbox',
+  email: 'removals@example.com',
+  label: 'Dedicated removal mailbox',
 }
 
 function portablePayload(settings: PortablePayload['settings']): PortablePayload {
@@ -78,6 +84,7 @@ describe('portable adapter autopilot settings', () => {
       if (name === 'profile') return profile
       if (name === 'statuses') return statuses
       if (name === 'removal-policy') return policy
+      if (name === 'broker-identity') return brokerIdentity
       return null
     })
 
@@ -86,6 +93,8 @@ describe('portable adapter autopilot settings', () => {
     expect(exported.settings.daily_limit).toBe(7)
     expect(exported.settings.delay_min_ms).toBe(3_000)
     expect(exported.settings.delay_max_ms).toBe(3_000)
+    expect(exported.settings.broker_identity_email).toBe('removals@example.com')
+    expect(exported.settings.broker_identity_mode).toBe('dedicated_mailbox')
   })
 
   it('imports portable pacing settings into the PWA removal policy on replace', async () => {
@@ -97,6 +106,8 @@ describe('portable adapter autopilot settings', () => {
       daily_limit: 9,
       delay_min_ms: 4_000,
       delay_max_ms: 10_000,
+      broker_identity_email: 'restored-removals@example.com',
+      broker_identity_mode: 'masked_alias',
       dry_run: false,
       verify_before_send: false,
       scan_interval_days: 30,
@@ -107,6 +118,11 @@ describe('portable adapter autopilot settings', () => {
     expect(saveEncrypted).toHaveBeenCalledWith(db, key, 'removal-policy', {
       dailyLimit: 9,
       delayMs: 4_000,
+    })
+    expect(saveEncrypted).toHaveBeenCalledWith(db, key, 'broker-identity', {
+      mode: 'masked_alias',
+      email: 'restored-removals@example.com',
+      label: 'Imported removal mailbox',
     })
   })
 })

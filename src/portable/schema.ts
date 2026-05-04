@@ -24,6 +24,8 @@ export const PortableSettingsSchema = z.object({
   delay_min_ms: z.number().default(5_000),
   delay_max_ms: z.number().default(15_000),
   daily_limit: z.number().int().positive().optional(),
+  broker_identity_email: z.string().email().optional(),
+  broker_identity_mode: z.enum(["dedicated_mailbox", "masked_alias", "plus_alias", "same_mailbox"]).optional(),
   dry_run: z.boolean().default(false),
   verify_before_send: z.boolean().default(false),
   scan_interval_days: z.number().int().positive().default(30),

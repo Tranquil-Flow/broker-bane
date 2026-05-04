@@ -1,5 +1,5 @@
 import type { IDBPDatabase } from 'idb'
-import type { UserProfile, BrokerStatus, RemovalPolicy } from '../types'
+import type { UserProfile, BrokerIdentity, BrokerStatus, RemovalPolicy } from '../types'
 import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 import type { PortablePayload, PortableProfile, PortableRemovalRequest, PortableSettings } from '@brokerbane/portable/schema.js'
 import { loadEncrypted, saveEncrypted } from './storage'
@@ -44,6 +44,15 @@ function portableSettingsToRemovalPolicy(settings: PortableSettings): RemovalPol
   })
 }
 
+function portableSettingsToBrokerIdentity(settings: PortableSettings): BrokerIdentity | null {
+  if (!settings.broker_identity_email) return null
+  return {
+    mode: settings.broker_identity_mode ?? 'dedicated_mailbox',
+    email: settings.broker_identity_email,
+    label: 'Imported removal mailbox',
+  }
+}
+
 // Map BrokerStatus → PortableRemovalRequest
 function statusToRequest(s: BrokerStatus): PortableRemovalRequest {
   return {
@@ -68,6 +77,7 @@ export async function exportFromVault(
 ): Promise<PortablePayload> {
   const profile = await loadEncrypted<UserProfile>(db, vaultKey, 'profile')
   const statuses = await loadEncrypted<Record<string, BrokerStatus>>(db, vaultKey, 'statuses')
+  const identity = await loadEncrypted<BrokerIdentity>(db, vaultKey, 'broker-identity')
   const policy = normalizeRemovalPolicy(
     await loadEncrypted<RemovalPolicy>(db, vaultKey, 'removal-policy') ?? DEFAULT_REMOVAL_POLICY
   )
@@ -88,6 +98,10 @@ export async function exportFromVault(
       daily_limit: policy.dailyLimit,
       delay_min_ms: policy.delayMs,
       delay_max_ms: policy.delayMs,
+      ...(identity ? {
+        broker_identity_email: identity.email,
+        broker_identity_mode: identity.mode,
+      } : {}),
       dry_run: false,
       verify_before_send: false,
       scan_interval_days: 30,
@@ -115,6 +129,10 @@ export async function importToVault(
   if (mode === 'replace') {
     await saveEncrypted(db, vaultKey, 'profile', pwaProfile)
     await saveEncrypted(db, vaultKey, 'removal-policy', portableSettingsToRemovalPolicy(payload.settings))
+    const importedIdentity = portableSettingsToBrokerIdentity(payload.settings)
+    if (importedIdentity) {
+      await saveEncrypted(db, vaultKey, 'broker-identity', importedIdentity)
+    }
     const newStatuses: Record<string, BrokerStatus> = {}
     for (const rr of payload.removal_requests) {
       newStatuses[rr.broker_id] = {

@@ -113,6 +113,19 @@ describe("PortableSettingsSchema", () => {
     expect(result.daily_limit).toBe(10);
   });
 
+  it("accepts broker-facing identity fields for privacy-preserving restores", () => {
+    const result = PortableSettingsSchema.parse({
+      broker_identity_email: "removals@example.com",
+      broker_identity_mode: "dedicated_mailbox",
+    });
+    expect(result.broker_identity_email).toBe("removals@example.com");
+    expect(result.broker_identity_mode).toBe("dedicated_mailbox");
+  });
+
+  it("rejects an invalid broker-facing identity email", () => {
+    expect(() => PortableSettingsSchema.parse({ broker_identity_email: "not-an-email" })).toThrow();
+  });
+
   it("daily_limit rejects zero", () => {
     expect(() => PortableSettingsSchema.parse({ daily_limit: 0 })).toThrow();
   });
