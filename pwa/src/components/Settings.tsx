@@ -1,12 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { useVault } from '../lib/vault-context'
 import { exportBackup } from '../lib/backup'
+import { useEmail } from '../lib/email-context'
 import ImportPreview from './ImportPreview'
 import type { BrokerIdentity, RemovalPolicy, UserProfile } from '../types'
 import { DEFAULT_REMOVAL_POLICY, MAX_DAILY_REMOVAL_LIMIT, normalizeRemovalPolicy } from '../types'
 
 export default function Settings({ profile }: { profile: UserProfile }) {
   const { db, key, load, save } = useVault()
+  const { provider, connectGmail, connectOutlook, setProvider } = useEmail()
   const [exportPassphrase, setExportPassphrase] = useState('')
   const [exportStatus, setExportStatus] = useState<'idle' | 'exporting' | 'done' | 'error'>('idle')
   const [exportError, setExportError] = useState('')
@@ -16,7 +18,19 @@ export default function Settings({ profile }: { profile: UserProfile }) {
   const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
   const [settingsStatus, setSettingsStatus] = useState<'idle' | 'saved' | 'error'>('idle')
   const [settingsError, setSettingsError] = useState('')
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'connecting' | 'saved' | 'error'>('idle')
+  const [emailError, setEmailError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const googleOAuthConfigured = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
+  const microsoftOAuthConfigured = Boolean(import.meta.env.VITE_MICROSOFT_CLIENT_ID)
+  const providerLabel = provider?.type === 'gmail'
+    ? 'Gmail'
+    : provider?.type === 'outlook'
+    ? 'Outlook'
+    : provider?.type === 'mailto'
+    ? 'mailto drafts'
+    : 'Not connected'
+  const oauthReconnectRequired = Boolean(provider && provider.type !== 'mailto' && !provider.accessToken)
 
   useEffect(() => {
     load<BrokerIdentity>('broker-identity')
@@ -70,6 +84,33 @@ export default function Settings({ profile }: { profile: UserProfile }) {
     } catch (e) {
       setSettingsError(e instanceof Error ? e.message : 'Failed to save removal settings')
       setSettingsStatus('error')
+    }
+  }
+
+  async function handleUseMailto() {
+    setEmailStatus('connecting')
+    setEmailError('')
+    try {
+      const mailtoProvider = { type: 'mailto' as const }
+      await save('email-provider', mailtoProvider)
+      setProvider(mailtoProvider)
+      setEmailStatus('saved')
+    } catch (e) {
+      setEmailError(e instanceof Error ? e.message : 'Failed to save email connection')
+      setEmailStatus('error')
+    }
+  }
+
+  async function handleReconnect(kind: 'gmail' | 'outlook') {
+    setEmailStatus('connecting')
+    setEmailError('')
+    try {
+      if (kind === 'gmail') await connectGmail()
+      else await connectOutlook()
+      setEmailStatus('saved')
+    } catch (e) {
+      setEmailError(e instanceof Error ? e.message : `Failed to connect ${kind === 'gmail' ? 'Gmail' : 'Outlook'}`)
+      setEmailStatus('error')
     }
   }
 
@@ -164,6 +205,48 @@ export default function Settings({ profile }: { profile: UserProfile }) {
           {settingsStatus === 'error' && (
             <p className="text-red-400 text-xs">{settingsError}</p>
           )}
+        </div>
+
+        {/* Email connection */}
+        <div className="bg-slate-900 rounded-xl p-5 space-y-3">
+          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">Email Connection</h2>
+          <p className="text-xs text-slate-500">
+            Connect the same dedicated mailbox or alias you put above. OAuth tokens stay in memory only, so you may need to reconnect after reopening the app.
+          </p>
+          <div className="flex items-center justify-between gap-3 text-sm">
+            <span className="text-slate-500">Current provider</span>
+            <span className={oauthReconnectRequired ? 'text-amber-300 font-medium' : 'text-slate-200 font-medium'}>
+              {oauthReconnectRequired ? `${providerLabel} reconnect required` : providerLabel}
+            </span>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <button
+              onClick={() => handleReconnect('gmail')}
+              disabled={!googleOAuthConfigured || emailStatus === 'connecting'}
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:hover:bg-slate-800"
+            >
+              {provider?.type === 'gmail' ? 'Reconnect Gmail' : 'Use Gmail'}
+            </button>
+            <button
+              onClick={() => handleReconnect('outlook')}
+              disabled={!microsoftOAuthConfigured || emailStatus === 'connecting'}
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:hover:bg-slate-800"
+            >
+              {provider?.type === 'outlook' ? 'Reconnect Outlook' : 'Use Outlook'}
+            </button>
+            <button
+              onClick={handleUseMailto}
+              disabled={emailStatus === 'connecting'}
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:hover:bg-slate-800"
+            >
+              Use mailto drafts
+            </button>
+          </div>
+          {!googleOAuthConfigured && !microsoftOAuthConfigured && (
+            <p className="text-xs text-amber-400">OAuth client IDs are not configured in this build, so mailto drafts are the safe local-testing path.</p>
+          )}
+          {emailStatus === 'saved' && <p className="text-green-400 text-xs">Email connection updated. Return to the dashboard to continue autopilot.</p>}
+          {emailStatus === 'error' && <p className="text-red-400 text-xs">{emailError}</p>}
         </div>
 
         {/* Export */}

@@ -3,6 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Settings from './Settings'
 
 const save = vi.fn(() => Promise.resolve())
+const connectGmail = vi.fn(() => Promise.resolve())
+const connectOutlook = vi.fn(() => Promise.resolve())
+const setProvider = vi.fn()
+let provider: { type: 'gmail' | 'outlook' | 'mailto'; accessToken?: string } | null = { type: 'gmail' }
 const load = vi.fn(async (key: string) => {
   if (key === 'broker-identity') return { mode: 'dedicated_mailbox', email: 'old-removals@example.com', label: 'Removal mailbox' }
   if (key === 'removal-policy') return { dailyLimit: 7, delayMs: 2000 }
@@ -22,10 +26,18 @@ vi.mock('../lib/backup', () => ({
   exportBackup: vi.fn(() => Promise.resolve()),
 }))
 
+vi.mock('../lib/email-context', () => ({
+  useEmail: () => ({ provider, connectGmail, connectOutlook, setProvider }),
+}))
+
 describe('Settings removal autopilot controls', () => {
   beforeEach(() => {
     save.mockClear()
     load.mockClear()
+    connectGmail.mockClear()
+    connectOutlook.mockClear()
+    setProvider.mockClear()
+    provider = { type: 'gmail' }
   })
 
   it('loads and saves broker-facing mailbox and daily cap without changing profile identifiers', async () => {
@@ -68,5 +80,15 @@ describe('Settings removal autopilot controls', () => {
     fireEvent.click(screen.getByRole('button', { name: /Save Removal Settings/ }))
 
     await waitFor(() => expect(save).toHaveBeenCalledWith('removal-policy', { dailyLimit: 25, delayMs: 2000 }))
+  })
+
+  it('surfaces reconnect-required OAuth state and lets users switch to mailto drafts', async () => {
+    render(<Settings profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+
+    expect(await screen.findByText(/Gmail reconnect required/)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: /Use mailto drafts/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('email-provider', { type: 'mailto' }))
+    expect(setProvider).toHaveBeenCalledWith({ type: 'mailto' })
   })
 })
