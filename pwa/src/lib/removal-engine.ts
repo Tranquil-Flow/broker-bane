@@ -53,6 +53,10 @@ function isSameLocalDay(a: Date, b: Date): boolean {
   )
 }
 
+export function getNextLocalBatchTime(now = new Date()): Date {
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0)
+}
+
 function statusCountsAgainstDailyLimit(status: BrokerStatus, now: Date): boolean {
   if (status.status !== 'sent' && status.status !== 'manual' && status.status !== 'confirmed') return false
   const timestamp = status.sentAt ?? status.lastUpdated

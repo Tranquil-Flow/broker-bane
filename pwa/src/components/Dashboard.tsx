@@ -7,6 +7,7 @@ import {
   getWebformBrokers,
   runEmailRemovals,
   getTodaysBatch,
+  getNextLocalBatchTime,
 } from '../lib/removal-engine'
 import { buildRemovalEmail } from '../lib/email-templates'
 import BrokerCard from './BrokerCard'
@@ -161,6 +162,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const previewBrokers = todaysBatch.toSend.slice(0, 5)
   const hiddenPreviewCount = Math.max(0, todaysBatch.toSend.length - previewBrokers.length)
   const dailyDone = remaining > 0 && !canSendToday
+  const nextBatchAt = getNextLocalBatchTime()
   const hasPendingManualBatch = pendingManualBatch.length > 0
   const pendingManualBrokers = pendingManualBatch
     .map(id => emailBrokers.find(broker => broker.id === id))
@@ -283,6 +285,11 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           <p className="text-xs text-slate-500">
             BrokerBane sends in small daily batches so a fresh removal mailbox is less likely to trip provider spam controls. No warm-up swarm; just quiet, steady removal work.
           </p>
+          {dailyDone && (
+            <p className="text-xs text-emerald-300">
+              Next batch opens {nextBatchAt.toLocaleString()}.
+            </p>
+          )}
         </div>
 
         {/* CTA */}

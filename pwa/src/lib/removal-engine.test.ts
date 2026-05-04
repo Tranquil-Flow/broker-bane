@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getEmailBrokers, getWebformBrokers, getAllBrokers, runEmailRemovals, getTodaysBatch } from './removal-engine'
+import { getEmailBrokers, getWebformBrokers, getAllBrokers, runEmailRemovals, getTodaysBatch, getNextLocalBatchTime } from './removal-engine'
 import type { UserProfile, BrokerStatus, BrokerIdentity } from '../types'
 
 describe('getEmailBrokers', () => {
@@ -161,5 +161,19 @@ describe('runEmailRemovals', () => {
     expect(batch.remainingAllowance).toBe(25)
     expect(batch.toSend).toHaveLength(25)
     expect(batch.queued).toHaveLength(5)
+  })
+
+  it('calculates the next local midnight for resume-tomorrow copy', () => {
+    const now = new Date(2026, 4, 4, 15, 30, 45)
+
+    const resumeAt = getNextLocalBatchTime(now)
+
+    expect(resumeAt.getFullYear()).toBe(2026)
+    expect(resumeAt.getMonth()).toBe(4)
+    expect(resumeAt.getDate()).toBe(5)
+    expect(resumeAt.getHours()).toBe(0)
+    expect(resumeAt.getMinutes()).toBe(0)
+    expect(resumeAt.getSeconds()).toBe(0)
+    expect(resumeAt.getMilliseconds()).toBe(0)
   })
 })

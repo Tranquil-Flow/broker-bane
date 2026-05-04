@@ -7,13 +7,14 @@ const save = vi.fn(() => Promise.resolve())
 const load = vi.fn(async (key: string) => {
   if (key === 'statuses') return storedStatuses
   if (key === 'broker-identity') return storedIdentity
-  if (key === 'removal-policy') return { dailyLimit: 10, delayMs: 0 }
+  if (key === 'removal-policy') return storedPolicy
   if (key === 'autopilot-paused') return storedPaused
   if (key === 'pending-manual-batch') return storedPendingManualBatch
   return null
 })
 let storedStatuses: Record<string, BrokerStatus> | null = null
 let storedIdentity: { mode: 'dedicated_mailbox' | 'same_mailbox'; email: string; label: string } | null = null
+let storedPolicy: { dailyLimit: number; delayMs: number } | null = null
 let storedPaused: boolean | null = null
 let storedPendingManualBatch: string[] | null = null
 let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | null = { type: 'mailto' }
@@ -59,6 +60,7 @@ describe('Dashboard safety controls', () => {
     emailBrokers = [...baseEmailBrokers]
     storedStatuses = null
     storedIdentity = { mode: 'dedicated_mailbox', email: 'removals@example.com', label: 'Removal mailbox' }
+    storedPolicy = { dailyLimit: 10, delayMs: 0 }
     storedPaused = null
     storedPendingManualBatch = null
   })
@@ -134,6 +136,22 @@ describe('Dashboard safety controls', () => {
     expect(within(dialog).getByText(/Replies should go to removals@example.com/)).toBeTruthy()
     expect(within(dialog).getByText(/OAuth sends may still show the connected Gmail account as the From sender/)).toBeTruthy()
     expect(within(dialog).queryByText(/Brokers will see removals@example.com/)).toBeNull()
+  })
+
+  it('shows when the next daily batch opens after the privacy cap is reached', async () => {
+    storedPolicy = { dailyLimit: 1, delayMs: 0 }
+    const sentAt = new Date().toISOString()
+    storedStatuses = {
+      a: { brokerId: 'a', status: 'sent', sentAt, lastUpdated: sentAt },
+    }
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Daily cap reached/)).toBeTruthy()
+    expect(screen.getByText(/Next batch opens/)).toBeTruthy()
+    expect((screen.getByRole('button', { name: /Daily privacy-safe batch complete/ }) as HTMLButtonElement).disabled).toBe(true)
   })
 
   it('can pause and resume autopilot without sending', async () => {
