@@ -14,6 +14,8 @@ import UpgradeCallout from './UpgradeCallout'
 import type { BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '../types'
 import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 
+const INITIAL_EMAIL_BROKER_VISIBLE_COUNT = 50
+
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load } = useVault()
   const { sendEmail, provider, openMailto } = useEmail()
@@ -25,6 +27,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [paused, setPaused] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [pendingManualBatch, setPendingManualBatch] = useState<string[]>([])
+  const [visibleEmailBrokerCount, setVisibleEmailBrokerCount] = useState(INITIAL_EMAIL_BROKER_VISIBLE_COUNT)
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
@@ -32,6 +35,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const manualWebformBrokers = webformBrokers.filter(b => b.method === 'webform')
   const emailBrokerIds = new Set(emailBrokers.map(b => b.id))
   const webformBrokerIds = new Set(manualWebformBrokers.map(b => b.id))
+  const visibleEmailBrokers = emailBrokers.slice(0, visibleEmailBrokerCount)
+  const hiddenEmailBrokerCount = Math.max(0, emailBrokers.length - visibleEmailBrokers.length)
   const effectiveIdentity: BrokerIdentity = brokerIdentity ?? {
     mode: 'same_mailbox',
     email: profile.emails[0] ?? '',
@@ -403,10 +408,18 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
             Email Brokers ({emailBrokers.length})
           </h2>
           <div className="bg-slate-900 rounded-xl px-4 divide-y divide-slate-800">
-            {emailBrokers.map(b => (
+            {visibleEmailBrokers.map(b => (
               <BrokerCard key={b.id} broker={b} status={statuses[b.id]} />
             ))}
           </div>
+          {hiddenEmailBrokerCount > 0 && (
+            <button
+              onClick={() => setVisibleEmailBrokerCount(emailBrokers.length)}
+              className="w-full mt-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 py-2 rounded-lg text-sm font-medium transition"
+            >
+              Show {hiddenEmailBrokerCount} more email brokers
+            </button>
+          )}
         </div>
 
         {/* Export — available in Settings tab */}

@@ -19,14 +19,14 @@ let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | n
 const openMailto = vi.fn()
 const sendEmail = vi.fn(() => Promise.resolve())
 
-const emailBrokers: Broker[] = [
+const baseEmailBrokers: Broker[] = [
   { id: 'a', name: 'Alpha Broker', method: 'email', removalEmail: 'alpha@example.com', removalLaw: 'generic', category: 'people-search' },
   { id: 'b', name: 'Beta Broker', method: 'email', removalEmail: 'beta@example.com', removalLaw: 'generic', category: 'people-search' },
 ]
+let emailBrokers: Broker[] = [...baseEmailBrokers]
 const webformBrokers: Broker[] = [
   { id: 'c', name: 'Gamma Manual', method: 'webform', removalLaw: 'ccpa', category: 'people-search', notes: 'Go to gamma.example/optout and confirm by email.' },
 ]
-const brokers: Broker[] = [...emailBrokers, ...webformBrokers]
 
 vi.mock('../lib/vault-context', () => ({
   useVault: () => ({
@@ -43,7 +43,7 @@ vi.mock('../lib/removal-engine', async () => {
   const actual = await vi.importActual<typeof import('../lib/removal-engine')>('../lib/removal-engine')
   return {
     ...actual,
-    getAllBrokers: () => brokers,
+    getAllBrokers: () => [...emailBrokers, ...webformBrokers],
     getEmailBrokers: () => emailBrokers,
     getWebformBrokers: () => webformBrokers,
   }
@@ -55,6 +55,7 @@ describe('Dashboard safety controls', () => {
     openMailto.mockClear()
     sendEmail.mockClear()
     provider = { type: 'mailto' }
+    emailBrokers = [...baseEmailBrokers]
     storedStatuses = null
     storedPaused = null
     storedPendingManualBatch = null
@@ -149,5 +150,27 @@ describe('Dashboard safety controls', () => {
     expect(save).toHaveBeenCalledWith('statuses', expect.objectContaining({
       c: expect.objectContaining({ brokerId: 'c', status: 'manual' }),
     }))
+  })
+
+  it('initially caps the huge email broker list and lets the user expand it', async () => {
+    emailBrokers = Array.from({ length: 55 }, (_, index) => ({
+      id: `broker-${index + 1}`,
+      name: `Broker ${index + 1}`,
+      method: 'email' as const,
+      removalEmail: `broker-${index + 1}@example.com`,
+      removalLaw: 'generic' as const,
+      category: 'people-search',
+    }))
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText('Broker 50')).toBeTruthy()
+    expect(screen.queryByText('Broker 51')).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: /Show 5 more email brokers/ }))
+
+    expect(await screen.findByText('Broker 51')).toBeTruthy()
   })
 })
