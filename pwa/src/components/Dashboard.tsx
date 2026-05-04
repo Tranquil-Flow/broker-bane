@@ -42,6 +42,9 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     email: profile.emails[0] ?? '',
     label: 'Profile email',
   }
+  const usingProfileInbox = effectiveIdentity.mode === 'same_mailbox' || (
+    effectiveIdentity.email.trim().toLowerCase() === (profile.emails[0] ?? '').trim().toLowerCase()
+  )
   const todaysBatch = getTodaysBatch(emailBrokers, statuses, policy.dailyLimit)
   const oauthProviderNeedsReconnect = Boolean(
     provider && provider.type !== 'mailto' && !provider.accessToken
@@ -220,6 +223,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
             <span className="text-slate-400">Broker-facing mailbox</span>
             <span className="font-medium text-white truncate">{effectiveIdentity.email || 'Not set'}</span>
           </div>
+          {usingProfileInbox && (
+            <div className="rounded-lg border border-amber-500/40 bg-amber-950/30 px-3 py-2">
+              <p className="text-xs font-medium text-amber-300">Main inbox fallback</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Broker replies may land in your profile inbox. Use Settings to switch to a dedicated removal mailbox or alias.
+              </p>
+            </div>
+          )}
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Autopilot status</span>
             <span className={`font-medium ${paused || hasPendingManualBatch || oauthProviderNeedsReconnect ? 'text-amber-300' : 'text-emerald-300'}`}>
@@ -325,6 +336,11 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               <p className="text-sm text-amber-300 mt-2">
                 Brokers will see {effectiveIdentity.email || 'your configured removal mailbox'} as the contact / reply address.
               </p>
+              {usingProfileInbox && (
+                <p className="text-sm text-amber-300 mt-2">
+                  These replies may land in your main inbox. Cancel and choose a dedicated removal mailbox in Settings if you want a cleaner test.
+                </p>
+              )}
               {previewBrokers.length > 0 && (
                 <div className="mt-3 rounded-lg bg-slate-950/60 border border-slate-800 p-3">
                   <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">Today’s brokers</p>

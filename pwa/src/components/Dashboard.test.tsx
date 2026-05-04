@@ -6,13 +6,14 @@ import type { Broker, BrokerStatus } from '../types'
 const save = vi.fn(() => Promise.resolve())
 const load = vi.fn(async (key: string) => {
   if (key === 'statuses') return storedStatuses
-  if (key === 'broker-identity') return { mode: 'dedicated_mailbox', email: 'removals@example.com', label: 'Removal mailbox' }
+  if (key === 'broker-identity') return storedIdentity
   if (key === 'removal-policy') return { dailyLimit: 10, delayMs: 0 }
   if (key === 'autopilot-paused') return storedPaused
   if (key === 'pending-manual-batch') return storedPendingManualBatch
   return null
 })
 let storedStatuses: Record<string, BrokerStatus> | null = null
+let storedIdentity: { mode: 'dedicated_mailbox' | 'same_mailbox'; email: string; label: string } | null = null
 let storedPaused: boolean | null = null
 let storedPendingManualBatch: string[] | null = null
 let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | null = { type: 'mailto' }
@@ -57,6 +58,7 @@ describe('Dashboard safety controls', () => {
     provider = { type: 'mailto' }
     emailBrokers = [...baseEmailBrokers]
     storedStatuses = null
+    storedIdentity = { mode: 'dedicated_mailbox', email: 'removals@example.com', label: 'Removal mailbox' }
     storedPaused = null
     storedPendingManualBatch = null
   })
@@ -100,6 +102,20 @@ describe('Dashboard safety controls', () => {
 
     await waitFor(() => expect(save).toHaveBeenCalledWith('pending-manual-batch', []))
     expect(await screen.findByRole('button', { name: /Open 2 drafts for today/ })).toBeTruthy()
+  })
+
+  it('warns before sending when broker replies would go to the profile inbox', async () => {
+    storedIdentity = { mode: 'same_mailbox', email: 'personal@example.com', label: 'Same as profile email' }
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Main inbox fallback/)).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: /Open 2 drafts for today/ }))
+
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText(/These replies may land in your main inbox/)).toBeTruthy()
   })
 
   it('can pause and resume autopilot without sending', async () => {

@@ -65,6 +65,12 @@ describe('OnboardingWizard', () => {
     })
 
     expect(await screen.findByText(/Use a dedicated removal mailbox to keep broker replies out of your main inbox/)).toBeTruthy()
+
+    fireEvent.change(screen.getByPlaceholderText(/Dedicated mailbox/), {
+      target: { value: 'personal@example.com' },
+    })
+
+    expect(await screen.findByText(/This is the same as your first known email/)).toBeTruthy()
   })
 
   it('rejects invalid known and broker-facing emails before saving', async () => {

@@ -27,7 +27,11 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [brokerEmail, setBrokerEmail] = useState('')
   const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
   const firstKnownEmail = email.split(',').map(s => s.trim()).filter(Boolean)[0] ?? ''
-  const brokerMailboxFallsBackToProfile = Boolean(firstKnownEmail && !brokerEmail.trim())
+  const trimmedBrokerEmail = brokerEmail.trim()
+  const brokerMailboxFallsBackToProfile = Boolean(firstKnownEmail && !trimmedBrokerEmail)
+  const brokerMailboxMatchesProfile = Boolean(
+    firstKnownEmail && trimmedBrokerEmail.toLowerCase() === firstKnownEmail.toLowerCase()
+  )
 
   async function saveProfile() {
     setProfileError('')
@@ -146,6 +150,11 @@ export default function OnboardingWizard({ onComplete }: Props) {
           {brokerMailboxFallsBackToProfile && (
             <p className="text-xs text-amber-300 -mt-2">
               Use a dedicated removal mailbox to keep broker replies out of your main inbox. Leaving this blank will use {firstKnownEmail}.
+            </p>
+          )}
+          {brokerMailboxMatchesProfile && (
+            <p className="text-xs text-amber-300 -mt-2">
+              This is the same as your first known email. It works, but a dedicated removal mailbox or alias keeps broker replies isolated.
             </p>
           )}
           <Field label="Daily send limit" hint="10 recommended for a fresh mailbox" value={dailyLimit} onChange={setDailyLimit} />
