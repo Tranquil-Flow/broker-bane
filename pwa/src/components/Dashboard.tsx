@@ -162,6 +162,9 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const hiddenPreviewCount = Math.max(0, todaysBatch.toSend.length - previewBrokers.length)
   const dailyDone = remaining > 0 && !canSendToday
   const hasPendingManualBatch = pendingManualBatch.length > 0
+  const pendingManualBrokers = pendingManualBatch
+    .map(id => emailBrokers.find(broker => broker.id === id))
+    .filter((broker): broker is (typeof emailBrokers)[number] => Boolean(broker))
   const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
 
   function requestStartRemovals() {
@@ -308,6 +311,19 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               <p className="text-sm text-slate-300 mt-1">
                 BrokerBane opened {pendingManualBatch.length} draft{pendingManualBatch.length === 1 ? '' : 's'} in your email client. It will not count them as handled until you confirm you sent them.
               </p>
+              {pendingManualBrokers.length > 0 && (
+                <div className="mt-3 rounded-lg bg-slate-950/50 border border-amber-500/20 p-3">
+                  <p className="text-xs font-medium text-amber-200 mb-2">Opened draft batch:</p>
+                  <ul className="space-y-1 text-sm text-slate-200">
+                    {pendingManualBrokers.map(broker => (
+                      <li key={broker.id} className="flex justify-between gap-3">
+                        <span className="truncate">{broker.name}</span>
+                        <span className="text-xs text-slate-500 shrink-0">{broker.category}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
             <div className="flex gap-2">
               <button

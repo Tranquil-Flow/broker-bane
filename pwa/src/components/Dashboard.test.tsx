@@ -83,6 +83,9 @@ describe('Dashboard safety controls', () => {
     await waitFor(() => expect(openMailto).toHaveBeenCalledTimes(2))
     expect(screen.getByText(/0 sent · 0 drafts\/manual/)).toBeTruthy()
     expect(await screen.findByText(/Review your opened drafts/)).toBeTruthy()
+    expect(screen.getByText(/Opened draft batch:/)).toBeTruthy()
+    expect(screen.getAllByText(/Alpha Broker/).length).toBeGreaterThan(1)
+    expect(screen.getAllByText(/Beta Broker/).length).toBeGreaterThan(1)
 
     fireEvent.click(screen.getByRole('button', { name: /I sent these 2 drafts/ }))
 
