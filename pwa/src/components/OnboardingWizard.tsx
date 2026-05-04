@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useVault } from '../lib/vault-context'
 import { useEmail } from '../lib/email-context'
-import type { UserProfile } from '../types'
+import type { BrokerIdentity, RemovalPolicy, UserProfile } from '../types'
+import { DEFAULT_REMOVAL_POLICY } from '../types'
 
 interface Props {
   onComplete: (profile: UserProfile) => void
@@ -20,6 +21,8 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [address, setAddress] = useState('')
   const [phone, setPhone] = useState('')
   const [dob, setDob] = useState('')
+  const [brokerEmail, setBrokerEmail] = useState('')
+  const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
 
   async function saveProfile() {
     setSaving(true)
@@ -30,7 +33,20 @@ export default function OnboardingWizard({ onComplete }: Props) {
       phone: phone.trim() || undefined,
       dob: dob.trim() || undefined,
     }
+    const knownEmail = profile.emails[0] ?? ''
+    const identity: BrokerIdentity = {
+      mode: brokerEmail.trim() && brokerEmail.trim() !== knownEmail ? 'dedicated_mailbox' : 'same_mailbox',
+      email: brokerEmail.trim() || knownEmail,
+      label: brokerEmail.trim() && brokerEmail.trim() !== knownEmail ? 'Dedicated removal mailbox' : 'Same as profile email',
+    }
+    const parsedLimit = Number.parseInt(dailyLimit, 10)
+    const policy: RemovalPolicy = {
+      ...DEFAULT_REMOVAL_POLICY,
+      dailyLimit: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : DEFAULT_REMOVAL_POLICY.dailyLimit,
+    }
     await save('profile', profile)
+    await save('broker-identity', identity)
+    await save('removal-policy', policy)
     setSaving(false)
     setStep(2)
     return profile
@@ -82,19 +98,21 @@ export default function OnboardingWizard({ onComplete }: Props) {
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
       <div className="w-full max-w-lg p-8 space-y-6">
         <div>
-          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 1 of 2</div>
+          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 1 of 3</div>
           <h2 className="text-xl font-bold">Your Profile</h2>
           <p className="text-slate-400 text-sm mt-1">
-            Used to identify your records at data brokers. Encrypted on your device — never transmitted.
+            Used to identify your records at data brokers. Encrypted on your device — never uploaded to BrokerBane servers.
           </p>
         </div>
 
         <div className="space-y-4">
           <Field label="Full name(s)" hint="Comma-separate aliases e.g. John Smith, Johnny Smith" value={name} onChange={setName} required />
-          <Field label="Email address(es)" hint="Comma-separate if multiple" value={email} onChange={setEmail} required />
+          <Field label="Email address(es) brokers may know" hint="Comma-separate existing emails used to find records" value={email} onChange={setEmail} required />
           <Field label="Address(es)" hint="Current and past, comma-separated" value={address} onChange={setAddress} required />
           <Field label="Phone number" hint="Optional" value={phone} onChange={setPhone} />
           <Field label="Date of birth" hint="YYYY-MM-DD, optional" value={dob} onChange={setDob} />
+          <Field label="Broker-facing removal mailbox" hint="Dedicated mailbox/alias for broker replies; defaults to first email above" value={brokerEmail} onChange={setBrokerEmail} />
+          <Field label="Daily send limit" hint="10 recommended for a fresh mailbox" value={dailyLimit} onChange={setDailyLimit} />
         </div>
 
         <button
@@ -112,10 +130,10 @@ export default function OnboardingWizard({ onComplete }: Props) {
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
       <div className="w-full max-w-lg p-8 space-y-6">
         <div>
-          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 2 of 2</div>
+          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 2 of 3</div>
           <h2 className="text-xl font-bold">Connect Your Email</h2>
           <p className="text-slate-400 text-sm mt-1">
-            BrokerBane sends removal requests from your email. Your credentials never leave your device.
+            Connect the dedicated removal mailbox if you have one. Brokers see the sending address; your credentials never leave your device.
           </p>
         </div>
 
@@ -165,7 +183,7 @@ export default function OnboardingWizard({ onComplete }: Props) {
         <div className="text-6xl">✓</div>
         <h2 className="text-xl font-bold">You're all set</h2>
         <p className="text-slate-400">
-          Ready to remove your data from 1,000+ brokers.
+          Ready to start quiet daily batches against 1,000+ brokers without blasting your inbox all at once.
         </p>
         <button
           onClick={handleFinish}

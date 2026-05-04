@@ -39,4 +39,16 @@ describe('buildRemovalEmail', () => {
     expect(email.body).not.toContain('undefined')
     expect(email.body).not.toContain('null')
   })
+
+  it('separates broker-facing contact mailbox from profile emails brokers may know', () => {
+    const multi = { ...profile, emails: ['old@example.com', 'work@example.com'] }
+
+    const email = buildRemovalEmail(multi, 'generic', 'test@broker.com', {
+      brokerFacingEmail: 'removals@example.net',
+    })
+
+    expect(email.body).toContain('Contact / reply email: removals@example.net')
+    expect(email.body).toContain('Emails that may identify my records: old@example.com, work@example.com')
+    expect(email.body).not.toContain('- Email: old@example.com')
+  })
 })

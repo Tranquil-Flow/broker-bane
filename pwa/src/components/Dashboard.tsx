@@ -5,25 +5,41 @@ import {
   getEmailBrokers,
   getAllBrokers,
   runEmailRemovals,
+  getTodaysBatch,
 } from '../lib/removal-engine'
 import { buildRemovalEmail } from '../lib/email-templates'
 import BrokerCard from './BrokerCard'
 import UpgradeCallout from './UpgradeCallout'
-import type { UserProfile, BrokerStatus } from '../types'
+import type { BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '../types'
+import { DEFAULT_REMOVAL_POLICY } from '../types'
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load } = useVault()
   const { sendEmail, provider, openMailto } = useEmail()
   const runningRef = useRef(false)
   const [statuses, setStatuses] = useState<Record<string, BrokerStatus>>({})
+  const [brokerIdentity, setBrokerIdentity] = useState<BrokerIdentity | null>(null)
+  const [policy, setPolicy] = useState<RemovalPolicy>(DEFAULT_REMOVAL_POLICY)
   const [running, setRunning] = useState(false)
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
+  const effectiveIdentity: BrokerIdentity = brokerIdentity ?? {
+    mode: 'same_mailbox',
+    email: profile.emails[0] ?? '',
+    label: 'Profile email',
+  }
+  const todaysBatch = getTodaysBatch(emailBrokers, statuses, policy.dailyLimit)
 
   useEffect(() => {
     load<Record<string, BrokerStatus>>('statuses')
       .then(s => { if (s) setStatuses(s) })
+      .catch(() => {})
+    load<BrokerIdentity>('broker-identity')
+      .then(i => { if (i) setBrokerIdentity(i) })
+      .catch(() => {})
+    load<RemovalPolicy>('removal-policy')
+      .then(p => { if (p) setPolicy({ ...DEFAULT_REMOVAL_POLICY, ...p }) })
       .catch(() => {})
   }, [load])
 
@@ -35,12 +51,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
 
   const updateStatus = useCallback(
     (brokerId: string, status: BrokerStatus['status']) => {
+      const now = new Date().toISOString()
       setStatuses(prev => ({
         ...prev,
         [brokerId]: {
           brokerId,
           status,
-          lastUpdated: new Date().toISOString(),
+          sentAt: status === 'sent' || status === 'manual' ? now : prev[brokerId]?.sentAt,
+          lastUpdated: now,
         },
       }))
     },
@@ -48,22 +66,28 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   )
 
   async function startRemovals() {
-    if (!provider || runningRef.current) return
+    if (!provider || runningRef.current || todaysBatch.remainingAllowance <= 0) return
 
     if (provider.type === 'mailto') {
-      // For mailto, open each broker's email in the user's client
-      const emailBrokersToSend = emailBrokers.filter(b => {
-        const s = statuses[b.id]
-        return !s || s.status === 'pending' || s.status === 'failed'
-      })
-      for (const broker of emailBrokersToSend) {
-        if (!broker.removalEmail) continue
-        const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail)
-        openMailto(message)
-        // Mark as manual — user must confirm they actually sent the email
-        updateStatus(broker.id, 'manual')
-        // Small delay between opening mailto links
-        await new Promise(r => setTimeout(r, 200))
+      runningRef.current = true
+      setRunning(true)
+      setRunError('')
+      try {
+        for (const broker of todaysBatch.toSend) {
+          if (!broker.removalEmail) continue
+          const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail, {
+            brokerIdentity: effectiveIdentity,
+          })
+          openMailto(message)
+          // Mark as manual — user must confirm they actually sent the email.
+          updateStatus(broker.id, 'manual')
+          await new Promise(r => setTimeout(r, Math.max(250, Math.min(policy.delayMs, 2_000))))
+        }
+      } catch (e) {
+        setRunError(e instanceof Error ? e.message : 'Unknown error')
+      } finally {
+        setRunning(false)
+        runningRef.current = false
       }
       return
     }
@@ -77,7 +101,13 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         profile,
         statuses,
         sendEmail,
-        ({ brokerId, status }) => updateStatus(brokerId, status)
+        ({ brokerId, status }) => updateStatus(brokerId, status),
+        emailBrokers,
+        {
+          brokerIdentity: effectiveIdentity,
+          dailyLimit: policy.dailyLimit,
+          delayMs: policy.delayMs,
+        }
       )
     } catch (e) {
       setRunError(e instanceof Error ? e.message : 'Unknown error')
@@ -88,10 +118,12 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   }
 
   const sentCount = Object.values(statuses).filter(
-    s => s.status === 'sent' || s.status === 'confirmed'
+    s => s.status === 'sent' || s.status === 'confirmed' || s.status === 'manual'
   ).length
   const failedCount = Object.values(statuses).filter(s => s.status === 'failed').length
   const remaining = emailBrokers.length - sentCount
+  const canSendToday = todaysBatch.toSend.length > 0
+  const dailyDone = remaining > 0 && !canSendToday
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -105,26 +137,46 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
           <StatCard label="Total brokers" value={allBrokers.length} />
-          <StatCard label="Requests sent" value={sentCount} highlight />
+          <StatCard label="Requests handled" value={sentCount} highlight />
           <StatCard label="Remaining" value={remaining} />
+        </div>
+
+        <div className="bg-slate-900 rounded-xl p-4 space-y-2 text-sm text-slate-300">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400">Broker-facing mailbox</span>
+            <span className="font-medium text-white truncate">{effectiveIdentity.email || 'Not set'}</span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400">Autopilot pace</span>
+            <span className="font-medium text-white">
+              {todaysBatch.sentToday}/{policy.dailyLimit} today · {todaysBatch.queued.length} queued
+            </span>
+          </div>
+          <p className="text-xs text-slate-500">
+            BrokerBane sends in small daily batches so a fresh removal mailbox is less likely to trip provider spam controls. No warm-up swarm; just quiet, steady removal work.
+          </p>
         </div>
 
         {/* CTA */}
         {!provider ? (
           <div className="bg-slate-900 rounded-xl p-4 text-sm text-amber-400">
-            No email provider connected. Re-run setup to connect Gmail or Outlook.
+            No email provider connected. Re-run setup to connect a dedicated removal mailbox or use mailto drafts.
           </div>
         ) : (
           <button
             onClick={startRemovals}
-            disabled={running || remaining === 0}
+            disabled={running || remaining === 0 || dailyDone}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl font-medium transition disabled:opacity-50"
           >
             {running
-              ? 'Sending removal requests…'
+              ? provider.type === 'mailto' ? 'Opening today’s draft batch…' : 'Sending today’s removal batch…'
               : remaining === 0
-              ? '✓ All email requests sent'
-              : `Send ${remaining} removal requests`}
+              ? '✓ All email requests handled'
+              : dailyDone
+              ? '✓ Daily privacy-safe batch complete — continue tomorrow'
+              : provider.type === 'mailto'
+              ? `Open ${todaysBatch.toSend.length} drafts for today`
+              : `Send ${todaysBatch.toSend.length} removal requests today`}
           </button>
         )}
 

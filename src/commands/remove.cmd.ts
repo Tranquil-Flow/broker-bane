@@ -45,7 +45,10 @@ export async function removeCommand(options: {
 
     if (summary.dryRun) {
       console.log("\n  No emails were actually sent (dry run mode).");
-      console.log("  Remove --dry-run to send real opt-out requests.\n");
+      console.log("  Remove --dry-run to send real opt-out requests using the same daily cap.\n");
+    } else if (summary.limitReached) {
+      console.log("\n  Daily privacy-safe send cap reached.");
+      console.log("  BrokerBane stopped before blasting the mailbox; run 'brokerbane remove --resume' tomorrow to continue.\n");
     } else if (summary.manualRequired > 0) {
       console.log(`\n  ${summary.manualRequired} broker(s) require you to submit an opt-out form manually.`);
       console.log("  Run 'brokerbane confirm' to see the list with links.\n");

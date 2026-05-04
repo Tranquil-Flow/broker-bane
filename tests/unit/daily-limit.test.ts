@@ -10,10 +10,10 @@ describe("OptionsConfigSchema daily_limit", () => {
     if (result.success) expect(result.data.daily_limit).toBe(40);
   });
 
-  it("daily_limit is optional (undefined by default)", () => {
+  it("defaults daily_limit to a privacy-safe fresh-mailbox cap", () => {
     const result = OptionsConfigSchema.safeParse({});
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.daily_limit).toBeUndefined();
+    if (result.success) expect(result.data.daily_limit).toBe(10);
   });
 });
 

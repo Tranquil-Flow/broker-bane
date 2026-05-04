@@ -45,6 +45,7 @@ export interface PipelineSummary {
   failed: number;
   skipped: number;
   manualRequired: number;
+  limitReached: boolean;
   dryRun: boolean;
 }
 
@@ -227,6 +228,7 @@ export class Orchestrator {
       failed: 0,
       skipped: validitySkippedCount,
       manualRequired: 0,
+      limitReached: false,
       dryRun,
     };
 
@@ -314,6 +316,7 @@ export class Orchestrator {
                 `Daily send limit reached (${sentToday}/${dailyLimit}). Run 'brokerbane resume' tomorrow to continue.`
               );
               limitReached = true;
+              summary.limitReached = true;
               break;
             }
           }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getEmailBrokers, getWebformBrokers, getAllBrokers, runEmailRemovals } from './removal-engine'
-import type { UserProfile, BrokerStatus } from '../types'
+import { getEmailBrokers, getWebformBrokers, getAllBrokers, runEmailRemovals, getTodaysBatch } from './removal-engine'
+import type { UserProfile, BrokerStatus, BrokerIdentity } from '../types'
 
 describe('getEmailBrokers', () => {
   it('returns only email-capable brokers', () => {
@@ -37,6 +37,11 @@ describe('runEmailRemovals', () => {
     names: ['Test User'],
     emails: ['test@example.com'],
     addresses: ['123 Test St'],
+  }
+
+  const brokerIdentity: BrokerIdentity = {
+    mode: 'dedicated_mailbox',
+    email: 'removals@example.net',
   }
 
   it('calls sendFn for each pending email broker', async () => {
@@ -77,5 +82,52 @@ describe('runEmailRemovals', () => {
     await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers)
 
     expect(onProgress).toHaveBeenCalledWith(expect.objectContaining({ status: 'failed' }))
+  })
+
+  it('uses the broker-facing identity email in generated removal requests', async () => {
+    const sendFn = vi.fn().mockResolvedValue(undefined)
+    const onProgress = vi.fn()
+    const brokers = getEmailBrokers().slice(0, 1)
+
+    await runEmailRemovals(profile, {}, sendFn, onProgress, brokers, {
+      brokerIdentity,
+    })
+
+    expect(sendFn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.stringContaining('Contact / reply email: removals@example.net'),
+      })
+    )
+  })
+
+  it('only sends up to the daily limit and reports remaining queued items', async () => {
+    const sendFn = vi.fn().mockResolvedValue(undefined)
+    const onProgress = vi.fn()
+    const brokers = getEmailBrokers().slice(0, 3)
+
+    const result = await runEmailRemovals(profile, {}, sendFn, onProgress, brokers, {
+      brokerIdentity,
+      dailyLimit: 2,
+      delayMs: 0,
+    })
+
+    expect(sendFn).toHaveBeenCalledTimes(2)
+    expect(result.sent).toBe(2)
+    expect(result.queued).toBe(1)
+    expect(result.limitReached).toBe(true)
+  })
+
+  it('counts sent and manual requests from today against the daily batch', () => {
+    const brokers = getEmailBrokers().slice(0, 3)
+    const today = new Date().toISOString()
+    const statuses: Record<string, BrokerStatus> = {
+      [brokers[0].id]: { brokerId: brokers[0].id, status: 'sent', sentAt: today, lastUpdated: today },
+    }
+
+    const batch = getTodaysBatch(brokers, statuses, 2, new Date(today))
+
+    expect(batch.remainingAllowance).toBe(1)
+    expect(batch.toSend).toHaveLength(1)
+    expect(batch.queued).toHaveLength(1)
   })
 })

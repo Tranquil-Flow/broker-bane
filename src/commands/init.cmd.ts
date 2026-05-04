@@ -378,6 +378,20 @@ export async function initCommand(): Promise<void> {
     },
   ]);
 
+  const { dailyLimitRaw } = await prompt([
+    {
+      type: "input",
+      name: "dailyLimitRaw",
+      message: "Daily removal email cap (10 recommended for a fresh mailbox):",
+      default: "10",
+      validate: (v: string) => {
+        const n = Number.parseInt(v, 10);
+        return Number.isFinite(n) && n > 0 || "Enter a positive number";
+      },
+    },
+  ]);
+  const dailyLimit = Number.parseInt(dailyLimitRaw, 10);
+
   // ── Step 8: DONE ─────────────────────────────────────────────────────────
   const config = {
     profile: {
@@ -429,6 +443,7 @@ export async function initCommand(): Promise<void> {
       regions: ["us"],
       excluded_brokers: [] as string[],
       tiers: [1, 2, 3],
+      daily_limit: dailyLimit,
       verify_before_send: false,
     },
     ...(imapConfig && { inbox: imapConfig }),
@@ -450,7 +465,8 @@ export async function initCommand(): Promise<void> {
   console.log("");
   console.log("Next steps:");
   console.log("  brokerbane remove --dry-run    Preview what would be sent");
-  console.log("  brokerbane remove              Start removing your data\n");
+  console.log("  brokerbane remove              Start today's privacy-safe batch");
+  console.log("  brokerbane remove --resume     Continue tomorrow if the daily cap stops the run\n");
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────
