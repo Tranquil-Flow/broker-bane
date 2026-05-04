@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react'
 import Dashboard from './Dashboard'
 import type { Broker, BrokerStatus } from '../types'
 
@@ -69,10 +69,13 @@ describe('Dashboard safety controls', () => {
     fireEvent.click(start)
 
     expect(openMailto).not.toHaveBeenCalled()
-    expect(screen.getByText(/Confirm today’s batch/)).toBeTruthy()
-    expect(screen.getByText(/Brokers will see removals@example.com/)).toBeTruthy()
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText(/Confirm today’s batch/)).toBeTruthy()
+    expect(within(dialog).getByText(/Alpha Broker/)).toBeTruthy()
+    expect(within(dialog).getByText(/Beta Broker/)).toBeTruthy()
+    expect(within(dialog).getByText(/Brokers will see removals@example.com/)).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /Confirm and open drafts/ }))
+    fireEvent.click(within(dialog).getByRole('button', { name: /Confirm and open drafts/ }))
 
     await waitFor(() => expect(openMailto).toHaveBeenCalledTimes(2))
     expect(screen.getByText(/0 sent · 0 drafts\/manual/)).toBeTruthy()

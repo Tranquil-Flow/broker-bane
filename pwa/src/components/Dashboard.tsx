@@ -150,6 +150,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const failedCount = emailStatusValues.filter(s => s.status === 'failed').length
   const remaining = emailBrokers.length - handledCount
   const canSendToday = todaysBatch.toSend.length > 0
+  const previewBrokers = todaysBatch.toSend.slice(0, 5)
+  const hiddenPreviewCount = Math.max(0, todaysBatch.toSend.length - previewBrokers.length)
   const dailyDone = remaining > 0 && !canSendToday
   const hasPendingManualBatch = pendingManualBatch.length > 0
   const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
@@ -318,6 +320,22 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               <p className="text-sm text-amber-300 mt-2">
                 Brokers will see {effectiveIdentity.email || 'your configured removal mailbox'} as the contact / reply address.
               </p>
+              {previewBrokers.length > 0 && (
+                <div className="mt-3 rounded-lg bg-slate-950/60 border border-slate-800 p-3">
+                  <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-2">Today’s brokers</p>
+                  <ul className="space-y-1 text-sm text-slate-200">
+                    {previewBrokers.map(broker => (
+                      <li key={broker.id} className="flex justify-between gap-3">
+                        <span className="truncate">{broker.name}</span>
+                        <span className="text-xs text-slate-500 shrink-0">{broker.category}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {hiddenPreviewCount > 0 && (
+                    <p className="text-xs text-slate-500 mt-2">+{hiddenPreviewCount} more in today’s capped batch</p>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex gap-2">
               <button
