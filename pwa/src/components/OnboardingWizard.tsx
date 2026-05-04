@@ -14,6 +14,7 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [connectError, setConnectError] = useState('')
+  const [profileError, setProfileError] = useState('')
   const googleOAuthConfigured = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
   const microsoftOAuthConfigured = Boolean(import.meta.env.VITE_MICROSOFT_CLIENT_ID)
 
@@ -27,7 +28,7 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
 
   async function saveProfile() {
-    setSaving(true)
+    setProfileError('')
     const profile: UserProfile = {
       names: name.split(',').map(s => s.trim()).filter(Boolean),
       emails: email.split(',').map(s => s.trim()).filter(Boolean),
@@ -35,23 +36,49 @@ export default function OnboardingWizard({ onComplete }: Props) {
       phone: phone.trim() || undefined,
       dob: dob.trim() || undefined,
     }
-    const knownEmail = profile.emails[0] ?? ''
-    const identity: BrokerIdentity = {
-      mode: brokerEmail.trim() && brokerEmail.trim() !== knownEmail ? 'dedicated_mailbox' : 'same_mailbox',
-      email: brokerEmail.trim() || knownEmail,
-      label: brokerEmail.trim() && brokerEmail.trim() !== knownEmail ? 'Dedicated removal mailbox' : 'Same as profile email',
+    const invalidKnownEmail = profile.emails.find(e => !isValidEmail(e))
+    if (profile.names.length === 0) {
+      setProfileError('Enter at least one name brokers may know.')
+      return null
     }
-    const parsedLimit = Number.parseInt(dailyLimit, 10)
-    const policy: RemovalPolicy = normalizeRemovalPolicy({
-      ...DEFAULT_REMOVAL_POLICY,
-      dailyLimit: Number.isFinite(parsedLimit) ? parsedLimit : DEFAULT_REMOVAL_POLICY.dailyLimit,
-    })
-    await save('profile', profile)
-    await save('broker-identity', identity)
-    await save('removal-policy', policy)
-    setSaving(false)
-    setStep(2)
-    return profile
+    if (profile.emails.length === 0 || invalidKnownEmail) {
+      setProfileError('Enter valid known email address(es) brokers may use to find your records.')
+      return null
+    }
+    if (profile.addresses.length === 0) {
+      setProfileError('Enter at least one current or past address brokers may know.')
+      return null
+    }
+    const trimmedBrokerEmail = brokerEmail.trim()
+    if (trimmedBrokerEmail && !isValidEmail(trimmedBrokerEmail)) {
+      setProfileError('Enter a valid broker-facing removal mailbox, or leave it blank to use your first known email.')
+      return null
+    }
+
+    setSaving(true)
+    try {
+      const knownEmail = profile.emails[0] ?? ''
+      const identity: BrokerIdentity = {
+        mode: trimmedBrokerEmail && trimmedBrokerEmail !== knownEmail ? 'dedicated_mailbox' : 'same_mailbox',
+        email: trimmedBrokerEmail || knownEmail,
+        label: trimmedBrokerEmail && trimmedBrokerEmail !== knownEmail ? 'Dedicated removal mailbox' : 'Same as profile email',
+      }
+      const parsedLimit = Number.parseInt(dailyLimit, 10)
+      const policy: RemovalPolicy = normalizeRemovalPolicy({
+        ...DEFAULT_REMOVAL_POLICY,
+        dailyLimit: Number.isFinite(parsedLimit) ? parsedLimit : DEFAULT_REMOVAL_POLICY.dailyLimit,
+      })
+      await save('profile', profile)
+      await save('broker-identity', identity)
+      await save('removal-policy', policy)
+      setStep(2)
+      return profile
+    } catch (e) {
+      setProfileError(e instanceof Error ? e.message : 'Failed to save profile')
+      return null
+    } finally {
+      setSaving(false)
+    }
   }
 
   // Keep profile ref for onComplete
@@ -59,7 +86,7 @@ export default function OnboardingWizard({ onComplete }: Props) {
 
   async function handleSaveProfile() {
     const profile = await saveProfile()
-    setSavedProfile(profile)
+    if (profile) setSavedProfile(profile)
   }
 
   async function handleConnectGmail() {
@@ -116,6 +143,8 @@ export default function OnboardingWizard({ onComplete }: Props) {
           <Field label="Broker-facing removal mailbox" hint="Dedicated mailbox/alias for broker replies; defaults to first email above" value={brokerEmail} onChange={setBrokerEmail} />
           <Field label="Daily send limit" hint="10 recommended for a fresh mailbox" value={dailyLimit} onChange={setDailyLimit} />
         </div>
+
+        {profileError && <p className="text-red-400 text-sm">{profileError}</p>}
 
         <button
           onClick={handleSaveProfile}
@@ -208,6 +237,10 @@ export default function OnboardingWizard({ onComplete }: Props) {
       </div>
     </div>
   )
+}
+
+function isValidEmail(value: string): boolean {
+  return /^\S+@\S+\.\S+$/.test(value)
 }
 
 function Field({

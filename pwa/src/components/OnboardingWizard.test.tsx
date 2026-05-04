@@ -54,6 +54,48 @@ describe('OnboardingWizard', () => {
     })
   })
 
+  it('rejects invalid known and broker-facing emails before saving', async () => {
+    render(<OnboardingWizard onComplete={vi.fn()} />)
+
+    fireEvent.change(screen.getByPlaceholderText(/Comma-separate aliases/), {
+      target: { value: 'Evi Example' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/existing emails/), {
+      target: { value: 'not-an-email' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/Current and past/), {
+      target: { value: '1 Moon Lane' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/Dedicated mailbox/), {
+      target: { value: 'also-bad' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/ }))
+
+    expect(await screen.findByText(/Enter valid known email address/)).toBeTruthy()
+    expect(save).not.toHaveBeenCalled()
+  })
+
+  it('recovers from vault save failures without leaving onboarding stuck saving', async () => {
+    save.mockRejectedValueOnce(new Error('vault locked'))
+    render(<OnboardingWizard onComplete={vi.fn()} />)
+
+    fireEvent.change(screen.getByPlaceholderText(/Comma-separate aliases/), {
+      target: { value: 'Evi Example' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/existing emails/), {
+      target: { value: 'personal@example.com' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/Current and past/), {
+      target: { value: '1 Moon Lane' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Continue/ }))
+
+    expect(await screen.findByText(/vault locked/)).toBeTruthy()
+    await waitFor(() => expect((screen.getByRole('button', { name: /Continue/ }) as HTMLButtonElement).disabled).toBe(false))
+  })
+
   it('warns and disables OAuth buttons when client IDs are not configured', async () => {
     render(<OnboardingWizard onComplete={vi.fn()} />)
 
