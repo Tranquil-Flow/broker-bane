@@ -37,4 +37,18 @@ describe('buildGmailPayload', () => {
     expect(decoded).toContain('Subject: Removal Request')
     expect(decoded).toContain('Please remove my data.')
   })
+
+  it('adds a Reply-To header for the broker-facing mailbox', () => {
+    const payload = buildGmailPayload({
+      to: 'opt-out@broker.com',
+      subject: 'Removal Request',
+      body: 'Please remove my data.',
+      replyTo: 'removals@example.net',
+    })
+    const b64 = payload.raw.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = b64 + '==='.slice(0, (4 - b64.length % 4) % 4)
+    const decoded = atob(padded)
+
+    expect(decoded).toContain('Reply-To: removals@example.net')
+  })
 })

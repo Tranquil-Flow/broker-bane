@@ -4,6 +4,7 @@ export interface EmailMessage {
   to: string
   subject: string
   body: string
+  replyTo?: string
 }
 
 export interface RemovalEmailOptions {
@@ -64,5 +65,5 @@ Please confirm in writing that you have complied with this request within 30 day
 Regards,
 ${name}`
 
-  return { to: toAddress, subject, body }
+  return { to: toAddress, subject, body, replyTo: contactEmail || undefined }
 }

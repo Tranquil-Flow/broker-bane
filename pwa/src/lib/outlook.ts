@@ -1,6 +1,28 @@
 import { PublicClientApplication, type SilentRequest } from '@azure/msal-browser'
 import type { EmailMessage } from './email-templates'
 
+export interface OutlookPayload {
+  message: {
+    subject: string
+    body: { contentType: 'Text'; content: string }
+    toRecipients: Array<{ emailAddress: { address: string } }>
+    replyTo?: Array<{ emailAddress: { address: string } }>
+  }
+}
+
+export function buildOutlookPayload(message: EmailMessage): OutlookPayload {
+  return {
+    message: {
+      subject: message.subject,
+      body: { contentType: 'Text', content: message.body },
+      toRecipients: [{ emailAddress: { address: message.to } }],
+      ...(message.replyTo
+        ? { replyTo: [{ emailAddress: { address: message.replyTo } }] }
+        : {}),
+    },
+  }
+}
+
 let msalInstance: PublicClientApplication | null = null
 
 function getMsal(): PublicClientApplication {
@@ -50,13 +72,7 @@ export async function sendViaOutlook(
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      message: {
-        subject: message.subject,
-        body: { contentType: 'Text', content: message.body },
-        toRecipients: [{ emailAddress: { address: message.to } }],
-      },
-    }),
+    body: JSON.stringify(buildOutlookPayload(message)),
   })
   if (!response.ok) {
     const error = await response.json().catch(() => ({}))

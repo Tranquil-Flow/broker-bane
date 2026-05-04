@@ -8,11 +8,12 @@ export function buildGmailPayload(message: EmailMessage): GmailPayload {
   const rfc2822 = [
     `To: ${message.to}`,
     `Subject: ${message.subject}`,
+    message.replyTo ? `Reply-To: ${message.replyTo}` : null,
     `Content-Type: text/plain; charset=utf-8`,
     `MIME-Version: 1.0`,
     ``,
     message.body,
-  ].join('\r\n')
+  ].filter(line => line !== null).join('\r\n')
 
   // Encode to UTF-8 bytes, then base64url (Gmail API requirement)
   const bytes = new TextEncoder().encode(rfc2822)

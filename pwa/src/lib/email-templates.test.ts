@@ -51,4 +51,15 @@ describe('buildRemovalEmail', () => {
     expect(email.body).toContain('Emails that may identify my records: old@example.com, work@example.com')
     expect(email.body).not.toContain('- Email: old@example.com')
   })
+
+  it('sets Reply-To to the broker-facing mailbox when it differs from known emails', () => {
+    const email = buildRemovalEmail(profile, 'generic', 'test@broker.com', {
+      brokerIdentity: {
+        mode: 'dedicated_mailbox',
+        email: 'removals@example.net',
+      },
+    })
+
+    expect(email.replyTo).toBe('removals@example.net')
+  })
 })
