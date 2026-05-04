@@ -26,9 +26,10 @@ const baseEmailBrokers: Broker[] = [
   { id: 'b', name: 'Beta Broker', method: 'email', removalEmail: 'beta@example.com', removalLaw: 'generic', category: 'people-search' },
 ]
 let emailBrokers: Broker[] = [...baseEmailBrokers]
-const webformBrokers: Broker[] = [
+const baseWebformBrokers: Broker[] = [
   { id: 'c', name: 'Gamma Manual', method: 'webform', removalLaw: 'ccpa', category: 'people-search', notes: 'Go to gamma.example/optout and confirm by email.' },
 ]
+let webformBrokers: Broker[] = [...baseWebformBrokers]
 
 vi.mock('../lib/vault-context', () => ({
   useVault: () => ({
@@ -58,6 +59,7 @@ describe('Dashboard safety controls', () => {
     sendEmail.mockClear()
     provider = { type: 'mailto' }
     emailBrokers = [...baseEmailBrokers]
+    webformBrokers = [...baseWebformBrokers]
     storedStatuses = null
     storedIdentity = { mode: 'dedicated_mailbox', email: 'removals@example.com', label: 'Removal mailbox' }
     storedPolicy = { dailyLimit: 10, delayMs: 0 }
@@ -247,5 +249,27 @@ describe('Dashboard safety controls', () => {
     fireEvent.click(screen.getByRole('button', { name: /Show 5 more email brokers/ }))
 
     expect(await screen.findByText('Broker 51')).toBeTruthy()
+  })
+
+  it('initially caps the huge manual webform queue and lets the user expand it', async () => {
+    webformBrokers = Array.from({ length: 55 }, (_, index) => ({
+      id: `webform-${index + 1}`,
+      name: `Webform Broker ${index + 1}`,
+      method: 'webform' as const,
+      removalLaw: 'generic' as const,
+      category: 'people-search',
+      notes: `Manual opt-out instructions ${index + 1}`,
+    }))
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText('Webform Broker 50')).toBeTruthy()
+    expect(screen.queryByText('Webform Broker 51')).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: /Show 5 more manual webform brokers/ }))
+
+    expect(await screen.findByText('Webform Broker 51')).toBeTruthy()
   })
 })

@@ -16,6 +16,7 @@ import type { BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '.
 import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 
 const INITIAL_EMAIL_BROKER_VISIBLE_COUNT = 50
+const INITIAL_WEBFORM_BROKER_VISIBLE_COUNT = 50
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load } = useVault()
@@ -29,6 +30,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [pendingManualBatch, setPendingManualBatch] = useState<string[]>([])
   const [visibleEmailBrokerCount, setVisibleEmailBrokerCount] = useState(INITIAL_EMAIL_BROKER_VISIBLE_COUNT)
+  const [visibleWebformBrokerCount, setVisibleWebformBrokerCount] = useState(INITIAL_WEBFORM_BROKER_VISIBLE_COUNT)
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
@@ -38,6 +40,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const webformBrokerIds = new Set(manualWebformBrokers.map(b => b.id))
   const visibleEmailBrokers = emailBrokers.slice(0, visibleEmailBrokerCount)
   const hiddenEmailBrokerCount = Math.max(0, emailBrokers.length - visibleEmailBrokers.length)
+  const visibleWebformBrokers = manualWebformBrokers.slice(0, visibleWebformBrokerCount)
+  const hiddenWebformBrokerCount = Math.max(0, manualWebformBrokers.length - visibleWebformBrokers.length)
   const effectiveIdentity: BrokerIdentity = brokerIdentity ?? {
     mode: 'same_mailbox',
     email: profile.emails[0] ?? '',
@@ -471,7 +475,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               Manual Webform Brokers ({manualWebformBrokers.length})
             </h2>
             <div className="bg-slate-900 rounded-xl px-4 divide-y divide-slate-800">
-              {manualWebformBrokers.map(broker => {
+              {visibleWebformBrokers.map(broker => {
                 const status = statuses[broker.id]
                 const complete = status?.status === 'manual' || status?.status === 'confirmed'
                 return (
@@ -496,6 +500,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
                 )
               })}
             </div>
+            {hiddenWebformBrokerCount > 0 && (
+              <button
+                onClick={() => setVisibleWebformBrokerCount(manualWebformBrokers.length)}
+                className="w-full mt-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Show {hiddenWebformBrokerCount} more manual webform brokers
+              </button>
+            )}
           </div>
         )}
 
