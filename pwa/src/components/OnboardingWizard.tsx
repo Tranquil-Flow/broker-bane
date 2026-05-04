@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useVault } from '../lib/vault-context'
 import { useEmail } from '../lib/email-context'
 import type { BrokerIdentity, RemovalPolicy, UserProfile } from '../types'
-import { DEFAULT_REMOVAL_POLICY } from '../types'
+import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 
 interface Props {
   onComplete: (profile: UserProfile) => void
@@ -40,10 +40,10 @@ export default function OnboardingWizard({ onComplete }: Props) {
       label: brokerEmail.trim() && brokerEmail.trim() !== knownEmail ? 'Dedicated removal mailbox' : 'Same as profile email',
     }
     const parsedLimit = Number.parseInt(dailyLimit, 10)
-    const policy: RemovalPolicy = {
+    const policy: RemovalPolicy = normalizeRemovalPolicy({
       ...DEFAULT_REMOVAL_POLICY,
-      dailyLimit: Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : DEFAULT_REMOVAL_POLICY.dailyLimit,
-    }
+      dailyLimit: Number.isFinite(parsedLimit) ? parsedLimit : DEFAULT_REMOVAL_POLICY.dailyLimit,
+    })
     await save('profile', profile)
     await save('broker-identity', identity)
     await save('removal-policy', policy)

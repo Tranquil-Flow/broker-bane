@@ -11,7 +11,7 @@ import { buildRemovalEmail } from '../lib/email-templates'
 import BrokerCard from './BrokerCard'
 import UpgradeCallout from './UpgradeCallout'
 import type { BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '../types'
-import { DEFAULT_REMOVAL_POLICY } from '../types'
+import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load } = useVault()
@@ -39,7 +39,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       .then(i => { if (i) setBrokerIdentity(i) })
       .catch(() => {})
     load<RemovalPolicy>('removal-policy')
-      .then(p => { if (p) setPolicy({ ...DEFAULT_REMOVAL_POLICY, ...p }) })
+      .then(p => { if (p) setPolicy(normalizeRemovalPolicy(p)) })
       .catch(() => {})
   }, [load])
 

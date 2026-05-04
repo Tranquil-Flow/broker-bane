@@ -23,9 +23,25 @@ export interface RemovalPolicy {
   delayMs: number
 }
 
+export const MIN_DAILY_REMOVAL_LIMIT = 1
+export const MAX_DAILY_REMOVAL_LIMIT = 25
+
 export const DEFAULT_REMOVAL_POLICY: RemovalPolicy = {
   dailyLimit: 10,
   delayMs: 2_000,
+}
+
+export function normalizeRemovalPolicy(policy: Partial<RemovalPolicy> = {}): RemovalPolicy {
+  const parsedLimit = Number.parseInt(String(policy.dailyLimit ?? DEFAULT_REMOVAL_POLICY.dailyLimit), 10)
+  const dailyLimit = Number.isFinite(parsedLimit)
+    ? Math.min(MAX_DAILY_REMOVAL_LIMIT, Math.max(MIN_DAILY_REMOVAL_LIMIT, parsedLimit))
+    : DEFAULT_REMOVAL_POLICY.dailyLimit
+  const parsedDelay = Number.parseInt(String(policy.delayMs ?? DEFAULT_REMOVAL_POLICY.delayMs), 10)
+
+  return {
+    dailyLimit,
+    delayMs: Number.isFinite(parsedDelay) && parsedDelay >= 0 ? parsedDelay : DEFAULT_REMOVAL_POLICY.delayMs,
+  }
 }
 
 export type BrokerMethod = 'email' | 'webform' | 'both'

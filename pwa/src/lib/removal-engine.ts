@@ -1,6 +1,6 @@
 import brokers from '../data/brokers.json'
 import type { Broker, BrokerIdentity, BrokerStatus, RemovalPolicy, UserProfile } from '../types'
-import { DEFAULT_REMOVAL_POLICY } from '../types'
+import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 import { buildRemovalEmail, type EmailMessage } from './email-templates'
 
 export function getAllBrokers(): Broker[] {
@@ -73,8 +73,9 @@ export function getTodaysBatch(
   dailyLimit = DEFAULT_REMOVAL_POLICY.dailyLimit,
   now = new Date()
 ): DailyBatch {
+  const normalizedLimit = normalizeRemovalPolicy({ dailyLimit }).dailyLimit
   const sentToday = Object.values(statuses).filter(status => statusCountsAgainstDailyLimit(status, now)).length
-  const remainingAllowance = Math.max(0, dailyLimit - sentToday)
+  const remainingAllowance = Math.max(0, normalizedLimit - sentToday)
   const pending = brokersToProcess.filter(b => b.removalEmail && isPendingForSend(b, statuses))
 
   return {

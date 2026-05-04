@@ -130,4 +130,14 @@ describe('runEmailRemovals', () => {
     expect(batch.toSend).toHaveLength(1)
     expect(batch.queued).toHaveLength(1)
   })
+
+  it('caps extreme daily limits to a privacy-safe maximum batch size', () => {
+    const brokers = getEmailBrokers().slice(0, 30)
+
+    const batch = getTodaysBatch(brokers, {}, 1_000, new Date('2026-05-04T12:00:00Z'))
+
+    expect(batch.remainingAllowance).toBe(25)
+    expect(batch.toSend).toHaveLength(25)
+    expect(batch.queued).toHaveLength(5)
+  })
 })
