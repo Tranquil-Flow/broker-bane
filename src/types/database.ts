@@ -43,6 +43,7 @@ export interface EmailLogRow {
   request_id: number;
   direction: string;
   message_id: string | null;
+  identity_id: string;
   from_addr: string;
   to_addr: string;
   subject: string;

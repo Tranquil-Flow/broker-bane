@@ -14,6 +14,8 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [connectError, setConnectError] = useState('')
+  const googleOAuthConfigured = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
+  const microsoftOAuthConfigured = Boolean(import.meta.env.VITE_MICROSOFT_CLIENT_ID)
 
   // Step 1 fields
   const [name, setName] = useState('')
@@ -140,19 +142,31 @@ export default function OnboardingWizard({ onComplete }: Props) {
         <div className="space-y-3">
           <button
             onClick={handleConnectGmail}
-            className="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-3 rounded-lg transition"
+            disabled={!googleOAuthConfigured}
+            className="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-3 rounded-lg transition disabled:opacity-50 disabled:hover:bg-slate-800"
           >
             <span className="font-medium">Sign in with Google</span>
             {provider?.type === 'gmail' && <span className="text-green-400 text-sm">✓ Connected</span>}
           </button>
+          {!googleOAuthConfigured && (
+            <p className="text-xs text-amber-400">
+              Google OAuth is not configured. Set VITE_GOOGLE_CLIENT_ID or use mailto drafts for local testing.
+            </p>
+          )}
 
           <button
             onClick={handleConnectOutlook}
-            className="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-3 rounded-lg transition"
+            disabled={!microsoftOAuthConfigured}
+            className="w-full flex items-center justify-between bg-slate-800 hover:bg-slate-700 border border-slate-600 px-4 py-3 rounded-lg transition disabled:opacity-50 disabled:hover:bg-slate-800"
           >
             <span className="font-medium">Sign in with Microsoft</span>
             {provider?.type === 'outlook' && <span className="text-green-400 text-sm">✓ Connected</span>}
           </button>
+          {!microsoftOAuthConfigured && (
+            <p className="text-xs text-amber-400">
+              Microsoft OAuth is not configured. Set VITE_MICROSOFT_CLIENT_ID or use mailto drafts for local testing.
+            </p>
+          )}
 
           {connectError && <p className="text-red-400 text-sm">{connectError}</p>}
 

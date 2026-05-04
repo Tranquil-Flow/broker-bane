@@ -15,7 +15,7 @@ import { EvidenceChainRepo } from "../db/repositories/evidence-chain.repo.js";
 import { EvidenceChainService } from "./evidence-chain.js";
 import { EmailSender } from "../email/sender.js";
 import { buildTemplateVariables, renderTemplate } from "../email/template-engine.js";
-import { getBrokerFacingEmail, getBrokerIdentityImap, getEffectiveBrokerIdentity } from "../types/identity.js";
+import { getBrokerFacingEmail, getBrokerIdentityId, getBrokerIdentityImap, getEffectiveBrokerIdentity } from "../types/identity.js";
 import { CircuitBreaker } from "./circuit-breaker.js";
 import { withRetry, configToRetryOptions } from "./retry.js";
 import { scheduleBrokers } from "./scheduler.js";
@@ -309,7 +309,7 @@ export class Orchestrator {
         ) {
           // Enforce daily send limit before each email
           if (dailyLimit !== undefined) {
-            const sentToday = emailLogRepo.countSentToday();
+            const sentToday = emailLogRepo.countSentToday(brokerIdentity.id);
             if (sentToday >= dailyLimit) {
               logger.info(
                 { sentToday, dailyLimit },
@@ -473,6 +473,7 @@ export class Orchestrator {
           toAddr: broker.email!,
           subject: rendered.subject,
           status: result.rejected.length > 0 ? "rejected" : "sent",
+          identityId: getBrokerIdentityId(this.config),
         });
 
         if (result.rejected.length > 0 && result.accepted.length === 0) {

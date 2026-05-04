@@ -1,6 +1,6 @@
 # Getting Started with BrokerBane
 
-BrokerBane automates GDPR and CCPA data removal requests to 1,169+ data brokers.
+BrokerBane automates GDPR and CCPA data removal requests to 1,175+ data brokers.
 Everything runs locally on your machine. Your personal data never leaves your
 computer except in the removal requests sent directly to each broker.
 
@@ -10,8 +10,8 @@ computer except in the removal requests sent directly to each broker.
 
 - Node.js 20 or later
 - npm (comes with Node.js)
-- An email account for sending removal requests (Gmail, ProtonMail, etc.)
-- Optionally: a separate IMAP-accessible email to monitor broker responses
+- A dedicated removal mailbox or alias for broker-facing removal requests (strongly recommended)
+- Optional SMTP/IMAP access for that dedicated mailbox if you want automated sending and response monitoring
 
 ---
 
@@ -38,17 +38,18 @@ remove your records. This data is stored locally with strict file permissions
 (0600) and never sent anywhere except to the broker being contacted.
 
 ```bash
-npx brokerbane setup
+npx brokerbane init
 ```
 
 The wizard will ask for:
 
-### Personal information
+### Personal information and broker-facing identity
 
 | Field | Why it's needed | Example |
 |---|---|---|
 | Full name | Brokers match records by name | Jane Doe |
-| Email address | Required in removal requests; brokers reply here | jane@example.com |
+| Profile email(s) | Emails brokers may already know; used as record identifiers | jane@example.com |
+| Broker-facing removal mailbox | The address brokers should see and reply to; use a dedicated mailbox when possible | removals-jane@example.com |
 | Phone number | Some brokers match by phone | +1-555-0123 |
 | Mailing address | Many US data brokers match by address | 123 Main St, City, ST 12345 |
 | Date of birth | Optional; helps brokers find the right record | 1990-01-15 |
@@ -86,8 +87,9 @@ Go to https://myaccount.google.com/apppasswords to generate one.
   automation or CAPTCHA-solving services. You only need those for brokers that
   require filling out web forms (and even then, the tool falls back to email).
 - **You control the pace.** The pipeline has a configurable daily limit
-  (default: 50 brokers per run) and per-domain rate limiting with exponential
-  backoff.
+  (default: 10 sends per day) and per-domain rate limiting with exponential
+  backoff. The daily cap is counted per broker-facing identity, so a dedicated
+  removal mailbox has its own safe pace.
 
 ---
 
@@ -96,22 +98,22 @@ Go to https://myaccount.google.com/apppasswords to generate one.
 Once setup is complete, start the removal pipeline:
 
 ```bash
-npx brokerbane run
+npx brokerbane remove --dry-run
 ```
 
 This will:
-1. Load the broker database (1,169 entries in `data/brokers.yaml`)
+1. Load the broker database (1,175+ entries in `data/brokers.yaml`)
 2. For each broker, select the appropriate template (GDPR, CCPA, or generic)
-3. Send removal requests via email (or flag brokers that need web forms)
+3. Preview removal requests via email (or flag brokers that need web forms)
 4. Record each request in the local SQLite database
 5. Stop after the daily limit is reached
 
 ### What to expect on the first run
 
-- The first run processes up to 50 brokers (configurable)
-- Most brokers receive an email. Some are flagged for manual action.
+- The default pace is 10 sends per day (configurable)
+- Start with `--dry-run`; when the preview looks right, run `npx brokerbane remove` to actually send.
 - Total time: 5-15 minutes depending on SMTP rate limits
-- Check results: `npx brokerbane report`
+- Check results: `npx brokerbane status`
 
 ---
 
@@ -120,7 +122,7 @@ This will:
 If you configured IMAP, BrokerBane can watch for broker responses:
 
 ```bash
-npx brokerbane monitor
+npx brokerbane dashboard
 ```
 
 This uses IMAP IDLE to watch for incoming emails from known broker domains.
@@ -148,7 +150,7 @@ npx brokerbane rescan --schedule
 ## 7. Check Your Status
 
 ```bash
-npx brokerbane report
+npx brokerbane status
 ```
 
 Shows:
@@ -160,7 +162,7 @@ Shows:
 
 Export as JSON:
 ```bash
-npx brokerbane report --json > report.json
+npx brokerbane status --json > report.json
 ```
 
 ---
@@ -175,7 +177,7 @@ npx brokerbane report --json > report.json
 
 ### "No brokers processed"
 
-- Make sure you ran `brokerbane setup` first
+- Make sure you ran `brokerbane init` first
 - Check that your personal data is populated: the pipeline skips if name/email
   are missing
 
@@ -185,7 +187,7 @@ Some brokers require filling out web forms. These are flagged during the run.
 To handle them:
 
 1. Install Stagehand (optional): `npm install @browserbasehq/stagehand`
-2. Run: `npx brokerbane run --browser`
+2. Run: `npx brokerbane remove --dry-run --browser`
 3. For CAPTCHA-protected forms, install NopeCHA
 
 Without Stagehand, these brokers are skipped and listed in the report as
@@ -197,7 +199,7 @@ Without Stagehand, these brokers are skipped and listed in the report as
 
 | File | Purpose |
 |---|---|
-| `data/brokers.yaml` | Full broker database (1,169 entries) |
+| `data/brokers.yaml` | Full broker database (1,175+ entries) |
 | `templates/gdpr.hbs` | GDPR removal email template |
 | `templates/ccpa.hbs` | CCPA removal email template |
 | `templates/generic.hbs` | Generic removal email template |
@@ -209,6 +211,6 @@ Without Stagehand, these brokers are skipped and listed in the report as
 
 ## Next Steps
 
-- Run `brokerbane report` weekly to track progress
+- Run `brokerbane status` weekly to track progress
 - Set up `brokerbane rescan --schedule` for automatic follow-up
-- Review `docs/broker-audit-2026-03.md` for known dead/changed broker URLs
+- Run `npm run audit:broker-urls -- --tier 1 --limit 10` to spot stale high-priority URLs

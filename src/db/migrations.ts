@@ -240,6 +240,17 @@ const MIGRATIONS: Array<{ version: number; sql: string }> = [
       INSERT INTO schema_version (version) VALUES (7);
     `,
   },
+  {
+    version: 8,
+    sql: `
+      -- Namespace outbound email logs by broker-facing identity so daily caps
+      -- apply to the mailbox actually sending requests.
+      ALTER TABLE email_log ADD COLUMN identity_id TEXT NOT NULL DEFAULT 'default';
+      CREATE INDEX IF NOT EXISTS idx_email_log_identity_created ON email_log(identity_id, created_at);
+
+      INSERT INTO schema_version (version) VALUES (8);
+    `,
+  },
 ];
 
 export function runMigrations(db: Database): void {

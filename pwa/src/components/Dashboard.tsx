@@ -21,6 +21,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [brokerIdentity, setBrokerIdentity] = useState<BrokerIdentity | null>(null)
   const [policy, setPolicy] = useState<RemovalPolicy>(DEFAULT_REMOVAL_POLICY)
   const [running, setRunning] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
@@ -40,6 +42,9 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       .catch(() => {})
     load<RemovalPolicy>('removal-policy')
       .then(p => { if (p) setPolicy(normalizeRemovalPolicy(p)) })
+      .catch(() => {})
+    load<boolean>('autopilot-paused')
+      .then(p => { if (typeof p === 'boolean') setPaused(p) })
       .catch(() => {})
   }, [load])
 
@@ -66,7 +71,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   )
 
   async function startRemovals() {
-    if (!provider || runningRef.current || todaysBatch.remainingAllowance <= 0) return
+    if (!provider || paused || runningRef.current || todaysBatch.remainingAllowance <= 0) return
 
     if (provider.type === 'mailto') {
       runningRef.current = true
@@ -124,6 +129,24 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const remaining = emailBrokers.length - sentCount
   const canSendToday = todaysBatch.toSend.length > 0
   const dailyDone = remaining > 0 && !canSendToday
+  const actionDisabled = running || paused || remaining === 0 || dailyDone
+
+  function requestStartRemovals() {
+    if (!provider || actionDisabled) return
+    setRunError('')
+    setConfirmOpen(true)
+  }
+
+  async function confirmStartRemovals() {
+    setConfirmOpen(false)
+    await startRemovals()
+  }
+
+  function togglePaused() {
+    const next = !paused
+    setPaused(next)
+    save('autopilot-paused', next).catch(() => {})
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -147,11 +170,23 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
             <span className="font-medium text-white truncate">{effectiveIdentity.email || 'Not set'}</span>
           </div>
           <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400">Autopilot status</span>
+            <span className={`font-medium ${paused ? 'text-amber-300' : 'text-emerald-300'}`}>
+              {paused ? 'Autopilot is paused' : dailyDone ? 'Daily cap reached' : running ? 'Running daily batch' : 'Ready for today’s batch'}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Autopilot pace</span>
             <span className="font-medium text-white">
               {todaysBatch.sentToday}/{policy.dailyLimit} today · {todaysBatch.queued.length} queued
             </span>
           </div>
+          <button
+            onClick={togglePaused}
+            className="text-xs text-violet-300 hover:text-violet-200 underline"
+          >
+            {paused ? 'Resume autopilot' : 'Pause autopilot'}
+          </button>
           <p className="text-xs text-slate-500">
             BrokerBane sends in small daily batches so a fresh removal mailbox is less likely to trip provider spam controls. No warm-up swarm; just quiet, steady removal work.
           </p>
@@ -164,8 +199,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           </div>
         ) : (
           <button
-            onClick={startRemovals}
-            disabled={running || remaining === 0 || dailyDone}
+            onClick={requestStartRemovals}
+            disabled={actionDisabled}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl font-medium transition disabled:opacity-50"
           >
             {running
@@ -182,6 +217,34 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
 
         {runError && (
           <p className="text-red-400 text-sm">{runError}</p>
+        )}
+
+        {confirmOpen && (
+          <div className="bg-slate-900 border border-violet-500/50 rounded-xl p-4 space-y-3" role="dialog" aria-modal="true">
+            <div>
+              <h2 className="font-semibold text-white">Confirm today’s batch</h2>
+              <p className="text-sm text-slate-300 mt-1">
+                {provider?.type === 'mailto' ? 'BrokerBane will open' : 'BrokerBane will send'} {todaysBatch.toSend.length} removal request{todaysBatch.toSend.length === 1 ? '' : 's'} for today.
+              </p>
+              <p className="text-sm text-amber-300 mt-2">
+                Brokers will see {effectiveIdentity.email || 'your configured removal mailbox'} as the contact / reply address.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={confirmStartRemovals}
+                className="flex-1 bg-violet-600 hover:bg-violet-700 text-white py-2 rounded-lg font-medium transition"
+              >
+                {provider?.type === 'mailto' ? 'Confirm and open drafts' : 'Confirm and send'}
+              </button>
+              <button
+                onClick={() => setConfirmOpen(false)}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg font-medium transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         )}
 
         {failedCount > 0 && (

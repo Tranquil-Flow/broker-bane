@@ -46,7 +46,7 @@ brokers:
     domain: whitepages.com
     region: us
     category: people_search
-    privacy_policy_url: https://www.whitepages.com/privacy-policy
+    privacy_policy_url: https://www.whitepages.com/privacy
     search_url: https://www.whitepages.com/
     removal_method: web_form
     requires_captcha: false
@@ -79,9 +79,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to intelius.com/optout. Search for your name and select your state. Identify your record and click on it. Enter your email address
-      and submit. Confirm via the email link. May take several days to process.
-    opt_out_url: https://www.intelius.com/optout
+      Intelius is handled by PeopleConnect's suppression center. Go to suppression.peopleconnect.us/login, enter the email address associated
+      with your listing, verify via email, then search/select records for suppression. May take several days to process across PeopleConnect sites.
+    opt_out_url: https://suppression.peopleconnect.us/login
   - id: peoplefinder
     name: PeopleFinder
     domain: peoplefinder.com
@@ -99,9 +99,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Navigate to peoplefinder.com/optout. Enter the full URL of your listing from the site. Provide your email address for confirmation.
-      Submit the form and confirm via the email link.
-    opt_out_url: https://www.peoplefinder.com/optout
+      PeopleFinder is handled by PeopleConnect's suppression center. Go to suppression.peopleconnect.us/login, enter the email address associated
+      with your listing, verify via email, then search/select records for suppression.
+    opt_out_url: https://suppression.peopleconnect.us/login
   - id: truepeoplesearch
     name: TruePeopleSearch
     domain: truepeoplesearch.com
@@ -182,7 +182,7 @@ brokers:
     opt_out_url: https://radaris.com/control/privacy
   - id: mylife
     name: MyLife
-    domain: mylife.com
+    domain: www.mylife.com
     email: privacy@mylife.com
     region: us
     category: people_search
@@ -198,10 +198,8 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Search for your profile at mylife.com. You will need to join or create an account. Navigate to Settings > Privacy. Request profile
-      removal. You may be asked to verify identity with a photo ID. Email privacy@mylife.com if the self-service option is blocked. Removal
-      can take 7-10 business days.
-    opt_out_url: https://www.mylife.com/privacy-policy#remove
+      Search for your profile at mylife.com, copy the profile URL, then submit it through mylife.com/ccpa/index.pubview. The form may require CAPTCHA and identity verification. Email privacy@mylife.com if the self-service option is blocked. Removal can take 7-10 business days.
+    opt_out_url: https://www.mylife.com/ccpa/index.pubview
   - id: truthfinder
     name: Truthfinder
     domain: truthfinder.com
@@ -220,9 +218,9 @@ brokers:
     public_directory: true
     verify_before_send: true
     form_hints: >-
-      Go to truthfinder.com/optout. Search for your record by name and state. Select the matching result. Enter your email address and
-      submit the opt-out. Confirm by clicking the link in the email you receive.
-    opt_out_url: https://www.truthfinder.com/optout
+      TruthFinder is handled by PeopleConnect's suppression center. Go to suppression.peopleconnect.us/login, enter the email address associated
+      with your listing, verify via email, then search/select records for suppression.
+    opt_out_url: https://suppression.peopleconnect.us/login
   - id: instantcheckmate
     name: InstantCheckmate
     domain: instantcheckmate.com

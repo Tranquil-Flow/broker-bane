@@ -87,14 +87,15 @@ The PWA is a browser app that runs entirely on your computer. After the one-time
    npm run preview
    ```
 6. Open your browser and go to: **http://localhost:4173**
-7. The setup wizard will appear — enter your name, email address, and connect your Gmail or Outlook account
-8. Click **Start Removals** — BrokerBane will begin sending removal requests automatically
+7. The setup wizard will appear — enter your profile details, plus a **broker-facing removal mailbox**. A dedicated mailbox or alias is strongly recommended; your daily personal inbox should be a fallback only.
+8. Connect Gmail/Outlook only if OAuth client IDs are configured. Otherwise choose **Use my own email client (mailto: links)** for local testing.
+9. Click the daily batch button, review the confirmation, then open/send today’s small privacy-safe batch. The PWA defaults to 10/day and clamps to 25/day so it will not blast every broker at once.
 
 [screenshot: the BrokerBane setup wizard showing name and email fields]
 
 ### Quick Check: Did it work?
 
-After clicking Start Removals, you should see a progress screen showing requests being sent. Within a few minutes, the counter should start going up. If you see "0 sent" after 5 minutes, check the Troubleshooting section below.
+After confirming a daily batch, you should see the handled counter increase and the daily cap status update. In mailto mode BrokerBane marks drafts as manual because your email client still controls the actual send. If the OAuth buttons are disabled, set `VITE_GOOGLE_CLIENT_ID` / `VITE_MICROSOFT_CLIENT_ID` before building, or keep using mailto mode for safer first-run testing.
 
 ### Installing to your desktop (optional)
 
@@ -139,7 +140,7 @@ Then visit http://localhost:4173 in your browser.
 
 ### First run
 
-6. Run the setup wizard — it will ask for your name, email, and email password:
+6. Run the setup wizard — it will ask for your profile details and a broker-facing removal mailbox. Use a dedicated mailbox or alias if possible; brokers should not see your daily personal mailbox unless you explicitly choose legacy/same-mailbox mode:
    ```
    brokerbane init
    ```
@@ -165,7 +166,8 @@ The dashboard shows your removal progress, broker statuses, and any tasks that n
 To send removal requests without the dashboard:
 ```
 brokerbane remove --dry-run   # preview what will be sent (no emails sent)
-brokerbane remove             # actually send the removal requests
+brokerbane remove             # send up to the configured daily limit, default 10/day
+brokerbane resume             # continue after the daily cap or an interruption
 ```
 
 ### Quick Check: Did it work?
@@ -239,6 +241,12 @@ Sends removal requests to all brokers. Options:
 
 **`brokerbane resume`**
 Shortcut for `brokerbane remove --resume` — continue an interrupted run.
+
+**Broker URL audit (maintainers)**
+Checks high-priority broker URLs for stale/dead links. HTTP 401/403 is reported as `auth` rather than failure because many broker sites block bots while the URL still exists.
+```
+npm run audit:broker-urls -- --tier 1 --limit 10
+```
 
 ---
 

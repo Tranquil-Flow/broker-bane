@@ -63,9 +63,36 @@ describe("EmailLogRepo.countSentToday", () => {
 
   it("does not count emails from previous days", () => {
     db.prepare(`
-      INSERT INTO email_log (request_id, direction, message_id, from_addr, to_addr, subject, status, created_at)
-      VALUES (1, 'outbound', 'msg1', 'me@test.com', 'them@test.com', 'test', 'sent', datetime('now', '-1 day'))
+      INSERT INTO email_log (request_id, direction, message_id, identity_id, from_addr, to_addr, subject, status, created_at)
+      VALUES (1, 'outbound', 'msg1', 'default', 'me@test.com', 'them@test.com', 'test', 'sent', datetime('now', '-1 day'))
     `).run();
     expect(repo.countSentToday()).toBe(0);
+  });
+
+  it("counts sent emails separately per broker-facing identity", () => {
+    repo.create({
+      requestId: 1,
+      direction: "outbound",
+      messageId: "msg-default",
+      fromAddr: "legacy@test.com",
+      toAddr: "broker-a@test.com",
+      subject: "test",
+      status: "sent",
+      identityId: "default",
+    });
+    repo.create({
+      requestId: 2,
+      direction: "outbound",
+      messageId: "msg-removal",
+      fromAddr: "removals@test.com",
+      toAddr: "broker-b@test.com",
+      subject: "test",
+      status: "sent",
+      identityId: "removal-mailbox",
+    });
+
+    expect(repo.countSentToday("default")).toBe(1);
+    expect(repo.countSentToday("removal-mailbox")).toBe(1);
+    expect(repo.countSentToday("missing")).toBe(0);
   });
 });

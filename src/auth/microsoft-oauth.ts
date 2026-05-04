@@ -2,8 +2,7 @@ import { createServer } from "node:http";
 import { URL } from "node:url";
 import { PublicClientApplication } from "@azure/msal-node";
 import open from "open";
-import keytar from "keytar";
-import { saveTokens, type OAuthTokens } from "./token-store.js";
+import { getKeytar, saveTokens, type OAuthTokens } from "./token-store.js";
 
 const CLIENT_ID = process.env.BROKERBANE_MICROSOFT_CLIENT_ID ?? "";
 const REDIRECT_PORT = 9234;
@@ -26,11 +25,13 @@ function createPCAWithCache(): PublicClientApplication {
     cache: {
       cachePlugin: {
         beforeCacheAccess: async (context) => {
+          const keytar = await getKeytar();
           const cached = await keytar.getPassword(MSAL_CACHE_KEY, MSAL_CACHE_ACCOUNT);
           if (cached) context.tokenCache.deserialize(cached);
         },
         afterCacheAccess: async (context) => {
           if (context.cacheHasChanged) {
+            const keytar = await getKeytar();
             await keytar.setPassword(MSAL_CACHE_KEY, MSAL_CACHE_ACCOUNT, context.tokenCache.serialize());
           }
         },

@@ -5,16 +5,17 @@
   "license": "AGPL-3.0",
   "type": "module",
   "bin": {
-    "brokerbane": "./dist/cli.js"
+    "brokerbane": "dist/cli.js"
   },
   "files": [
     "dist/",
     "data/",
-    "templates/"
+    "templates/",
+    "scripts/patch-stagehand-models.cjs"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Tranquil-Flow/broker-bane.git"
+    "url": "git+https://github.com/Tranquil-Flow/broker-bane.git"
   },
   "scripts": {
     "build": "tsc",
@@ -25,6 +26,7 @@
     "prepublishOnly": "npm run build",
     "convert-brokers": "tsx scripts/convert-eraser-brokers.ts",
     "ingest-cppa": "tsx scripts/ingest-cppa.ts",
+    "audit:broker-urls": "tsx scripts/audit-broker-urls.ts",
     "postinstall": "node scripts/patch-stagehand-models.cjs"
   },
   "dependencies": {
@@ -41,14 +43,13 @@
     "fingerprint-generator": "^2.1.81",
     "fingerprint-injector": "^2.1.81",
     "googleapis": "^171.4.0",
-    "handlebars": "4.7.8",
+    "handlebars": "^4.7.9",
     "hono": "^4.12.5",
-    "imapflow": "1.0.175",
+    "imapflow": "^1.3.3",
     "inquirer": "12.4.2",
-    "js-yaml": "4.1.0",
-    "keytar": "^7.9.0",
-    "mailparser": "3.7.2",
-    "nodemailer": "6.10.0",
+    "js-yaml": "^4.1.1",
+    "mailparser": "^3.9.8",
+    "nodemailer": "^8.0.7",
     "nopecha": "1.0.11",
     "open": "^11.0.0",
     "openai": "^6.25.0",
@@ -58,6 +59,9 @@
     "pino-pretty": "13.0.0",
     "tldts": "6.1.77",
     "zod": "^3.25.76"
+  },
+  "optionalDependencies": {
+    "keytar": "^7.9.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",
@@ -72,5 +76,16 @@
   },
   "engines": {
     "node": ">=20.0.0"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Tranquil-Flow/broker-bane/issues"
+  },
+  "homepage": "https://github.com/Tranquil-Flow/broker-bane#readme"
 }

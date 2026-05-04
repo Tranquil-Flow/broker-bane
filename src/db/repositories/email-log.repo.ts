@@ -8,19 +8,21 @@ export class EmailLogRepo {
     requestId: number;
     direction: string;
     messageId?: string;
+    identityId?: string;
     fromAddr: string;
     toAddr: string;
     subject: string;
     status: string;
   }): EmailLogRow {
     const stmt = this.db.prepare(`
-      INSERT INTO email_log (request_id, direction, message_id, from_addr, to_addr, subject, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO email_log (request_id, direction, message_id, identity_id, from_addr, to_addr, subject, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const result = stmt.run(
       params.requestId,
       params.direction,
       params.messageId ?? null,
+      params.identityId ?? "default",
       params.fromAddr,
       params.toAddr,
       params.subject,
@@ -47,14 +49,16 @@ export class EmailLogRepo {
       .get(messageId) as EmailLogRow | undefined;
   }
 
-  countSentToday(): number {
+  countSentToday(identityId?: string): number {
+    const whereIdentity = identityId ? "AND identity_id = ?" : "";
     const row = this.db
       .prepare(
         `SELECT COUNT(*) as count FROM email_log
          WHERE direction = 'outbound' AND status = 'sent'
-         AND date(created_at) = date('now')`
+         AND date(created_at) = date('now')
+         ${whereIdentity}`
       )
-      .get() as { count: number };
+      .get(...(identityId ? [identityId] : [])) as { count: number };
     return row.count;
   }
 }
