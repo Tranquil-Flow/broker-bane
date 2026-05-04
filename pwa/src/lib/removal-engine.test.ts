@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { getEmailBrokers, getWebformBrokers, getAllBrokers, runEmailRemovals, getTodaysBatch, getNextLocalBatchTime } from './removal-engine'
 import type { UserProfile, BrokerStatus, BrokerIdentity } from '../types'
+import { DEFAULT_REMOVAL_POLICY } from '../types'
 
 describe('getEmailBrokers', () => {
   it('returns only email-capable brokers', () => {
@@ -52,7 +53,7 @@ describe('runEmailRemovals', () => {
     // Use a subset: first 3 email brokers
     const brokers = getEmailBrokers().slice(0, 3)
 
-    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers)
+    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers, { delayMs: 0 })
 
     expect(sendFn).toHaveBeenCalledTimes(3)
     expect(onProgress).toHaveBeenCalledTimes(3)
@@ -68,7 +69,7 @@ describe('runEmailRemovals', () => {
       [brokers[0].id]: { brokerId: brokers[0].id, status: 'sent', lastUpdated: new Date().toISOString() },
     }
 
-    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers)
+    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers, { delayMs: 0 })
 
     expect(sendFn).toHaveBeenCalledTimes(2) // skipped the already-sent one
   })
@@ -79,7 +80,7 @@ describe('runEmailRemovals', () => {
     const statuses: Record<string, BrokerStatus> = {}
     const brokers = getEmailBrokers().slice(0, 1)
 
-    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers)
+    await runEmailRemovals(profile, statuses, sendFn, onProgress, brokers, { delayMs: 0 })
 
     expect(onProgress).toHaveBeenCalledWith(expect.objectContaining({ status: 'failed' }))
   })
@@ -91,6 +92,7 @@ describe('runEmailRemovals', () => {
 
     await runEmailRemovals(profile, {}, sendFn, onProgress, brokers, {
       brokerIdentity,
+      delayMs: 0,
     })
 
     expect(sendFn).toHaveBeenCalledWith(
@@ -115,6 +117,34 @@ describe('runEmailRemovals', () => {
     expect(result.sent).toBe(2)
     expect(result.queued).toBe(1)
     expect(result.limitReached).toBe(true)
+  })
+
+  it('uses the privacy-safe default delay between provider sends, but not after the final send', async () => {
+    vi.useFakeTimers()
+    try {
+      const sendFn = vi.fn().mockResolvedValue(undefined)
+      const onProgress = vi.fn()
+      const brokers = getEmailBrokers().slice(0, 2)
+
+      const resultPromise = runEmailRemovals(profile, {}, sendFn, onProgress, brokers, {
+        brokerIdentity,
+      })
+
+      await vi.advanceTimersByTimeAsync(0)
+      expect(sendFn).toHaveBeenCalledTimes(1)
+
+      await vi.advanceTimersByTimeAsync(DEFAULT_REMOVAL_POLICY.delayMs - 1)
+      expect(sendFn).toHaveBeenCalledTimes(1)
+
+      await vi.advanceTimersByTimeAsync(1)
+      const result = await resultPromise
+
+      expect(sendFn).toHaveBeenCalledTimes(2)
+      expect(result.sent).toBe(2)
+      expect(result.queued).toBe(0)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('counts sent, manual, and confirmed requests from today against the daily batch', () => {

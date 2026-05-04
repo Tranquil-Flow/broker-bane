@@ -103,7 +103,7 @@ export async function runEmailRemovals(
 ): Promise<RemovalRunResult> {
   const allTargets = brokersToProcess ?? getEmailBrokers()
   const dailyLimit = options.dailyLimit ?? DEFAULT_REMOVAL_POLICY.dailyLimit
-  const delayMs = options.delayMs ?? 500
+  const delayMs = options.delayMs ?? DEFAULT_REMOVAL_POLICY.delayMs
   const batch = getTodaysBatch(allTargets, statuses, dailyLimit, options.now)
 
   const result: RemovalRunResult = {
@@ -114,7 +114,8 @@ export async function runEmailRemovals(
     limitReached: batch.queued.length > 0,
   }
 
-  for (const broker of batch.toSend) {
+  for (let index = 0; index < batch.toSend.length; index++) {
+    const broker = batch.toSend[index]
     if (!broker.removalEmail) continue
 
     try {
@@ -135,7 +136,7 @@ export async function runEmailRemovals(
     }
 
     // Rate limiting: avoid triggering spam filters and provider throttles.
-    if (delayMs > 0) {
+    if (delayMs > 0 && index < batch.toSend.length - 1) {
       await new Promise(r => setTimeout(r, delayMs))
     }
   }
