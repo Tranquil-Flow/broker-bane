@@ -15,7 +15,7 @@ export interface BackupCommandOptions {
   config?: string;
 }
 
-function configToPortableSettings(config: AppConfig): PortableSettings {
+export function configToPortableSettings(config: AppConfig): PortableSettings {
   return {
     template: config.options.template,
     regions: config.options.regions,
@@ -27,6 +27,10 @@ function configToPortableSettings(config: AppConfig): PortableSettings {
     dry_run: config.options.dry_run,
     verify_before_send: config.options.verify_before_send,
     scan_interval_days: config.options.scan_interval_days,
+    ...(config.broker_identity ? {
+      broker_identity_email: config.broker_identity.email,
+      broker_identity_mode: config.broker_identity.mode,
+    } : {}),
   };
 }
 

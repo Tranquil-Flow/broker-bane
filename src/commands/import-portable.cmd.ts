@@ -7,28 +7,12 @@ import { importToSqlite, exportFromSqlite } from "../portable/adapters/sqlite.js
 import { validate } from "../portable/validate.js";
 import { diff } from "../portable/diff.js";
 import { loadBrokerDatabase } from "../data/broker-loader.js";
+import { configToPortableSettings } from "./backup.cmd.js";
 import type { PortablePayload } from "../portable/schema.js";
-import type { AppConfig } from "../types/config.js";
-import type { PortableSettings } from "../portable/schema.js";
 
 export interface ImportPortableOptions {
   dryRun?: boolean;
   config?: string;
-}
-
-function configToPortableSettings(config: AppConfig): PortableSettings {
-  return {
-    template: config.options.template,
-    regions: config.options.regions,
-    tiers: config.options.tiers,
-    excluded_brokers: config.options.excluded_brokers,
-    delay_min_ms: config.options.delay_min_ms,
-    delay_max_ms: config.options.delay_max_ms,
-    daily_limit: config.options.daily_limit,
-    dry_run: config.options.dry_run,
-    verify_before_send: config.options.verify_before_send,
-    scan_interval_days: config.options.scan_interval_days,
-  };
 }
 
 export async function importPortableCommand(
