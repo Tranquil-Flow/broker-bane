@@ -95,7 +95,7 @@ The PWA is a browser app that runs entirely on your computer. After the one-time
 
 ### Quick Check: Did it work?
 
-After confirming a daily batch, you should see the handled counter increase and the daily cap status update. In mailto mode BrokerBane marks drafts as manual because your email client still controls the actual send. If the OAuth buttons are disabled, set `VITE_GOOGLE_CLIENT_ID` / `VITE_MICROSOFT_CLIENT_ID` before building, or keep using mailto mode for safer first-run testing.
+After confirming a daily batch, you should see the handled counter increase and the daily cap status update. In mailto mode BrokerBane opens the capped drafts first, then waits for you to click **I sent these drafts** before marking them handled; your email client still controls the actual send. If the OAuth buttons are disabled, set `VITE_GOOGLE_CLIENT_ID` / `VITE_MICROSOFT_CLIENT_ID` before building, or keep using mailto mode for safer first-run testing.
 
 ### Installing to your desktop (optional)
 

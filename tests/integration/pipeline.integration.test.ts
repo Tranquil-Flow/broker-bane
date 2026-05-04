@@ -280,18 +280,22 @@ describe("Pipeline Integration", () => {
     const config = loadConfig(configPath);
     const orchestrator = new Orchestrator(config);
 
-    // Find a hybrid broker — run the full pipeline in dry-run and look for one
-    const summary = await orchestrator.run({ dryRun: true });
+    // Use a small deterministic hybrid subset so this assertion is not polluted
+    // by a full-pipeline daily-limit stop leaving an unprocessed request pending.
+    const summary = await orchestrator.run({ dryRun: true, brokerIds: ["liveramp"] });
+    expect(summary.totalBrokers).toBe(1);
+    expect(summary.sent).toBe(1);
+    expect(summary.manualRequired).toBe(1);
+    expect(summary.limitReached).toBe(false);
 
     const db = createDatabase(config.database.path);
     runMigrations(db);
     const requestRepo = new RemovalRequestRepo(db);
     const hybridRequests = requestRepo.getAll().filter((r) => r.method === "hybrid");
 
-    // Hybrid brokers should be "sent" (email sent) and also have a manual task for the web form
-    for (const req of hybridRequests) {
-      expect(req.status).toBe("sent");
-    }
+    expect(hybridRequests).toHaveLength(1);
+    expect(hybridRequests[0].broker_id).toBe("liveramp");
+    expect(hybridRequests[0].status).toBe("sent");
     closeDatabase(db);
 
     await orchestrator.cleanup();

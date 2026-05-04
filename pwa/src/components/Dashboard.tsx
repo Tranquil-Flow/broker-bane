@@ -110,14 +110,17 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       setRunError('')
       try {
         const openedDraftIds: string[] = []
-        for (const broker of todaysBatch.toSend) {
+        for (let index = 0; index < todaysBatch.toSend.length; index++) {
+          const broker = todaysBatch.toSend[index]
           if (!broker.removalEmail) continue
           const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail, {
             brokerIdentity: effectiveIdentity,
           })
           openMailto(message)
           openedDraftIds.push(broker.id)
-          await new Promise(r => setTimeout(r, Math.max(250, Math.min(policy.delayMs, 2_000))))
+          if (policy.delayMs > 0 && index < todaysBatch.toSend.length - 1) {
+            await new Promise(r => setTimeout(r, policy.delayMs))
+          }
         }
         setPendingManualBatch(openedDraftIds)
         await save('pending-manual-batch', openedDraftIds)

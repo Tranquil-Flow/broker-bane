@@ -96,6 +96,38 @@ describe('Dashboard safety controls', () => {
     await waitFor(() => expect(screen.getByText(/0 sent · 2 drafts\/manual/)).toBeTruthy())
   })
 
+  it('honors the configured mailto pacing delay between opened drafts', async () => {
+    storedPolicy = { dailyLimit: 10, delayMs: 5_000 }
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    fireEvent.click(await screen.findByRole('button', { name: /Open 2 drafts for today/ }))
+    const dialog = screen.getByRole('dialog')
+
+    vi.useFakeTimers()
+    try {
+      fireEvent.click(within(dialog).getByRole('button', { name: /Confirm and open drafts/ }))
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(0)
+      })
+      expect(openMailto).toHaveBeenCalledTimes(1)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(4_999)
+      })
+      expect(openMailto).toHaveBeenCalledTimes(1)
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1)
+      })
+      expect(openMailto).toHaveBeenCalledTimes(2)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('persists opened mailto drafts across reload until the user resolves them', async () => {
     storedPendingManualBatch = ['a', 'b']
 
