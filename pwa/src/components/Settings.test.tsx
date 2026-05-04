@@ -82,6 +82,15 @@ describe('Settings removal autopilot controls', () => {
     await waitFor(() => expect(save).toHaveBeenCalledWith('removal-policy', { dailyLimit: 25, delayMs: 2000 }))
   })
 
+  it('warns if settings point broker replies at the profile inbox', async () => {
+    render(<Settings profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+
+    const mailbox = await screen.findByDisplayValue('old-removals@example.com')
+    fireEvent.change(mailbox, { target: { value: 'personal@example.com' } })
+
+    expect(await screen.findByText(/This uses your main profile email for broker replies/)).toBeTruthy()
+  })
+
   it('surfaces reconnect-required OAuth state and lets users switch to mailto drafts', async () => {
     render(<Settings profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
 

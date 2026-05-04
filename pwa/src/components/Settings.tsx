@@ -31,6 +31,7 @@ export default function Settings({ profile }: { profile: UserProfile }) {
     ? 'mailto drafts'
     : 'Not connected'
   const oauthReconnectRequired = Boolean(provider && provider.type !== 'mailto' && !provider.accessToken)
+  const usesProfileMailbox = brokerEmail.trim().toLowerCase() === (profile.emails[0] ?? '').trim().toLowerCase()
 
   useEffect(() => {
     load<BrokerIdentity>('broker-identity')
@@ -181,6 +182,11 @@ export default function Settings({ profile }: { profile: UserProfile }) {
             placeholder="removals@example.com"
             className="w-full bg-slate-800 text-white text-sm rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-violet-500"
           />
+          {usesProfileMailbox && (
+            <p className="text-xs text-amber-300">
+              This uses your main profile email for broker replies. A dedicated mailbox or alias keeps broker confirmations and follow-ups out of your everyday inbox.
+            </p>
+          )}
           <label className="block text-xs font-medium text-slate-400">Daily email cap (max {MAX_DAILY_REMOVAL_LIMIT})</label>
           <input
             type="number"

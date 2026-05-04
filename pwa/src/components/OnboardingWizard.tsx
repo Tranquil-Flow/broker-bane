@@ -26,6 +26,8 @@ export default function OnboardingWizard({ onComplete }: Props) {
   const [dob, setDob] = useState('')
   const [brokerEmail, setBrokerEmail] = useState('')
   const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
+  const firstKnownEmail = email.split(',').map(s => s.trim()).filter(Boolean)[0] ?? ''
+  const brokerMailboxFallsBackToProfile = Boolean(firstKnownEmail && !brokerEmail.trim())
 
   async function saveProfile() {
     setProfileError('')
@@ -141,6 +143,11 @@ export default function OnboardingWizard({ onComplete }: Props) {
           <Field label="Phone number" hint="Optional" value={phone} onChange={setPhone} />
           <Field label="Date of birth" hint="YYYY-MM-DD, optional" value={dob} onChange={setDob} />
           <Field label="Broker-facing removal mailbox" hint="Dedicated mailbox/alias for broker replies; defaults to first email above" value={brokerEmail} onChange={setBrokerEmail} />
+          {brokerMailboxFallsBackToProfile && (
+            <p className="text-xs text-amber-300 -mt-2">
+              Use a dedicated removal mailbox to keep broker replies out of your main inbox. Leaving this blank will use {firstKnownEmail}.
+            </p>
+          )}
           <Field label="Daily send limit" hint="10 recommended for a fresh mailbox" value={dailyLimit} onChange={setDailyLimit} />
         </div>
 

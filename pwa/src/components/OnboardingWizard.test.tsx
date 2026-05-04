@@ -54,6 +54,19 @@ describe('OnboardingWizard', () => {
     })
   })
 
+  it('warns when the broker-facing mailbox is left as the profile email', async () => {
+    render(<OnboardingWizard onComplete={vi.fn()} />)
+
+    fireEvent.change(screen.getByPlaceholderText(/Comma-separate aliases/), {
+      target: { value: 'Evi Example' },
+    })
+    fireEvent.change(screen.getByPlaceholderText(/existing emails/), {
+      target: { value: 'personal@example.com' },
+    })
+
+    expect(await screen.findByText(/Use a dedicated removal mailbox to keep broker replies out of your main inbox/)).toBeTruthy()
+  })
+
   it('rejects invalid known and broker-facing emails before saving', async () => {
     render(<OnboardingWizard onComplete={vi.fn()} />)
 
