@@ -248,6 +248,12 @@ Checks high-priority broker URLs for stale/dead links. HTTP 401/403 is reported 
 npm run audit:broker-urls -- --tier 1 --limit 10
 ```
 
+To find web-form/hybrid brokers that still need a direct opt-out URL before playbooks can be completed:
+```
+npm run audit:broker-urls -- --missing-opt-outs
+npm run audit:broker-urls -- --missing-opt-outs --tier 1 --json
+```
+
 ---
 
 ### Checking progress

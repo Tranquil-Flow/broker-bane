@@ -7,6 +7,7 @@ interface BrokerRecord {
   name: string;
   tier?: number;
   domain?: string;
+  removal_method?: "email" | "web_form" | "hybrid";
   opt_out_url?: string;
   privacy_policy_url?: string;
   search_url?: string;
@@ -46,6 +47,7 @@ function parseArgs(argv: string[]) {
     limit: args.has("limit") ? Number(args.get("limit")) : undefined,
     timeoutMs: args.has("timeout-ms") ? Number(args.get("timeout-ms")) : 10_000,
     json: Boolean(args.get("json")),
+    missingOptOuts: Boolean(args.get("missing-opt-outs")),
   };
 }
 
@@ -71,6 +73,14 @@ export function collectAuditTargets(brokers: BrokerRecord[], tier?: number, limi
     }
   }
   return targets;
+}
+
+export function collectMissingOptOutBrokers(brokers: BrokerRecord[], tier?: number, limit?: number): BrokerRecord[] {
+  return brokers
+    .filter((broker) => tier === undefined || broker.tier === tier)
+    .filter((broker) => broker.removal_method === "web_form" || broker.removal_method === "hybrid")
+    .filter((broker) => !broker.opt_out_url)
+    .slice(0, limit ?? brokers.length);
 }
 
 async function checkUrl(target: AuditTarget, timeoutMs: number): Promise<AuditResult> {
@@ -103,9 +113,25 @@ async function checkUrl(target: AuditTarget, timeoutMs: number): Promise<AuditRe
 }
 
 async function main() {
-  const { tier, limit, timeoutMs, json } = parseArgs(process.argv.slice(2));
+  const { tier, limit, timeoutMs, json, missingOptOuts } = parseArgs(process.argv.slice(2));
   const raw = readFileSync(resolve("data/brokers.yaml"), "utf8");
   const doc = yaml.load(raw) as { brokers: BrokerRecord[] };
+
+  if (missingOptOuts) {
+    const missing = collectMissingOptOutBrokers(doc.brokers, tier, limit);
+    if (json) {
+      console.log(JSON.stringify({ missing, summary: { count: missing.length } }, null, 2));
+    } else {
+      for (const broker of missing) {
+        const tierLabel = broker.tier === undefined ? "?" : String(broker.tier);
+        console.log(`${broker.id.padEnd(32)} tier=${tierLabel} method=${broker.removal_method} ${broker.name}`);
+      }
+      console.log(`\n${missing.length} web-form-capable brokers are missing opt_out_url.`);
+    }
+    process.exitCode = missing.length > 0 ? 1 : 0;
+    return;
+  }
+
   const targets = collectAuditTargets(doc.brokers, tier, limit);
   const results: AuditResult[] = [];
 
