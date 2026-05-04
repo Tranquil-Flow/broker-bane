@@ -74,7 +74,10 @@ export function getTodaysBatch(
   now = new Date()
 ): DailyBatch {
   const normalizedLimit = normalizeRemovalPolicy({ dailyLimit }).dailyLimit
-  const sentToday = Object.values(statuses).filter(status => statusCountsAgainstDailyLimit(status, now)).length
+  const targetBrokerIds = new Set(brokersToProcess.map(broker => broker.id))
+  const sentToday = Object.values(statuses).filter(status => (
+    targetBrokerIds.has(status.brokerId) && statusCountsAgainstDailyLimit(status, now)
+  )).length
   const remainingAllowance = Math.max(0, normalizedLimit - sentToday)
   const pending = brokersToProcess.filter(b => b.removalEmail && isPendingForSend(b, statuses))
 

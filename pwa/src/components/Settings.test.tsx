@@ -82,6 +82,19 @@ describe('Settings removal autopilot controls', () => {
     await waitFor(() => expect(save).toHaveBeenCalledWith('removal-policy', { dailyLimit: 25, delayMs: 2000 }))
   })
 
+  it('lets users tune the pacing delay between removal emails', async () => {
+    render(<Settings profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+
+    await screen.findByDisplayValue('old-removals@example.com')
+    const delaySeconds = await screen.findByLabelText(/Delay between emails/) as HTMLInputElement
+    expect(delaySeconds.value).toBe('2')
+
+    fireEvent.change(delaySeconds, { target: { value: '5' } })
+    fireEvent.click(screen.getByRole('button', { name: /Save Removal Settings/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('removal-policy', { dailyLimit: 7, delayMs: 5000 }))
+  })
+
   it('warns if settings point broker replies at the profile inbox', async () => {
     render(<Settings profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
 

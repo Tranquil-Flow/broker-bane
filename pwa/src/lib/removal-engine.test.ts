@@ -131,6 +131,27 @@ describe('runEmailRemovals', () => {
     expect(batch.queued).toHaveLength(1)
   })
 
+  it('does not let manual webform completions consume the email daily cap', () => {
+    const emailBrokers = getEmailBrokers().slice(0, 3)
+    const [webformBroker] = getWebformBrokers().filter(b => b.method === 'webform')
+    const today = '2026-05-04T12:00:00Z'
+    const statuses: Record<string, BrokerStatus> = {
+      [webformBroker.id]: {
+        brokerId: webformBroker.id,
+        status: 'manual',
+        sentAt: today,
+        lastUpdated: today,
+      },
+    }
+
+    const batch = getTodaysBatch(emailBrokers, statuses, 2, new Date(today))
+
+    expect(batch.sentToday).toBe(0)
+    expect(batch.remainingAllowance).toBe(2)
+    expect(batch.toSend.map(b => b.id)).toEqual(emailBrokers.slice(0, 2).map(b => b.id))
+    expect(batch.queued).toHaveLength(1)
+  })
+
   it('caps extreme daily limits to a privacy-safe maximum batch size', () => {
     const brokers = getEmailBrokers().slice(0, 30)
 

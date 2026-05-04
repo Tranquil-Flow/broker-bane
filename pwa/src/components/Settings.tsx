@@ -16,6 +16,7 @@ export default function Settings({ profile }: { profile: UserProfile }) {
   const [brokerEmail, setBrokerEmail] = useState('')
   const [savedRemovalPolicy, setSavedRemovalPolicy] = useState<RemovalPolicy>(DEFAULT_REMOVAL_POLICY)
   const [dailyLimit, setDailyLimit] = useState(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
+  const [delaySeconds, setDelaySeconds] = useState(String(DEFAULT_REMOVAL_POLICY.delayMs / 1000))
   const [settingsStatus, setSettingsStatus] = useState<'idle' | 'saved' | 'error'>('idle')
   const [settingsError, setSettingsError] = useState('')
   const [emailStatus, setEmailStatus] = useState<'idle' | 'connecting' | 'saved' | 'error'>('idle')
@@ -42,10 +43,12 @@ export default function Settings({ profile }: { profile: UserProfile }) {
         const normalized = normalizeRemovalPolicy(policy ?? DEFAULT_REMOVAL_POLICY)
         setSavedRemovalPolicy(normalized)
         setDailyLimit(String(normalized.dailyLimit))
+        setDelaySeconds(String(normalized.delayMs / 1000))
       })
       .catch(() => {
         setSavedRemovalPolicy(DEFAULT_REMOVAL_POLICY)
         setDailyLimit(String(DEFAULT_REMOVAL_POLICY.dailyLimit))
+        setDelaySeconds(String(DEFAULT_REMOVAL_POLICY.delayMs / 1000))
       })
   }, [load, profile.emails])
 
@@ -53,6 +56,7 @@ export default function Settings({ profile }: { profile: UserProfile }) {
     const trimmedEmail = brokerEmail.trim()
     const knownEmail = profile.emails[0] ?? ''
     const parsedLimit = Number.parseInt(dailyLimit, 10)
+    const parsedDelaySeconds = Number.parseFloat(delaySeconds)
 
     if (!trimmedEmail || !/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
       setSettingsError('Enter a valid broker-facing mailbox.')
@@ -61,6 +65,11 @@ export default function Settings({ profile }: { profile: UserProfile }) {
     }
     if (!Number.isFinite(parsedLimit) || parsedLimit < 1) {
       setSettingsError('Daily cap must be at least 1.')
+      setSettingsStatus('error')
+      return
+    }
+    if (!Number.isFinite(parsedDelaySeconds) || parsedDelaySeconds < 0) {
+      setSettingsError('Delay between emails must be 0 seconds or more.')
       setSettingsStatus('error')
       return
     }
@@ -73,6 +82,7 @@ export default function Settings({ profile }: { profile: UserProfile }) {
     const policy = normalizeRemovalPolicy({
       ...savedRemovalPolicy,
       dailyLimit: parsedLimit,
+      delayMs: Math.round(parsedDelaySeconds * 1000),
     })
 
     try {
@@ -80,6 +90,7 @@ export default function Settings({ profile }: { profile: UserProfile }) {
       await save('removal-policy', policy)
       setSavedRemovalPolicy(policy)
       setDailyLimit(String(policy.dailyLimit))
+      setDelaySeconds(String(policy.delayMs / 1000))
       setSettingsStatus('saved')
       setSettingsError('')
     } catch (e) {
@@ -199,6 +210,22 @@ export default function Settings({ profile }: { profile: UserProfile }) {
             }}
             className="w-full bg-slate-800 text-white text-sm rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-violet-500"
           />
+          <label className="block text-xs font-medium text-slate-400">Delay between emails (seconds)</label>
+          <input
+            aria-label="Delay between emails"
+            type="number"
+            min="0"
+            step="0.5"
+            value={delaySeconds}
+            onChange={e => {
+              setDelaySeconds(e.target.value)
+              setSettingsStatus('idle')
+            }}
+            className="w-full bg-slate-800 text-white text-sm rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-violet-500"
+          />
+          <p className="text-xs text-slate-500">
+            Use a gentle pause between each message so the removal mailbox behaves like a human-paced workflow instead of a burst sender.
+          </p>
           <button
             onClick={handleSaveRemovalSettings}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 rounded-lg text-sm font-medium transition"
