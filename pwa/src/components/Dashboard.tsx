@@ -165,6 +165,10 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const pendingManualBrokers = pendingManualBatch
     .map(id => emailBrokers.find(broker => broker.id === id))
     .filter((broker): broker is (typeof emailBrokers)[number] => Boolean(broker))
+  const awaitingConfirmationBrokers = emailBrokers.filter(broker => {
+    const status = statuses[broker.id]?.status
+    return status === 'sent' || status === 'manual'
+  })
   const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
 
   function requestStartRemovals() {
@@ -199,6 +203,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
 
   function markWebformComplete(brokerId: string) {
     updateStatus(brokerId, 'manual')
+  }
+
+  function markEmailConfirmed(brokerId: string) {
+    updateStatus(brokerId, 'confirmed')
+  }
+
+  function resetEmailToPending(brokerId: string) {
+    updateStatus(brokerId, 'pending')
   }
 
   function resetWebformToPending(brokerId: string) {
@@ -398,6 +410,47 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         )}
 
         <UpgradeCallout />
+
+        {/* Manual confirmation checklist */}
+        {awaitingConfirmationBrokers.length > 0 && (
+          <div className="bg-slate-900 rounded-xl p-4 space-y-3">
+            <div>
+              <h2 className="font-semibold text-white">Confirm broker replies manually</h2>
+              <p className="text-sm text-slate-400 mt-1">
+                Browser-only BrokerBane cannot monitor your dedicated mailbox automatically yet. When a broker replies with a completion or confirmation email, mark it here.
+              </p>
+            </div>
+            <div className="divide-y divide-slate-800">
+              {awaitingConfirmationBrokers.map(broker => {
+                const status = statuses[broker.id]?.status
+                return (
+                  <div key={broker.id} className="py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">{broker.name}</p>
+                      <p className="text-xs text-slate-500 capitalize">
+                        Waiting after {status === 'manual' ? 'manual draft send' : 'provider send'}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        onClick={() => markEmailConfirmed(broker.id)}
+                        className="text-xs text-emerald-300 hover:text-emerald-200 underline"
+                      >
+                        Mark {broker.name} confirmed
+                      </button>
+                      <button
+                        onClick={() => resetEmailToPending(broker.id)}
+                        className="text-xs text-slate-400 hover:text-slate-200 underline"
+                      >
+                        Retry later
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Manual webform queue */}
         {manualWebformBrokers.length > 0 && (

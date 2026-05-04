@@ -152,6 +152,29 @@ describe('Dashboard safety controls', () => {
     expect(openMailto).not.toHaveBeenCalled()
   })
 
+  it('lets users manually mark sent email removals confirmed after broker replies arrive', async () => {
+    const now = '2026-05-04T12:00:00Z'
+    storedStatuses = {
+      a: { brokerId: 'a', status: 'sent', sentAt: now, lastUpdated: now },
+      b: { brokerId: 'b', status: 'manual', sentAt: now, lastUpdated: now },
+    }
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Confirm broker replies manually/)).toBeTruthy()
+    expect(screen.getAllByText(/Alpha Broker/).length).toBeGreaterThan(1)
+    expect(screen.getAllByText(/Beta Broker/).length).toBeGreaterThan(1)
+
+    fireEvent.click(screen.getByRole('button', { name: /Mark Alpha Broker confirmed/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('statuses', expect.objectContaining({
+      a: expect.objectContaining({ brokerId: 'a', status: 'confirmed' }),
+      b: expect.objectContaining({ brokerId: 'b', status: 'manual' }),
+    })))
+  })
+
   it('tracks manual webform opt-outs without reducing the email queue', async () => {
     await act(async () => {
       render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
