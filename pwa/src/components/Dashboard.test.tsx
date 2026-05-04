@@ -107,4 +107,20 @@ describe('Dashboard safety controls', () => {
     fireEvent.click(screen.getByRole('button', { name: /Resume autopilot/ }))
     expect(save).toHaveBeenCalledWith('autopilot-paused', false)
   })
+
+  it('requires reconnecting OAuth providers restored without a live access token', async () => {
+    provider = { type: 'gmail' }
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Reconnect Gmail to continue/)).toBeTruthy()
+    const action = screen.getByRole('button', { name: /Reconnect email provider to continue/ }) as HTMLButtonElement
+    expect(action.disabled).toBe(true)
+    fireEvent.click(action)
+
+    expect(sendEmail).not.toHaveBeenCalled()
+    expect(openMailto).not.toHaveBeenCalled()
+  })
 })

@@ -33,6 +33,9 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     label: 'Profile email',
   }
   const todaysBatch = getTodaysBatch(emailBrokers, statuses, policy.dailyLimit)
+  const oauthProviderNeedsReconnect = Boolean(
+    provider && provider.type !== 'mailto' && !provider.accessToken
+  )
 
   useEffect(() => {
     load<Record<string, BrokerStatus>>('statuses')
@@ -141,7 +144,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const canSendToday = todaysBatch.toSend.length > 0
   const dailyDone = remaining > 0 && !canSendToday
   const hasPendingManualBatch = pendingManualBatch.length > 0
-  const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch
+  const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
 
   function requestStartRemovals() {
     if (!provider || actionDisabled) return
@@ -196,8 +199,18 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Autopilot status</span>
-            <span className={`font-medium ${paused || hasPendingManualBatch ? 'text-amber-300' : 'text-emerald-300'}`}>
-              {paused ? 'Autopilot is paused' : hasPendingManualBatch ? 'Review opened drafts' : dailyDone ? 'Daily cap reached' : running ? 'Running daily batch' : 'Ready for today’s batch'}
+            <span className={`font-medium ${paused || hasPendingManualBatch || oauthProviderNeedsReconnect ? 'text-amber-300' : 'text-emerald-300'}`}>
+              {paused
+                ? 'Autopilot is paused'
+                : hasPendingManualBatch
+                ? 'Review opened drafts'
+                : oauthProviderNeedsReconnect
+                ? `Reconnect ${provider?.type === 'gmail' ? 'Gmail' : 'Outlook'} to continue`
+                : dailyDone
+                ? 'Daily cap reached'
+                : running
+                ? 'Running daily batch'
+                : 'Ready for today’s batch'}
             </span>
           </div>
           <div className="flex items-center justify-between gap-3">
@@ -236,6 +249,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           >
             {running
               ? provider.type === 'mailto' ? 'Opening today’s draft batch…' : 'Sending today’s removal batch…'
+              : oauthProviderNeedsReconnect
+              ? 'Reconnect email provider to continue'
               : remaining === 0
               ? '✓ All email requests handled'
               : hasPendingManualBatch
