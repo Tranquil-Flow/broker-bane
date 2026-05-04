@@ -117,17 +117,18 @@ describe('runEmailRemovals', () => {
     expect(result.limitReached).toBe(true)
   })
 
-  it('counts sent and manual requests from today against the daily batch', () => {
+  it('counts sent, manual, and confirmed requests from today against the daily batch', () => {
     const brokers = getEmailBrokers().slice(0, 3)
     const today = new Date().toISOString()
     const statuses: Record<string, BrokerStatus> = {
       [brokers[0].id]: { brokerId: brokers[0].id, status: 'sent', sentAt: today, lastUpdated: today },
+      [brokers[1].id]: { brokerId: brokers[1].id, status: 'confirmed', sentAt: today, lastUpdated: today },
     }
 
     const batch = getTodaysBatch(brokers, statuses, 2, new Date(today))
 
-    expect(batch.remainingAllowance).toBe(1)
-    expect(batch.toSend).toHaveLength(1)
+    expect(batch.remainingAllowance).toBe(0)
+    expect(batch.toSend).toHaveLength(0)
     expect(batch.queued).toHaveLength(1)
   })
 

@@ -180,7 +180,7 @@ export default function OnboardingWizard({ onComplete }: Props) {
           <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 2 of 3</div>
           <h2 className="text-xl font-bold">Connect Your Email</h2>
           <p className="text-slate-400 text-sm mt-1">
-            Connect the dedicated removal mailbox if you have one. Brokers see the sending address; your credentials never leave your device.
+            Sign into the dedicated removal mailbox itself for OAuth sends. Reply-To helps route confirmations, but the connected Gmail/Outlook account may still appear as the sender.
           </p>
         </div>
 

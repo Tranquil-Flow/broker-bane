@@ -362,8 +362,13 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
                 {provider?.type === 'mailto' ? 'BrokerBane will open' : 'BrokerBane will send'} {todaysBatch.toSend.length} removal request{todaysBatch.toSend.length === 1 ? '' : 's'} for today.
               </p>
               <p className="text-sm text-amber-300 mt-2">
-                Brokers will see {effectiveIdentity.email || 'your configured removal mailbox'} as the contact / reply address.
+                Replies should go to {effectiveIdentity.email || 'your configured removal mailbox'} as the contact / reply address.
               </p>
+              {provider?.type !== 'mailto' && (
+                <p className="text-sm text-slate-400 mt-2">
+                  OAuth sends may still show the connected {provider?.type === 'gmail' ? 'Gmail' : 'Outlook'} account as the From sender. For strongest inbox isolation, connect the dedicated removal mailbox itself.
+                </p>
+              )}
               {usingProfileInbox && (
                 <p className="text-sm text-amber-300 mt-2">
                   These replies may land in your main inbox. Cancel and choose a dedicated removal mailbox in Settings if you want a cleaner test.

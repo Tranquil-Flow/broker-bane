@@ -76,7 +76,7 @@ describe('Dashboard safety controls', () => {
     expect(within(dialog).getByText(/Confirm today’s batch/)).toBeTruthy()
     expect(within(dialog).getByText(/Alpha Broker/)).toBeTruthy()
     expect(within(dialog).getByText(/Beta Broker/)).toBeTruthy()
-    expect(within(dialog).getByText(/Brokers will see removals@example.com/)).toBeTruthy()
+    expect(within(dialog).getByText(/Replies should go to removals@example.com/)).toBeTruthy()
 
     fireEvent.click(within(dialog).getByRole('button', { name: /Confirm and open drafts/ }))
 
@@ -119,6 +119,21 @@ describe('Dashboard safety controls', () => {
 
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).getByText(/These replies may land in your main inbox/)).toBeTruthy()
+  })
+
+  it('does not overpromise sender privacy for OAuth sends', async () => {
+    provider = { type: 'gmail', accessToken: 'live-token' }
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    fireEvent.click(await screen.findByRole('button', { name: /Send 2 removal requests today/ }))
+
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText(/Replies should go to removals@example.com/)).toBeTruthy()
+    expect(within(dialog).getByText(/OAuth sends may still show the connected Gmail account as the From sender/)).toBeTruthy()
+    expect(within(dialog).queryByText(/Brokers will see removals@example.com/)).toBeNull()
   })
 
   it('can pause and resume autopilot without sending', async () => {

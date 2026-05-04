@@ -54,7 +54,7 @@ function isSameLocalDay(a: Date, b: Date): boolean {
 }
 
 function statusCountsAgainstDailyLimit(status: BrokerStatus, now: Date): boolean {
-  if (status.status !== 'sent' && status.status !== 'manual') return false
+  if (status.status !== 'sent' && status.status !== 'manual' && status.status !== 'confirmed') return false
   const timestamp = status.sentAt ?? status.lastUpdated
   if (!timestamp) return false
   const date = new Date(timestamp)

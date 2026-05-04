@@ -131,6 +131,8 @@ describe('OnboardingWizard', () => {
 
     expect(await screen.findByText(/Google OAuth is not configured/)).toBeTruthy()
     expect(screen.getByText(/Microsoft OAuth is not configured/)).toBeTruthy()
+    expect(screen.getByText(/Sign into the dedicated removal mailbox itself for OAuth sends/)).toBeTruthy()
+    expect(screen.queryByText(/Brokers see the sending address/)).toBeNull()
     expect((screen.getByRole('button', { name: /Sign in with Google/ }) as HTMLButtonElement).disabled).toBe(true)
     expect((screen.getByRole('button', { name: /Sign in with Microsoft/ }) as HTMLButtonElement).disabled).toBe(true)
     expect(screen.getByRole('button', { name: /Use my own email client/ })).toBeTruthy()
