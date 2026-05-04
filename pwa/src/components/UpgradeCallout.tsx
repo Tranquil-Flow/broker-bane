@@ -8,16 +8,7 @@ export default function UpgradeCallout() {
         {count} brokers require browser automation
       </p>
       <p className="text-slate-400 text-sm mt-1">
-        Web form opt-outs need the desktop app to run automatically.{' '}
-        <a
-          href="https://github.com/Tranquil-Flow/broker-bane/releases"
-          className="text-amber-400 underline hover:text-amber-300"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Download the desktop app
-        </a>{' '}
-        to handle these automatically.
+        Web form opt-outs need local browser automation from the BrokerBane CLI/dashboard. The PWA keeps these as manual tasks until you run the local CLI with browser automation configured.
       </p>
     </div>
   )
