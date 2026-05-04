@@ -19,10 +19,14 @@ let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | n
 const openMailto = vi.fn()
 const sendEmail = vi.fn(() => Promise.resolve())
 
-const brokers: Broker[] = [
+const emailBrokers: Broker[] = [
   { id: 'a', name: 'Alpha Broker', method: 'email', removalEmail: 'alpha@example.com', removalLaw: 'generic', category: 'people-search' },
   { id: 'b', name: 'Beta Broker', method: 'email', removalEmail: 'beta@example.com', removalLaw: 'generic', category: 'people-search' },
 ]
+const webformBrokers: Broker[] = [
+  { id: 'c', name: 'Gamma Manual', method: 'webform', removalLaw: 'ccpa', category: 'people-search', notes: 'Go to gamma.example/optout and confirm by email.' },
+]
+const brokers: Broker[] = [...emailBrokers, ...webformBrokers]
 
 vi.mock('../lib/vault-context', () => ({
   useVault: () => ({
@@ -40,7 +44,8 @@ vi.mock('../lib/removal-engine', async () => {
   return {
     ...actual,
     getAllBrokers: () => brokers,
-    getEmailBrokers: () => brokers,
+    getEmailBrokers: () => emailBrokers,
+    getWebformBrokers: () => webformBrokers,
   }
 })
 
@@ -122,5 +127,24 @@ describe('Dashboard safety controls', () => {
 
     expect(sendEmail).not.toHaveBeenCalled()
     expect(openMailto).not.toHaveBeenCalled()
+  })
+
+  it('tracks manual webform opt-outs without reducing the email queue', async () => {
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Manual Webform Brokers \(1\)/)).toBeTruthy()
+    expect(screen.getByText(/Go to gamma\.example\/optout/)).toBeTruthy()
+    expect(screen.getByText('Remaining')).toBeTruthy()
+    expect(screen.getByText('2')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: /Mark Gamma Manual complete/ }))
+
+    await waitFor(() => expect(screen.getByText(/1 webform\/manual/)).toBeTruthy())
+    expect(screen.getByRole('button', { name: /Open 2 drafts for today/ })).toBeTruthy()
+    expect(save).toHaveBeenCalledWith('statuses', expect.objectContaining({
+      c: expect.objectContaining({ brokerId: 'c', status: 'manual' }),
+    }))
   })
 })

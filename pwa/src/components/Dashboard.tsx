@@ -4,6 +4,7 @@ import { useEmail } from '../lib/email-context'
 import {
   getEmailBrokers,
   getAllBrokers,
+  getWebformBrokers,
   runEmailRemovals,
   getTodaysBatch,
 } from '../lib/removal-engine'
@@ -27,6 +28,10 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
+  const webformBrokers = getWebformBrokers()
+  const manualWebformBrokers = webformBrokers.filter(b => b.method === 'webform')
+  const emailBrokerIds = new Set(emailBrokers.map(b => b.id))
+  const webformBrokerIds = new Set(manualWebformBrokers.map(b => b.id))
   const effectiveIdentity: BrokerIdentity = brokerIdentity ?? {
     mode: 'same_mailbox',
     email: profile.emails[0] ?? '',
@@ -136,10 +141,13 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   }
 
   const statusValues = Object.values(statuses)
-  const sentAutoCount = statusValues.filter(s => s.status === 'sent' || s.status === 'confirmed').length
-  const manualCount = statusValues.filter(s => s.status === 'manual').length
+  const emailStatusValues = statusValues.filter(s => emailBrokerIds.has(s.brokerId))
+  const webformStatusValues = statusValues.filter(s => webformBrokerIds.has(s.brokerId))
+  const sentAutoCount = emailStatusValues.filter(s => s.status === 'sent' || s.status === 'confirmed').length
+  const manualCount = emailStatusValues.filter(s => s.status === 'manual').length
+  const webformManualCount = webformStatusValues.filter(s => s.status === 'manual' || s.status === 'confirmed').length
   const handledCount = sentAutoCount + manualCount
-  const failedCount = statusValues.filter(s => s.status === 'failed').length
+  const failedCount = emailStatusValues.filter(s => s.status === 'failed').length
   const remaining = emailBrokers.length - handledCount
   const canSendToday = todaysBatch.toSend.length > 0
   const dailyDone = remaining > 0 && !canSendToday
@@ -174,6 +182,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   function discardPendingManualBatch() {
     setPendingManualBatch([])
     save('pending-manual-batch', []).catch(() => {})
+  }
+
+  function markWebformComplete(brokerId: string) {
+    updateStatus(brokerId, 'manual')
+  }
+
+  function resetWebformToPending(brokerId: string) {
+    updateStatus(brokerId, 'pending')
   }
 
   return (
@@ -222,7 +238,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Progress detail</span>
             <span className="font-medium text-white">
-              {sentAutoCount} sent · {manualCount} drafts/manual
+              {sentAutoCount} sent · {manualCount} drafts/manual · {webformManualCount} webform/manual
             </span>
           </div>
           <button
@@ -327,6 +343,41 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         )}
 
         <UpgradeCallout />
+
+        {/* Manual webform queue */}
+        {manualWebformBrokers.length > 0 && (
+          <div>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+              Manual Webform Brokers ({manualWebformBrokers.length})
+            </h2>
+            <div className="bg-slate-900 rounded-xl px-4 divide-y divide-slate-800">
+              {manualWebformBrokers.map(broker => {
+                const status = statuses[broker.id]
+                const complete = status?.status === 'manual' || status?.status === 'confirmed'
+                return (
+                  <div key={broker.id} className="py-3 border-b border-slate-800 last:border-0 space-y-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">{broker.name}</p>
+                        <p className="text-xs text-slate-500 capitalize">{broker.category}</p>
+                      </div>
+                      <span className={`text-xs font-medium shrink-0 ${complete ? 'text-amber-400' : 'text-slate-400'}`}>
+                        {complete ? 'Manual complete' : 'Manual pending'}
+                      </span>
+                    </div>
+                    {broker.notes && <p className="text-xs text-slate-400 leading-relaxed">{broker.notes}</p>}
+                    <button
+                      onClick={() => complete ? resetWebformToPending(broker.id) : markWebformComplete(broker.id)}
+                      className="text-xs text-violet-300 hover:text-violet-200 underline"
+                    >
+                      {complete ? `Mark ${broker.name} pending` : `Mark ${broker.name} complete`}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Broker list */}
         <div>
