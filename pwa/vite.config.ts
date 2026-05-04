@@ -28,6 +28,19 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+          if (id.includes('@azure/msal-browser')) return 'oauth'
+          if (id.includes('react') || id.includes('react-dom')) return 'react'
+          if (id.includes('idb')) return 'storage'
+          return 'vendor'
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,

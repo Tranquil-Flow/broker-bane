@@ -23,6 +23,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [running, setRunning] = useState(false)
   const [paused, setPaused] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [pendingManualBatch, setPendingManualBatch] = useState<string[]>([])
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
@@ -45,6 +46,13 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       .catch(() => {})
     load<boolean>('autopilot-paused')
       .then(p => { if (typeof p === 'boolean') setPaused(p) })
+      .catch(() => {})
+    load<string[]>('pending-manual-batch')
+      .then(batch => {
+        if (Array.isArray(batch)) {
+          setPendingManualBatch(batch.filter(id => typeof id === 'string'))
+        }
+      })
       .catch(() => {})
   }, [load])
 
@@ -78,16 +86,18 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       setRunning(true)
       setRunError('')
       try {
+        const openedDraftIds: string[] = []
         for (const broker of todaysBatch.toSend) {
           if (!broker.removalEmail) continue
           const message = buildRemovalEmail(profile, broker.removalLaw, broker.removalEmail, {
             brokerIdentity: effectiveIdentity,
           })
           openMailto(message)
-          // Mark as manual — user must confirm they actually sent the email.
-          updateStatus(broker.id, 'manual')
+          openedDraftIds.push(broker.id)
           await new Promise(r => setTimeout(r, Math.max(250, Math.min(policy.delayMs, 2_000))))
         }
+        setPendingManualBatch(openedDraftIds)
+        await save('pending-manual-batch', openedDraftIds)
       } catch (e) {
         setRunError(e instanceof Error ? e.message : 'Unknown error')
       } finally {
@@ -122,14 +132,16 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     }
   }
 
-  const sentCount = Object.values(statuses).filter(
-    s => s.status === 'sent' || s.status === 'confirmed' || s.status === 'manual'
-  ).length
-  const failedCount = Object.values(statuses).filter(s => s.status === 'failed').length
-  const remaining = emailBrokers.length - sentCount
+  const statusValues = Object.values(statuses)
+  const sentAutoCount = statusValues.filter(s => s.status === 'sent' || s.status === 'confirmed').length
+  const manualCount = statusValues.filter(s => s.status === 'manual').length
+  const handledCount = sentAutoCount + manualCount
+  const failedCount = statusValues.filter(s => s.status === 'failed').length
+  const remaining = emailBrokers.length - handledCount
   const canSendToday = todaysBatch.toSend.length > 0
   const dailyDone = remaining > 0 && !canSendToday
-  const actionDisabled = running || paused || remaining === 0 || dailyDone
+  const hasPendingManualBatch = pendingManualBatch.length > 0
+  const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch
 
   function requestStartRemovals() {
     if (!provider || actionDisabled) return
@@ -148,6 +160,19 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     save('autopilot-paused', next).catch(() => {})
   }
 
+  function markPendingManualBatchSent() {
+    for (const brokerId of pendingManualBatch) {
+      updateStatus(brokerId, 'manual')
+    }
+    setPendingManualBatch([])
+    save('pending-manual-batch', []).catch(() => {})
+  }
+
+  function discardPendingManualBatch() {
+    setPendingManualBatch([])
+    save('pending-manual-batch', []).catch(() => {})
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <div className="max-w-2xl mx-auto p-6 space-y-6">
@@ -160,7 +185,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
           <StatCard label="Total brokers" value={allBrokers.length} />
-          <StatCard label="Requests handled" value={sentCount} highlight />
+          <StatCard label="Requests handled" value={handledCount} highlight />
           <StatCard label="Remaining" value={remaining} />
         </div>
 
@@ -171,14 +196,20 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Autopilot status</span>
-            <span className={`font-medium ${paused ? 'text-amber-300' : 'text-emerald-300'}`}>
-              {paused ? 'Autopilot is paused' : dailyDone ? 'Daily cap reached' : running ? 'Running daily batch' : 'Ready for today’s batch'}
+            <span className={`font-medium ${paused || hasPendingManualBatch ? 'text-amber-300' : 'text-emerald-300'}`}>
+              {paused ? 'Autopilot is paused' : hasPendingManualBatch ? 'Review opened drafts' : dailyDone ? 'Daily cap reached' : running ? 'Running daily batch' : 'Ready for today’s batch'}
             </span>
           </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-slate-400">Autopilot pace</span>
             <span className="font-medium text-white">
               {todaysBatch.sentToday}/{policy.dailyLimit} today · {todaysBatch.queued.length} queued
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-slate-400">Progress detail</span>
+            <span className="font-medium text-white">
+              {sentAutoCount} sent · {manualCount} drafts/manual
             </span>
           </div>
           <button
@@ -207,6 +238,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               ? provider.type === 'mailto' ? 'Opening today’s draft batch…' : 'Sending today’s removal batch…'
               : remaining === 0
               ? '✓ All email requests handled'
+              : hasPendingManualBatch
+              ? 'Review opened drafts first'
               : dailyDone
               ? '✓ Daily privacy-safe batch complete — continue tomorrow'
               : provider.type === 'mailto'
@@ -217,6 +250,31 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
 
         {runError && (
           <p className="text-red-400 text-sm">{runError}</p>
+        )}
+
+        {hasPendingManualBatch && (
+          <div className="bg-amber-950/30 border border-amber-500/40 rounded-xl p-4 space-y-3">
+            <div>
+              <h2 className="font-semibold text-amber-200">Review your opened drafts</h2>
+              <p className="text-sm text-slate-300 mt-1">
+                BrokerBane opened {pendingManualBatch.length} draft{pendingManualBatch.length === 1 ? '' : 's'} in your email client. It will not count them as handled until you confirm you sent them.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={markPendingManualBatchSent}
+                className="flex-1 bg-violet-600 hover:bg-violet-700 text-white py-2 rounded-lg font-medium transition"
+              >
+                I sent these {pendingManualBatch.length} draft{pendingManualBatch.length === 1 ? '' : 's'}
+              </button>
+              <button
+                onClick={discardPendingManualBatch}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg font-medium transition"
+              >
+                Keep them pending
+              </button>
+            </div>
+          </div>
         )}
 
         {confirmOpen && (

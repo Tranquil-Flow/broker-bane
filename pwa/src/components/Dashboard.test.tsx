@@ -9,10 +9,12 @@ const load = vi.fn(async (key: string) => {
   if (key === 'broker-identity') return { mode: 'dedicated_mailbox', email: 'removals@example.com', label: 'Removal mailbox' }
   if (key === 'removal-policy') return { dailyLimit: 10, delayMs: 0 }
   if (key === 'autopilot-paused') return storedPaused
+  if (key === 'pending-manual-batch') return storedPendingManualBatch
   return null
 })
 let storedStatuses: Record<string, BrokerStatus> | null = null
 let storedPaused: boolean | null = null
+let storedPendingManualBatch: string[] | null = null
 let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | null = { type: 'mailto' }
 const openMailto = vi.fn()
 const sendEmail = vi.fn(() => Promise.resolve())
@@ -50,9 +52,10 @@ describe('Dashboard safety controls', () => {
     provider = { type: 'mailto' }
     storedStatuses = null
     storedPaused = null
+    storedPendingManualBatch = null
   })
 
-  it('opens a confirmation dialog before creating any mailto drafts', async () => {
+  it('opens mailto drafts only after confirmation and waits for the user to mark them sent', async () => {
     await act(async () => {
       render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
     })
@@ -67,6 +70,27 @@ describe('Dashboard safety controls', () => {
     fireEvent.click(screen.getByRole('button', { name: /Confirm and open drafts/ }))
 
     await waitFor(() => expect(openMailto).toHaveBeenCalledTimes(2))
+    expect(screen.getByText(/0 sent · 0 drafts\/manual/)).toBeTruthy()
+    expect(await screen.findByText(/Review your opened drafts/)).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: /I sent these 2 drafts/ }))
+
+    await waitFor(() => expect(screen.getByText(/0 sent · 2 drafts\/manual/)).toBeTruthy())
+  })
+
+  it('persists opened mailto drafts across reload until the user resolves them', async () => {
+    storedPendingManualBatch = ['a', 'b']
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(await screen.findByText(/Review your opened drafts/)).toBeTruthy()
+    expect((screen.getByRole('button', { name: /Review opened drafts first/ }) as HTMLButtonElement).disabled).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: /Keep them pending/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('pending-manual-batch', []))
+    expect(await screen.findByRole('button', { name: /Open 2 drafts for today/ })).toBeTruthy()
   })
 
   it('can pause and resume autopilot without sending', async () => {

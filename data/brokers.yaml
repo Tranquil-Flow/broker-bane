@@ -362,7 +362,7 @@ brokers:
     parent_company: RELX Group
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://optout.lexisnexis.com/
+    opt_out_url: https://www.lexisnexis.com/en-us/privacy/for-consumers/opt-out-of-lexisnexis.page
   - id: equifax
     name: Equifax
     domain: equifax.com
@@ -384,7 +384,7 @@ brokers:
     email: privacy@experian.com
     region: us
     category: credit_bureau
-    privacy_policy_url: https://www.experian.com/privacy/opting-out
+    privacy_policy_url: https://www.experian.com/privacy/opting_out
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -393,14 +393,14 @@ brokers:
     tier: 1
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://www.experian.com/privacy/opting-out
+    opt_out_url: https://www.experian.com/privacy/opting_out
   - id: transunion
     name: TransUnion
     domain: transunion.com
     email: privacy@transunion.com
     region: us
     category: credit_bureau
-    privacy_policy_url: https://www.transunion.com/privacy-policy
+    privacy_policy_url: https://www.transunion.com/privacy
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -415,7 +415,7 @@ brokers:
     email: privacy@zoominfo.com
     region: us
     category: business_data
-    privacy_policy_url: https://www.zoominfo.com/about/privacy-policy
+    privacy_policy_url: https://www.zoominfo.com/legal/privacy-policy
     search_url: https://www.zoominfo.com/people-search
     removal_method: email
     requires_captcha: false
@@ -426,7 +426,7 @@ brokers:
     tier: 1
     public_directory: false
     verify_before_send: false
-    opt_out_url: https://www.zoominfo.com/about/privacy-center
+    opt_out_url: https://privacy.zoominfo.com/
   - id: clearbit
     name: Clearbit
     domain: clearbit.com
@@ -594,7 +594,7 @@ brokers:
     opt_out_url: https://liveramp.com/opt_out/
   - id: oracle_datacloud
     name: Oracle Data Cloud (BlueKai)
-    domain: bluekai.com
+    domain: oracle.com
     email: oracle_privacy@oracle.com
     region: us
     category: marketing_data
@@ -641,7 +641,7 @@ brokers:
     verify_before_send: false
   - id: neustar
     name: Neustar
-    domain: neustar.biz
+    domain: home.neustar
     email: privacy@neustar.biz
     region: us
     category: marketing_data
@@ -677,7 +677,7 @@ brokers:
     email: privacy@iqvia.com
     region: us
     category: marketing_data
-    privacy_policy_url: https://www.iqvia.com/about-us/privacy/privacy-statement
+    privacy_policy_url: https://www.iqvia.com/about-us/privacy/privacy-policy
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -722,7 +722,7 @@ brokers:
     email: privacy@sterlingcheck.com
     region: us
     category: background_check
-    privacy_policy_url: https://www.sterlingcheck.com/privacy-policy/
+    privacy_policy_url: https://www.sterlingcheck.com/privacy/
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -767,7 +767,7 @@ brokers:
     email: dataprivacy@experian.com
     region: eu
     category: credit_bureau
-    privacy_policy_url: https://www.experian.co.uk/privacy/consumer-privacy-notice.html
+    privacy_policy_url: https://www.experian.co.uk/consumer/privacy.html
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -782,7 +782,7 @@ brokers:
     email: gdpr@equifax.co.uk
     region: eu
     category: credit_bureau
-    privacy_policy_url: https://www.equifax.co.uk/privacy-information.html
+    privacy_policy_url: https://www.equifax.co.uk/privacy-hub/ein
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -797,7 +797,7 @@ brokers:
     email: gdpr@epsilon.com
     region: eu
     category: marketing_data
-    privacy_policy_url: https://www.epsilon.com/eu/privacy-policy
+    privacy_policy_url: https://legal.epsilon.com/eu/privacy-policy
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -812,7 +812,7 @@ brokers:
     email: privacy@corelogic.com
     region: us
     category: data_aggregator
-    privacy_policy_url: https://www.corelogic.com/privacy/
+    privacy_policy_url: https://www.corelogic.com/privacy-policy/
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -827,7 +827,7 @@ brokers:
     email: privacyofficer@verisk.com
     region: us
     category: data_aggregator
-    privacy_policy_url: https://www.verisk.com/privacy-commitment/
+    privacy_policy_url: https://www.verisk.com/privacy-policies/
     removal_method: email
     requires_captcha: false
     requires_email_confirm: false
@@ -18162,10 +18162,10 @@ brokers:
     public_directory: false
     verify_before_send: false
     form_hints: >-
-      Navigate to vericast.com/ccpa-opt-out or submit a request via their OneTrust privacy portal.
+      Navigate to Vericast's Do Not Sell or Share page or submit a request via their privacy portal.
       Select 'Do Not Sell My Personal Information' option. Provide name and email address.
       Vericast also honors Global Privacy Control (GPC) signal.
-    opt_out_url: https://www.vericast.com/ccpa-opt-out/
+    opt_out_url: https://www.vericast.com/do-not-sell-or-share-my-personal-information/
   - id: certn
     name: Certn
     domain: certn.co
@@ -18192,7 +18192,7 @@ brokers:
     email: privacy@socure.com
     region: us
     category: identity_verification
-    privacy_policy_url: https://www.socure.com/privacy-policy
+    privacy_policy_url: https://www.socure.com/privacy
     removal_method: web_form
     requires_captcha: false
     requires_email_confirm: false
@@ -18203,11 +18203,11 @@ brokers:
     public_directory: false
     verify_before_send: false
     form_hints: >-
-      Submit a CCPA request via socure.com/ccpa or through their OneTrust privacy portal.
+      Submit a CCPA/data-rights request via Socure's privacy policy contact path or privacy portal.
       Select 'Delete My Data' or 'Do Not Sell My Personal Information' as appropriate.
       Socure provides identity verification for banks and fintechs — data deletion may not affect
       records already shared with their business customers.
-    opt_out_url: https://www.socure.com/ccpa
+    opt_out_url: https://www.socure.com/privacy
   - id: persona
     name: Persona
     domain: withpersona.com
@@ -18245,18 +18245,18 @@ brokers:
     public_directory: false
     verify_before_send: false
     form_hints: >-
-      Account deletion requires logging in at wallet.id.me/settings/account/deactivate.
+      Account deletion requires logging in and using Sign In & Security > Privacy > Remove my data.
       For data deletion without an account, email support@id.me with a data deletion request.
       ID.me is used by government agencies; deletion may not affect records already shared with
       state or federal systems. Processing time: up to 45 days.
-    opt_out_url: https://wallet.id.me/settings/account/deactivate
+    opt_out_url: https://help.id.me/hc/en-us/articles/203532014-Close-or-delete-your-ID-me-Wallet
   - id: plaid
     name: Plaid
     domain: plaid.com
     email: privacy@plaid.com
     region: us
     category: data_aggregator
-    privacy_policy_url: https://plaid.com/legal/privacy-statement/
+    privacy_policy_url: https://plaid.com/legal/#end-user-privacy-policy
     removal_method: web_form
     requires_captcha: false
     requires_email_confirm: true

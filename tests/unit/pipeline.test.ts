@@ -8,6 +8,15 @@ vi.mock("keytar", () => ({
   },
 }));
 
+const inboxMonitorMock = vi.hoisted(() => ({
+  start: vi.fn(async () => undefined),
+  stop: vi.fn(async () => undefined),
+}));
+
+vi.mock("../../src/inbox/monitor.js", () => ({
+  InboxMonitor: vi.fn().mockImplementation(() => inboxMonitorMock),
+}));
+
 import { validateTransition, transition, isTerminal, getNextStates } from "../../src/pipeline/state-machine.js";
 import { withRetry } from "../../src/pipeline/retry.js";
 import { CircuitBreaker } from "../../src/pipeline/circuit-breaker.js";
@@ -193,6 +202,8 @@ describe("Orchestrator email alias", () => {
   beforeEach(() => {
     tmpDir = join(tmpdir(), `brokerbane-alias-test-${Date.now()}`);
     mkdirSync(tmpDir, { recursive: true });
+    inboxMonitorMock.start.mockClear();
+    inboxMonitorMock.stop.mockClear();
   });
 
   afterEach(() => {
@@ -340,6 +351,63 @@ describe("Orchestrator email alias", () => {
     expect(logs[0].from_addr).toBe("removals@example.net");
     closeDatabase(db);
 
+    await orchestrator.cleanup();
+  });
+
+  it("does not start the inbox monitor during dry runs", async () => {
+    const dbPath = join(tmpDir, "dry-run-inbox-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@personal.example",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@personal.example", pass: "testpass" },
+      },
+      broker_identity: {
+        id: "default",
+        label: "Dedicated removal mailbox",
+        mode: "dedicated_mailbox",
+        email: "removals@example.net",
+        privacy_level: "maximum",
+        smtp: {
+          host: "smtp.example.net",
+          port: 587,
+          secure: false,
+          auth: { user: "removals@example.net", pass: "mailbox-pass" },
+        },
+        inbox: {
+          host: "imap.example.net",
+          port: 993,
+          secure: true,
+          auth: { user: "removals@example.net", pass: "mailbox-pass" },
+        },
+      },
+      options: {
+        template: "gdpr",
+        dry_run: true,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+      },
+      database: { path: dbPath },
+    });
+
+    const orchestrator = new Orchestrator(config);
+    await expect(orchestrator.run({ dryRun: true, brokerIds: ["zoominfo"] })).resolves.toMatchObject({
+      dryRun: true,
+      sent: 1,
+    });
+
+    expect(inboxMonitorMock.start).not.toHaveBeenCalled();
+    expect(inboxMonitorMock.stop).not.toHaveBeenCalled();
     await orchestrator.cleanup();
   });
 });

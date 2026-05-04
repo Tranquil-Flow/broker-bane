@@ -184,7 +184,7 @@ export class Orchestrator {
     // Start inbox monitor in background if configured
     let inboxMonitor: import("../inbox/monitor.js").InboxMonitor | null = null;
     const brokerInbox = getBrokerIdentityImap(this.config);
-    if (brokerInbox) {
+    if (brokerInbox && !dryRun) {
       try {
         const { InboxMonitor } = await import("../inbox/monitor.js");
         inboxMonitor = new InboxMonitor(
