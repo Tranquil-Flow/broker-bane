@@ -16835,8 +16835,9 @@ brokers:
     tier: 3
     public_directory: true
     verify_before_send: true
-    parent_company: PeopleFinders Inc
+    parent_company: Intelius
     search_url: https://www.publicrecords.com
+    opt_out_url: https://www.intelius.com/privacy-center/
   - id: cyberbackgroundchecks
     name: CyberBackgroundChecks
     domain: cyberbackgroundchecks.com
@@ -16887,6 +16888,7 @@ brokers:
     verify_before_send: true
     parent_company: AddressSearch
     search_url: https://www.addresssearch.com
+    opt_out_url: https://www.addresssearch.com/remove-info.php
   - id: peoplesearchnow
     name: PeopleSearchNow
     domain: peoplesearchnow.com
@@ -17018,6 +17020,7 @@ brokers:
     verify_before_send: true
     parent_company: CallerSmart
     search_url: https://www.callersmart.com
+    opt_out_url: https://www.callersmart.com/data
   - id: reversephonelookup
     name: ReversePhoneLookup
     domain: reversephonelookup.com
@@ -18271,4 +18274,4 @@ brokers:
       Disconnect linked apps and request data deletion. Plaid also accepts CCPA/GDPR requests
       via their privacy portal. Note: deleting Plaid data does not delete data already shared
       with connected financial apps.
-    opt_out_url: https://my.plaid.com/
+    opt_out_url: https://my.plaid.com/data-subject-request-form
