@@ -83,22 +83,36 @@ export function collectMissingOptOutBrokers(brokers: BrokerRecord[], tier?: numb
     .slice(0, limit ?? brokers.length);
 }
 
-async function checkUrl(target: AuditTarget, timeoutMs: number): Promise<AuditResult> {
+export async function checkUrl(target: AuditTarget, timeoutMs: number): Promise<AuditResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const headers = { "User-Agent": "BrokerBane URL audit (+https://github.com/Tranquil-Flow/broker-bane)" };
   try {
-    let response = await fetch(target.url, {
-      method: "HEAD",
-      redirect: "follow",
-      signal: controller.signal,
-      headers: { "User-Agent": "BrokerBane URL audit (+https://github.com/Tranquil-Flow/broker-bane)" },
-    });
+    let response: Response;
+    try {
+      response = await fetch(target.url, {
+        method: "HEAD",
+        redirect: "follow",
+        signal: controller.signal,
+        headers,
+      });
+    } catch (headErr) {
+      // Some otherwise-valid broker endpoints terminate or reject HEAD before
+      // returning an HTTP status. Fall back to GET so the audit does not mark
+      // live opt-out portals stale just because HEAD is brittle.
+      response = await fetch(target.url, {
+        method: "GET",
+        redirect: "follow",
+        signal: controller.signal,
+        headers,
+      });
+    }
     if (response.status === 405 || response.status === 403) {
       response = await fetch(target.url, {
         method: "GET",
         redirect: "follow",
         signal: controller.signal,
-        headers: { "User-Agent": "BrokerBane URL audit (+https://github.com/Tranquil-Flow/broker-bane)" },
+        headers,
       });
     }
     const blocked = response.status === 401 || response.status === 403;

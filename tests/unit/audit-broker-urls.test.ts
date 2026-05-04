@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { collectAuditTargets, collectMissingOptOutBrokers } from "../../scripts/audit-broker-urls.js";
+import { describe, expect, it, vi } from "vitest";
+import { collectAuditTargets, collectMissingOptOutBrokers, checkUrl } from "../../scripts/audit-broker-urls.js";
 
 describe("broker URL audit helpers", () => {
   const brokers = [
@@ -54,5 +54,31 @@ describe("broker URL audit helpers", () => {
 
   it("can scope missing opt-out reporting by tier and limit", () => {
     expect(collectMissingOptOutBrokers(brokers, 1, 1).map(b => b.id)).toEqual(["web-missing"]);
+  });
+
+  it("falls back to GET when HEAD fetch fails before a response arrives", async () => {
+    const originalFetch = globalThis.fetch;
+    const fetchMock = vi.fn()
+      .mockRejectedValueOnce(new Error("fetch failed"))
+      .mockResolvedValueOnce(new Response("ok", { status: 200 }));
+    globalThis.fetch = fetchMock as typeof fetch;
+
+    try {
+      const result = await checkUrl({
+        brokerId: "plaid",
+        brokerName: "Plaid",
+        tier: 1,
+        kind: "opt_out_url",
+        url: "https://my.plaid.com/",
+      }, 1000);
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock.mock.calls[0][1]?.method).toBe("HEAD");
+      expect(fetchMock.mock.calls[1][1]?.method).toBe("GET");
+      expect(result.ok).toBe(true);
+      expect(result.status).toBe(200);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });
