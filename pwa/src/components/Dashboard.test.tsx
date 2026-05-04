@@ -272,4 +272,31 @@ describe('Dashboard safety controls', () => {
 
     expect(await screen.findByText('Webform Broker 51')).toBeTruthy()
   })
+
+  it('initially caps the huge confirmation checklist and lets the user expand it', async () => {
+    const now = '2026-05-04T12:00:00Z'
+    emailBrokers = Array.from({ length: 55 }, (_, index) => ({
+      id: `awaiting-${index + 1}`,
+      name: `Awaiting Broker ${index + 1}`,
+      method: 'email' as const,
+      removalEmail: `awaiting-${index + 1}@example.com`,
+      removalLaw: 'generic' as const,
+      category: 'people-search',
+    }))
+    storedStatuses = Object.fromEntries(emailBrokers.map(broker => [
+      broker.id,
+      { brokerId: broker.id, status: 'sent' as const, sentAt: now, lastUpdated: now },
+    ]))
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Evi Example'], emails: ['personal@example.com'], addresses: ['1 Moon Lane'] }} />)
+    })
+
+    expect(screen.queryByText('Awaiting Broker 51')).toBeNull()
+    expect(screen.getAllByText('Awaiting Broker 50').length).toBeGreaterThan(0)
+
+    fireEvent.click(screen.getByRole('button', { name: /Show 5 more confirmations/ }))
+
+    expect(await screen.findByText('Awaiting Broker 51')).toBeTruthy()
+  })
 })

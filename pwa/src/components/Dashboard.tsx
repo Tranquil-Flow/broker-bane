@@ -17,6 +17,7 @@ import { DEFAULT_REMOVAL_POLICY, normalizeRemovalPolicy } from '../types'
 
 const INITIAL_EMAIL_BROKER_VISIBLE_COUNT = 50
 const INITIAL_WEBFORM_BROKER_VISIBLE_COUNT = 50
+const INITIAL_CONFIRMATION_VISIBLE_COUNT = 50
 
 export default function Dashboard({ profile }: { profile: UserProfile }) {
   const { save, load } = useVault()
@@ -31,6 +32,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [pendingManualBatch, setPendingManualBatch] = useState<string[]>([])
   const [visibleEmailBrokerCount, setVisibleEmailBrokerCount] = useState(INITIAL_EMAIL_BROKER_VISIBLE_COUNT)
   const [visibleWebformBrokerCount, setVisibleWebformBrokerCount] = useState(INITIAL_WEBFORM_BROKER_VISIBLE_COUNT)
+  const [visibleConfirmationCount, setVisibleConfirmationCount] = useState(INITIAL_CONFIRMATION_VISIBLE_COUNT)
   const [runError, setRunError] = useState('')
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
@@ -175,6 +177,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     const status = statuses[broker.id]?.status
     return status === 'sent' || status === 'manual'
   })
+  const visibleConfirmationBrokers = awaitingConfirmationBrokers.slice(0, visibleConfirmationCount)
+  const hiddenConfirmationCount = Math.max(0, awaitingConfirmationBrokers.length - visibleConfirmationBrokers.length)
   const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
 
   function requestStartRemovals() {
@@ -437,7 +441,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               </p>
             </div>
             <div className="divide-y divide-slate-800">
-              {awaitingConfirmationBrokers.map(broker => {
+              {visibleConfirmationBrokers.map(broker => {
                 const status = statuses[broker.id]?.status
                 return (
                   <div key={broker.id} className="py-3 flex items-center justify-between gap-3">
@@ -465,6 +469,14 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
                 )
               })}
             </div>
+            {hiddenConfirmationCount > 0 && (
+              <button
+                onClick={() => setVisibleConfirmationCount(awaitingConfirmationBrokers.length)}
+                className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Show {hiddenConfirmationCount} more confirmations
+              </button>
+            )}
           </div>
         )}
 
