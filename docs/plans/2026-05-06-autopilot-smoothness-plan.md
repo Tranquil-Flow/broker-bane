@@ -406,7 +406,315 @@ Do not jump straight from build-passing to full broker contact. Use this ladder:
 
 ---
 
-## 8. Non-goals
+## 8. Smooth user journey acceptance criteria
+
+BrokerBane should be judged by whether a non-technical user can run it without their normal life being disrupted. The acceptance test is not “can the CLI send email”; it is “can the user set this up once, understand what will happen, and trust the quiet worker.”
+
+### Journey A: first local setup
+
+**User story:** A user installs BrokerBane locally and wants maximum privacy without hand-editing YAML.
+
+**Required path:**
+
+1. User runs `brokerbane init` or local dashboard setup.
+2. Setup asks for legal/profile identifiers separately from the broker-facing removal mailbox.
+3. Setup recommends a dedicated mailbox and labels same-mailbox mode as legacy/risky.
+4. Setup verifies SMTP before enabling real sends.
+5. Setup verifies IMAP before enabling confirmation monitoring.
+6. Setup defaults to dry-run until the user explicitly flips to real mode.
+7. Setup defaults to a conservative daily cap, ideally 10/day for fresh mailboxes.
+8. Setup ends with a concrete next command: preview today, dry-run, or autopilot test mode.
+
+**Pass criteria:** The user never has to paste their personal mailbox as the operational sender unless they intentionally choose legacy mode.
+
+### Journey B: first safe test
+
+**User story:** A user wants to test BrokerBane without contacting brokers.
+
+**Required path:**
+
+1. PWA fake smoke-test mode works with no real identity.
+2. `remove --preview-today` shows exact brokers and no side effects.
+3. `remove --dry-run` renders requests but sends no SMTP.
+4. `autopilot start --once --test-mode` proves the worker loop without SMTP/IMAP/web contact.
+5. Ethereal sandbox proves real SMTP/IMAP plumbing but no broker delivery.
+
+**Pass criteria:** A test run cannot accidentally open 1000 mailto drafts, send real broker emails, start a real monitor, or mutate the live user database.
+
+### Journey C: first real broker pilot
+
+**User story:** A user has a dedicated mailbox and is ready to contact one broker.
+
+**Required path:**
+
+1. User runs preview for one selected email-capable broker.
+2. User runs dry-run for the same broker.
+3. User sets daily cap to 1.
+4. User starts `autopilot start --once` or runs `remove` for that one broker.
+5. Status shows sent/awaiting confirmation.
+6. Confirmation worker or manual task queue shows any next action.
+7. User can pause everything.
+
+**Pass criteria:** Exactly one outbound message is sent from the dedicated mailbox; replies/confirmations do not land in the main inbox.
+
+### Journey D: quiet autopilot
+
+**User story:** A user wants BrokerBane to keep working over days without babysitting.
+
+**Required path:**
+
+1. User sees status: next batch, daily cap, mailbox, retries, confirmations, manual tasks.
+2. User starts foreground autopilot.
+3. Autopilot previews before each cycle and sends only up to cap.
+4. Autopilot retries transient failures later.
+5. Autopilot monitors confirmations.
+6. Autopilot emits a daily summary and alerts only for action-required states.
+7. User can stop with Ctrl-C safely.
+
+**Pass criteria:** No surprise sends, no hidden daemon, no silent auth expiry, no buried manual work.
+
+---
+
+## 9. Dedicated mailbox guidance and setup hardening
+
+### Task 6.1: Add provider-specific dedicated-mailbox setup guides
+
+**Objective:** Make it clear that BrokerBane does not auto-create mailboxes, while still guiding users smoothly through creating one.
+
+**Files:**
+- Create: `docs/setup/dedicated-mailbox.md`
+- Modify: `README.md`
+- Modify: CLI/dashboard setup copy if docs reveal mismatches
+
+**Required content:**
+
+- Recommended mailbox naming pattern, e.g. `privacy-removals@...` without exposing main identity unnecessarily.
+- Gmail app-password path and caveats.
+- Outlook app-password/OAuth path and caveats.
+- Proton/Tuta caveat: consumer webmail may not expose SMTP/IMAP without a bridge/paid plan.
+- Fastmail/custom-domain path as a good privacy-friendly option.
+- Explicit split:
+  - known/profile emails = identifiers brokers search for
+  - broker-facing mailbox = operational sender/reply inbox
+  - notification email = optional user-facing alerts later
+- Warning that plus aliases are not equivalent to a dedicated mailbox.
+
+**Verification:**
+
+```bash
+npm run build
+```
+
+### Task 6.2: Add `test-config` checks for privacy-safe identity
+
+**Objective:** Catch misconfiguration before the first real send.
+
+**Files:**
+- Modify: `src/commands/test-config.cmd.ts` or equivalent config test command
+- Test: `tests/unit/test-config-command.test.ts`
+
+**Required behavior:**
+
+- Warn when broker-facing mailbox equals profile email.
+- Warn when SMTP auth user differs from broker identity email unless explicitly acknowledged.
+- Warn when inbox auth user differs from broker identity email.
+- Fail real-send readiness if SMTP cannot verify.
+- Fail confirmation-monitor readiness if IMAP cannot verify.
+- Keep dry-run readiness separate from real-send readiness.
+
+**Verification:**
+
+```bash
+npm test -- tests/unit/test-config-command.test.ts --run --no-file-parallelism --maxWorkers=1 --minWorkers=1
+npm run build
+node dist/cli.js test-config --config /tmp/brokerbane-test-config.yaml
+```
+
+---
+
+## 10. Dashboard control center tasks
+
+### Task 7.1: Dashboard autopilot status card
+
+**Objective:** Give the local dashboard the same “is it working?” signal as the CLI.
+
+**Files:**
+- Modify: `src/dashboard/routes/dashboard.ts`
+- Modify: `src/dashboard/views/components.ts`
+- Use/create: `src/db/repositories/autopilot-state.repo.ts`
+- Test: dashboard route/component tests
+
+**Required UI:**
+
+- Broker-facing mailbox and privacy mode.
+- Daily cap, sent today, remaining today.
+- Next batch preview count and first few broker names.
+- Retry queue ready/pending.
+- Awaiting confirmation.
+- Manual tasks count.
+- Last autopilot cycle time and result.
+- Clear CTA:
+  - Preview today
+  - Start one safe test cycle
+  - Open manual tasks
+  - Fix mailbox auth
+
+### Task 7.2: Dashboard pause/resume safety switch
+
+**Objective:** Make “stop touching brokers” obvious and durable.
+
+**Files:**
+- Add config/state field if needed: `autopilot.paused`
+- Modify: dashboard settings/routes
+- Modify: `src/pipeline/autopilot.ts`
+- Test: pause/resume tests
+
+**Required behavior:**
+
+- Pause prevents new sends and web actions.
+- Pause does not prevent read-only status or manual viewing.
+- Pause can optionally leave confirmation monitoring on; UI must label this clearly.
+- Autopilot status shows paused state and next action.
+
+---
+
+## 11. PWA/local-dashboard boundary plan
+
+The PWA is useful for onboarding, education, manual review, and smoke testing. The CLI/local dashboard is the real automation engine. Do not blur this boundary.
+
+### Task 8.1: PWA handoff to local engine
+
+**Objective:** When the PWA hits a browser limitation, guide users to the implemented local path instead of implying a nonexistent desktop app.
+
+**Files:**
+- Modify: `pwa/src/components/Dashboard.tsx`
+- Modify: `pwa/src/components/Settings.tsx` if present
+- Test: PWA component tests
+
+**Required behavior:**
+
+- PWA explains that background confirmation monitoring requires CLI/local dashboard.
+- PWA offers copyable CLI commands for:
+  - `brokerbane remove --preview-today`
+  - `brokerbane autopilot status`
+  - `brokerbane autopilot start --once --test-mode`
+- PWA does not claim background operation when the browser tab is closed.
+- Mailto remains a small manual-batch path only.
+
+### Task 8.2: Export/import safe setup bundle between PWA and CLI
+
+**Objective:** Let users start in PWA and continue locally without retyping everything, while keeping secrets out of exported files.
+
+**Files:**
+- Create: portable setup schema if not present
+- Modify: PWA export UI
+- Modify: CLI import command if needed
+- Test: export/import schema tests
+
+**Required behavior:**
+
+- Export profile identifiers, broker-facing mailbox address, daily cap, pacing, and selected brokers.
+- Do not export SMTP/IMAP passwords or OAuth tokens.
+- CLI import prompts for or preserves local-only secrets.
+- Export warns if same-mailbox mode is active.
+
+---
+
+## 12. Stop/rollback and evidence plan
+
+### Task 9.1: Add explicit pause-all and recovery docs
+
+**Objective:** Users need a moonlit emergency brake.
+
+**Files:**
+- Create: `docs/operations/pause-and-recovery.md`
+- Modify: CLI help/status copy if needed
+
+**Required content:**
+
+- How to stop foreground autopilot.
+- How to set dry-run true.
+- How to reduce daily cap to 1.
+- How to pause/disable a broker.
+- How to inspect retry queue.
+- How to export evidence before filing a bug.
+- What to do if replies hit the main inbox.
+- What to do on SMTP bounce spike, auth expiry, CAPTCHA wall, or legal/sensitive-ID request.
+
+### Task 9.2: Evidence and audit export for pilots
+
+**Objective:** Every real pilot should leave a compact, privacy-redacted record.
+
+**Files:**
+- Modify: export command if present
+- Create/update: `docs/testing/pilot-evidence-template.md`
+- Test: export redaction tests
+
+**Required output:**
+
+- config privacy mode and broker-facing mailbox domain, not full address by default
+- broker ids/names contacted
+- timestamps
+- request statuses
+- email status counts
+- retry counts
+- confirmation/manual-action counts
+- redacted error summaries
+
+---
+
+## 13. Pilot readiness gates
+
+### Gate A: no-contact local readiness
+
+Must pass before any SMTP credentials are used:
+
+```bash
+npm run build
+npm test -- --run --no-file-parallelism --maxWorkers=1 --minWorkers=1
+cd pwa && npm test -- --run --no-file-parallelism --pool=threads --maxWorkers=1 && npm run build
+```
+
+Plus manual checks:
+- PWA fake smoke-test mode cannot send/open drafts.
+- `remove --preview-today` creates no DB side effects.
+- `autopilot start --once --test-mode` sends nothing.
+
+### Gate B: sandbox email readiness
+
+Must pass before any real broker email:
+
+- Ethereal SMTP message is captured.
+- From and Reply-To equal broker-facing mailbox.
+- Dry-run sends nothing.
+- Test-mode autopilot sends nothing.
+- Confirmation monitor does not start during dry-run.
+
+### Gate C: one-broker live readiness
+
+Must pass before daily cap above 1:
+
+- Dedicated real mailbox created and verified.
+- SPF/DKIM/DMARC are acceptable for the sending domain if custom domain is used.
+- `test-config` passes real-send and monitor checks.
+- One broker selected explicitly.
+- Daily cap set to 1.
+- Main inbox receives no broker reply.
+- Status and evidence export are understandable.
+
+### Gate D: small beta readiness
+
+Must pass before more than 3 brokers/day:
+
+- Retry worker wired and tested.
+- Autopilot status includes last cycle/retry/confirmation health.
+- Notifications exist for auth expiry, manual action, failure spike, and daily summary.
+- Broker URL audit passes on top-tier subset or known failures are documented.
+- Pause/recovery docs exist.
+
+---
+
+## 14. Non-goals
 
 - Do not auto-create a consumer mailbox.
 - Do not build or imply a warm-up swarm.
