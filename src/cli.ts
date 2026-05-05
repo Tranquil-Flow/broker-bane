@@ -41,6 +41,7 @@ program
   .command("remove")
   .description("Execute removal pipeline")
   .option("-d, --dry-run", "Preview what would be sent without actually sending")
+  .option("--preview-today", "Show today's capped broker batch without creating requests, sending email, or starting monitors")
   .option("-b, --brokers <ids>", "Comma-separated broker IDs to target")
   .option("-m, --method <method>", "Filter by method: email, web, all", "all")
   .option("-r, --resume", "Resume an interrupted pipeline run")

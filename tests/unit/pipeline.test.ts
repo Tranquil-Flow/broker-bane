@@ -410,6 +410,131 @@ describe("Orchestrator email alias", () => {
     expect(inboxMonitorMock.stop).not.toHaveBeenCalled();
     await orchestrator.cleanup();
   });
+
+  it("previews today's capped broker batch without creating pipeline side effects", async () => {
+    const dbPath = join(tmpDir, "preview-today-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@personal.example",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@personal.example", pass: "testpass" },
+      },
+      broker_identity: {
+        id: "default",
+        label: "Dedicated removal mailbox",
+        mode: "dedicated_mailbox",
+        email: "removals@example.net",
+        privacy_level: "maximum",
+        smtp: {
+          host: "smtp.example.net",
+          port: 587,
+          secure: false,
+          auth: { user: "removals@example.net", pass: "mailbox-pass" },
+        },
+      },
+      options: {
+        template: "gdpr",
+        dry_run: false,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+        daily_limit: 1,
+      },
+      database: { path: dbPath },
+    });
+
+    const orchestrator = new Orchestrator(config);
+    const preview = await orchestrator.preview({ brokerIds: ["zoominfo", "clearbit", "fullcontact"], methods: ["email"] });
+
+    expect(preview.brokerFacingEmail).toBe("removals@example.net");
+    expect(preview.identityMode).toBe("dedicated_mailbox");
+    expect(preview.dailyLimit).toBe(1);
+    expect(preview.sentToday).toBe(0);
+    expect(preview.remainingToday).toBe(1);
+    expect(preview.limitReached).toBe(false);
+    expect(preview.today).toHaveLength(1);
+    expect(preview.notInTodayCount).toBe(2);
+    expect(preview.today[0]).toMatchObject({ id: expect.any(String), name: expect.any(String) });
+
+    const db = createDatabase(dbPath);
+    runMigrations(db);
+    expect((db.prepare("SELECT COUNT(*) AS count FROM removal_requests").get() as { count: number }).count).toBe(0);
+    expect((db.prepare("SELECT COUNT(*) AS count FROM pipeline_runs").get() as { count: number }).count).toBe(0);
+    expect((db.prepare("SELECT COUNT(*) AS count FROM email_log").get() as { count: number }).count).toBe(0);
+    closeDatabase(db);
+    expect(inboxMonitorMock.start).not.toHaveBeenCalled();
+    await orchestrator.cleanup();
+  });
+
+  it("previews an empty daily batch when the broker-facing identity already hit its cap", async () => {
+    const dbPath = join(tmpDir, "preview-limit-reached-test.db");
+    const config = AppConfigSchema.parse({
+      profile: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@personal.example",
+        country: "US",
+      },
+      email: {
+        host: "smtp.example.com",
+        port: 587,
+        secure: false,
+        auth: { user: "jane@personal.example", pass: "testpass" },
+      },
+      broker_identity: {
+        id: "removal-identity",
+        label: "Dedicated removal mailbox",
+        mode: "dedicated_mailbox",
+        email: "removals@example.net",
+        privacy_level: "maximum",
+        smtp: {
+          host: "smtp.example.net",
+          port: 587,
+          secure: false,
+          auth: { user: "removals@example.net", pass: "mailbox-pass" },
+        },
+      },
+      options: {
+        template: "gdpr",
+        dry_run: false,
+        regions: ["us"],
+        tiers: [1, 2, 3],
+        excluded_brokers: [],
+        delay_min_ms: 0,
+        delay_max_ms: 0,
+        daily_limit: 1,
+      },
+      database: { path: dbPath },
+    });
+
+    const db = createDatabase(dbPath);
+    runMigrations(db);
+    db.prepare("INSERT INTO removal_requests (id, broker_id, method) VALUES (1, 'already-sent', 'email')").run();
+    db.prepare(`
+      INSERT INTO email_log (request_id, direction, message_id, identity_id, from_addr, to_addr, subject, status, created_at)
+      VALUES (1, 'outbound', 'msg1', 'removal-identity', 'removals@example.net', 'broker@example.com', 'test', 'sent', datetime('now'))
+    `).run();
+    closeDatabase(db);
+
+    const orchestrator = new Orchestrator(config);
+    const preview = await orchestrator.preview({ brokerIds: ["zoominfo", "clearbit"], methods: ["email"] });
+
+    expect(preview.sentToday).toBe(1);
+    expect(preview.remainingToday).toBe(0);
+    expect(preview.limitReached).toBe(true);
+    expect(preview.today).toHaveLength(0);
+    expect(preview.notInTodayCount).toBe(2);
+    await orchestrator.cleanup();
+  });
 });
 
 function makeBroker(overrides: Partial<Broker> & { id: string }): Broker {

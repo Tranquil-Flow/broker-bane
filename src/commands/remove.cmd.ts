@@ -4,6 +4,7 @@ import { logger, reconfigureLogger } from "../util/logger.js";
 
 export async function removeCommand(options: {
   dryRun?: boolean;
+  previewToday?: boolean;
   brokers?: string;
   method?: string;
   resume?: boolean;
@@ -25,6 +26,46 @@ export async function removeCommand(options: {
     : undefined;
 
   try {
+    if (options.previewToday) {
+      const preview = await orchestrator.preview({
+        brokerIds,
+        methods,
+        resume: options.resume,
+      });
+
+      console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.log("  Today's BrokerBane Batch Preview");
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+      console.log(`  Broker-facing mailbox: ${preview.brokerFacingEmail}`);
+      console.log(`  Identity mode:          ${preview.identityMode} (${preview.privacyLevel})`);
+      console.log(`  Daily cap:              ${preview.dailyLimit ?? "unlimited"}`);
+      console.log(`  Sent today:             ${preview.sentToday}`);
+      console.log(`  Remaining today:        ${preview.remainingToday}`);
+      console.log(`  Candidate brokers:      ${preview.totalCandidates}`);
+      if (preview.validitySkipped > 0) {
+        console.log(`  Recent opt-outs skipped: ${preview.validitySkipped}`);
+      }
+
+      if (preview.limitReached) {
+        console.log("\n  Daily cap already reached. No brokers would be contacted today.\n");
+      } else if (preview.today.length === 0) {
+        console.log("\n  No brokers match this preview. No emails, browser sessions, or monitors were started.\n");
+      } else {
+        console.log("\n  Brokers in today's capped batch:");
+        preview.today.forEach((broker, index) => {
+          const route = broker.email ? `email: ${broker.email}` : broker.optOutUrl ? `web: ${broker.optOutUrl}` : broker.method;
+          console.log(`    ${index + 1}. ${broker.name} (${broker.id}) — ${route}`);
+        });
+        if (preview.notInTodayCount > 0) {
+          console.log(`\n  ${preview.notInTodayCount} additional broker(s) remain for later capped batches.`);
+        }
+        console.log("\n  Next safe steps:");
+        console.log("    1. Re-run this target with --dry-run to render the exact work without external sends.");
+        console.log("    2. Remove --dry-run only after you have reviewed the mailbox and broker list.\n");
+      }
+      return;
+    }
+
     const summary = await orchestrator.run({
       dryRun: options.dryRun,
       brokerIds,

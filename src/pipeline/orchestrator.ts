@@ -49,6 +49,31 @@ export interface PipelineSummary {
   dryRun: boolean;
 }
 
+export interface BatchPreviewBroker {
+  id: string;
+  name: string;
+  method: Broker["removal_method"];
+  email?: string;
+  optOutUrl?: string;
+  tier: number;
+  parentCompany?: string;
+}
+
+export interface BatchPreview {
+  brokerFacingEmail: string;
+  identityId: string;
+  identityMode: string;
+  privacyLevel: string;
+  dailyLimit?: number;
+  sentToday: number;
+  remainingToday: number;
+  limitReached: boolean;
+  totalCandidates: number;
+  validitySkipped: number;
+  today: BatchPreviewBroker[];
+  notInTodayCount: number;
+}
+
 export interface OrchestratorInit {
   playbookDir?: string;
 }
@@ -65,6 +90,35 @@ export class Orchestrator {
   ) {
     const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
     this.playbooks = loadAllPlaybooks(init.playbookDir ?? defaultDir);
+  }
+
+  async preview(options: OrchestratorOptions = {}): Promise<BatchPreview> {
+    this.db = createDatabase(this.config.database.path);
+    runMigrations(this.db);
+
+    const requestRepo = new RemovalRequestRepo(this.db);
+    const emailLogRepo = new EmailLogRepo(this.db);
+    const brokerIdentity = getEffectiveBrokerIdentity(this.config);
+    const { brokers, validitySkippedCount } = this.selectBrokersForRun(options, requestRepo);
+    const sentToday = emailLogRepo.countSentToday(brokerIdentity.id);
+    const dailyLimit = this.config.options.daily_limit;
+    const remainingToday = dailyLimit === undefined ? brokers.length : Math.max(0, dailyLimit - sentToday);
+    const today = brokers.slice(0, remainingToday).map(toPreviewBroker);
+
+    return {
+      brokerFacingEmail: getBrokerFacingEmail(this.config),
+      identityId: brokerIdentity.id,
+      identityMode: brokerIdentity.mode,
+      privacyLevel: brokerIdentity.privacy_level,
+      dailyLimit,
+      sentToday,
+      remainingToday,
+      limitReached: dailyLimit !== undefined && sentToday >= dailyLimit,
+      totalCandidates: brokers.length,
+      validitySkipped: validitySkippedCount,
+      today,
+      notInTodayCount: Math.max(0, brokers.length - today.length),
+    };
   }
 
   async run(options: OrchestratorOptions = {}): Promise<PipelineSummary> {
@@ -92,74 +146,7 @@ export class Orchestrator {
       this.config.circuit_breaker
     );
 
-    // Load and filter brokers
-    const brokerDb = loadBrokerDatabase();
-    const store = new BrokerStore(brokerDb.brokers);
-
-    let brokers: readonly Broker[];
-    if (options.brokerIds?.length) {
-      brokers = options.brokerIds
-        .map((id) => store.getById(id))
-        .filter((b): b is Broker => b !== undefined);
-    } else {
-      brokers = store.filter({
-        regions: this.config.options.regions as any,
-        tiers: this.config.options.tiers,
-        excludeIds: this.config.options.excluded_brokers,
-      });
-    }
-
-    // Filter by method if specified
-    if (options.methods?.length && !options.methods.includes("all")) {
-      const methodFilter = options.methods.includes("email") ? "email" : "web_form";
-      brokers = brokers.filter(
-        (b) => b.removal_method === methodFilter || b.removal_method === "hybrid"
-      );
-    }
-
-    // Schedule broker order
-    const scheduled = scheduleBrokers(brokers);
-
-    // Filter out completed brokers if resuming
-    let toProcess = scheduled;
-    if (options.resume) {
-      const completedIds = new Set(
-        requestRepo
-          .getByStatus(REQUEST_STATUS.completed)
-          .map((r) => r.broker_id)
-      );
-      toProcess = scheduled.filter((b) => !completedIds.has(b.id));
-      if (toProcess.length < scheduled.length) {
-        logger.info(
-          { skipped: scheduled.length - toProcess.length },
-          "Resuming: skipping completed brokers"
-        );
-      }
-    }
-
-    // Skip brokers whose opt-out is still within their validity window.
-    // This check is bypassed in resume mode, where the intent is to continue
-    // a previously interrupted pipeline run rather than start a new one.
-    let validitySkippedCount = 0;
-    if (!options.resume) {
-      const validityFiltered: Broker[] = [];
-      for (const broker of toProcess) {
-        const lastSentAt = requestRepo.getLastSentAt(broker.id);
-        if (lastSentAt) {
-          const validityMs = broker.opt_out_validity_days * 24 * 60 * 60 * 1000;
-          const expiresAt = new Date(lastSentAt).getTime() + validityMs;
-          if (Date.now() < expiresAt) {
-            validitySkippedCount++;
-            continue; // skip: opt-out still valid
-          }
-        }
-        validityFiltered.push(broker);
-      }
-      if (validitySkippedCount > 0) {
-        logger.info({ count: validitySkippedCount }, "Skipping brokers with valid recent opt-out");
-      }
-      toProcess = validityFiltered;
-    }
+    const { brokers: toProcess, validitySkippedCount } = this.selectBrokersForRun(options, requestRepo);
 
     // Create pipeline run
     const pipelineRun = pipelineRunRepo.create(toProcess.length);
@@ -429,6 +416,75 @@ export class Orchestrator {
 
     logger.info(summary, "Pipeline completed");
     return summary;
+  }
+
+  private selectBrokersForRun(
+    options: OrchestratorOptions,
+    requestRepo: RemovalRequestRepo
+  ): { brokers: readonly Broker[]; validitySkippedCount: number } {
+    const brokerDb = loadBrokerDatabase();
+    const store = new BrokerStore(brokerDb.brokers);
+
+    let brokers: readonly Broker[];
+    if (options.brokerIds?.length) {
+      brokers = options.brokerIds
+        .map((id) => store.getById(id))
+        .filter((b): b is Broker => b !== undefined);
+    } else {
+      brokers = store.filter({
+        regions: this.config.options.regions as any,
+        tiers: this.config.options.tiers,
+        excludeIds: this.config.options.excluded_brokers,
+      });
+    }
+
+    if (options.methods?.length && !options.methods.includes("all")) {
+      const methodFilter = options.methods.includes("email") ? "email" : "web_form";
+      brokers = brokers.filter(
+        (b) => b.removal_method === methodFilter || b.removal_method === "hybrid"
+      );
+    }
+
+    const scheduled = scheduleBrokers(brokers);
+
+    let toProcess = scheduled;
+    if (options.resume) {
+      const completedIds = new Set(
+        requestRepo
+          .getByStatus(REQUEST_STATUS.completed)
+          .map((r) => r.broker_id)
+      );
+      toProcess = scheduled.filter((b) => !completedIds.has(b.id));
+      if (toProcess.length < scheduled.length) {
+        logger.info(
+          { skipped: scheduled.length - toProcess.length },
+          "Resuming: skipping completed brokers"
+        );
+      }
+    }
+
+    let validitySkippedCount = 0;
+    if (!options.resume) {
+      const validityFiltered: Broker[] = [];
+      for (const broker of toProcess) {
+        const lastSentAt = requestRepo.getLastSentAt(broker.id);
+        if (lastSentAt) {
+          const validityMs = broker.opt_out_validity_days * 24 * 60 * 60 * 1000;
+          const expiresAt = new Date(lastSentAt).getTime() + validityMs;
+          if (Date.now() < expiresAt) {
+            validitySkippedCount++;
+            continue;
+          }
+        }
+        validityFiltered.push(broker);
+      }
+      if (validitySkippedCount > 0) {
+        logger.info({ count: validitySkippedCount }, "Skipping brokers with valid recent opt-out");
+      }
+      toProcess = validityFiltered;
+    }
+
+    return { brokers: toProcess, validitySkippedCount };
   }
 
   private async processEmailRemoval(
@@ -737,6 +793,18 @@ export class Orchestrator {
       this.db = null;
     }
   }
+}
+
+function toPreviewBroker(broker: Broker): BatchPreviewBroker {
+  return {
+    id: broker.id,
+    name: broker.name,
+    method: broker.removal_method,
+    email: broker.email,
+    optOutUrl: broker.opt_out_url,
+    tier: broker.tier,
+    parentCompany: broker.parent_company ?? broker.subsidiary_of,
+  };
 }
 
 // Lightweight helpers used only in the inbox monitor callback
