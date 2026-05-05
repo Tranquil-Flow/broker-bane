@@ -714,7 +714,320 @@ Must pass before more than 3 brokers/day:
 
 ---
 
-## 14. Non-goals
+## 14. Implementation contracts for the next code sprint
+
+These contracts are intentionally explicit so the next implementation can proceed task-by-task without rediscovering intent.
+
+### 14.1 Retry payload contract
+
+Use a versioned payload so future migrations are possible.
+
+```ts
+export interface EmailRetryPayloadV1 {
+  version: 1;
+  kind: "email";
+  requestId: number;
+  brokerId: string;
+  to: string;
+  subject?: string;
+  body?: string;
+  templateName?: string;
+  identityId: string;
+  createdFrom: "orchestrator" | "manual" | "import";
+  originalError?: {
+    message: string;
+    code?: string;
+  };
+}
+```
+
+Rules:
+
+- `identityId` must match the broker-facing identity used for daily-cap accounting.
+- `to` must be the broker email address, never the user profile email.
+- `subject/body` may be persisted for exact replay, but the handler must also support reconstruction from template.
+- Handler must validate request and broker still exist before sending.
+- If request status is already confirmed/completed, handler should no-op successfully and remove the retry task.
+- If request status is cancelled/manual_required due to user action, handler should no-op successfully and remove the retry task.
+- If broker no longer has email capability, handler should throw a permanent error.
+
+### 14.2 Retry handler dependency injection
+
+Make retry handlers testable without live SMTP. Prefer this shape:
+
+```ts
+export interface RetryHandlerFactoryInit {
+  config: AppConfig;
+  brokers: readonly Broker[];
+  requestRepo: RemovalRequestRepo;
+  emailLogRepo: EmailLogRepo;
+  senderFactory?: (smtp: SmtpConfig, dryRun: boolean, identityId: string) => Pick<EmailSender, "send" | "close">;
+  dryRun?: boolean;
+}
+
+export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryWorkerHandlers;
+```
+
+Rules:
+
+- Tests must inject `senderFactory`; no test should rely on Nodemailer internals.
+- The factory must close a sender it creates, or the caller must own sender lifecycle explicitly. Do not leak pooled transports.
+- Dry-run/test-mode must use a no-side-effect sender path and still write enough local status for observability.
+- Do not copy production template logic into tests. Tests should call the real template engine or assert only on stable fields like `from`, `to`, and status.
+
+### 14.3 Autopilot status snapshot contract
+
+Use one latest-row table plus optional historical rows later. Start simple.
+
+Suggested schema:
+
+```sql
+CREATE TABLE IF NOT EXISTS autopilot_state (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  updated_at TEXT NOT NULL,
+  last_cycle_started_at TEXT,
+  last_cycle_finished_at TEXT,
+  mode TEXT NOT NULL DEFAULT 'foreground',
+  test_mode INTEGER NOT NULL DEFAULT 0,
+  paused INTEGER NOT NULL DEFAULT 0,
+  preview_count INTEGER NOT NULL DEFAULT 0,
+  remaining_today INTEGER NOT NULL DEFAULT 0,
+  skipped_reason TEXT,
+  pipeline_sent INTEGER NOT NULL DEFAULT 0,
+  pipeline_failed INTEGER NOT NULL DEFAULT 0,
+  pipeline_manual_required INTEGER NOT NULL DEFAULT 0,
+  retry_processed INTEGER NOT NULL DEFAULT 0,
+  retry_succeeded INTEGER NOT NULL DEFAULT 0,
+  retry_failed INTEGER NOT NULL DEFAULT 0,
+  retry_requeued INTEGER NOT NULL DEFAULT 0,
+  retry_skipped_daily_cap INTEGER NOT NULL DEFAULT 0,
+  confirmation_worker_configured INTEGER NOT NULL DEFAULT 0,
+  confirmation_worker_started_at TEXT,
+  confirmation_worker_stopped_at TEXT,
+  confirmation_worker_last_error TEXT,
+  last_error TEXT
+);
+```
+
+Status command rules:
+
+- If no snapshot exists, say “No autopilot cycle has run yet.”
+- If snapshot is older than 24 hours and autopilot is expected to be running, show stale warning.
+- Show paused/test-mode prominently.
+- Show same-mailbox warning regardless of snapshot.
+- Never print full profile address, phone, address, or DOB.
+
+### 14.4 Notification event payload contract
+
+Keep notification payloads PII-minimal.
+
+```ts
+export type NotificationSeverity = "info" | "warning" | "urgent";
+
+export interface BrokerBaneNotification {
+  type:
+    | "daily_batch_sent"
+    | "daily_cap_reached"
+    | "confirmation_received"
+    | "manual_action_required"
+    | "failure_spike"
+    | "mailbox_auth_expired"
+    | "same_mailbox_warning"
+    | "autopilot_stale";
+  severity: NotificationSeverity;
+  createdAt: string;
+  title: string;
+  message: string;
+  brokerId?: string;
+  brokerName?: string;
+  counts?: Record<string, number>;
+  nextAction?: string;
+}
+```
+
+Rules:
+
+- Notification text should say what happened and what the user should do next.
+- Do not include full email bodies or profile details.
+- Start with console/log/dashboard sinks only. Webhooks/system notifications are later.
+- Failure-spike detection should be aggregate, e.g. more than 3 failures in a cycle or more than 20% failures, not one alert per broker.
+
+---
+
+## 15. Concrete testing fixtures to add
+
+### 15.1 Shared fake config builder
+
+**Objective:** Avoid brittle test setup and prevent accidental real SMTP/IMAP usage in unit tests.
+
+**Files:**
+- Create: `tests/helpers/config.ts` or extend existing helper
+
+**Required helper:**
+
+- `createTestConfig(overrides)` returns an `AppConfig` with:
+  - profile email: `profile@example.invalid`
+  - broker identity email: `removals@example.invalid`
+  - SMTP host: `localhost`, password auth, no pool
+  - inbox host: `localhost`, password auth, disabled unless explicitly requested
+  - database path supplied per test
+  - dry_run true by default
+  - daily_limit 1 by default
+
+**Rule:** Tests that verify real-send readiness must opt into `dry_run: false` explicitly.
+
+### 15.2 Fake broker fixtures
+
+**Files:**
+- Create: `tests/fixtures/brokers.ts`
+
+Required brokers:
+
+- `email-basic`: email-only, has broker email, no confirmation required.
+- `email-confirm`: email-only, requires email confirmation.
+- `hybrid-basic`: hybrid with email and opt-out URL.
+- `web-manual`: web_form only, opt-out URL.
+- `captcha-web`: web_form only, CAPTCHA required.
+
+Use these in retry/status/autopilot tests instead of relying on the full 1000+ broker dataset.
+
+### 15.3 Side-effect sentinel tests
+
+Add a small suite that protects the sacred boundaries:
+
+- `remove --preview-today` does not create pipeline runs, requests, email logs, pending tasks, retry rows, or broker responses.
+- `autopilot start --once --test-mode` does not call real sender, real inbox monitor, or browser launcher.
+- PWA smoke-test mode disables OAuth send and mailto open paths.
+- Same-mailbox mode always displays a warning in settings/status surfaces.
+
+---
+
+## 16. Pilot broker selection plan
+
+Before any real broker email, choose targets deliberately.
+
+### Email-only pilot candidates
+
+Criteria:
+
+- email-capable broker with stable contact mailbox
+- no known sensitive-ID upload requirement
+- no CAPTCHA-only opt-out path
+- low legal/operational risk
+- not a parent-company cluster that would cause duplicate requests across many child brokers
+
+Selection task:
+
+1. Add `brokerbane list-brokers --method email --tier 1 --json` if it does not exist.
+2. Pick 5 candidates manually.
+3. Run URL/contact audit on those candidates.
+4. Select 1 for Gate C.
+5. Save pilot notes in `docs/testing/pilot-candidates.md`.
+
+### Webform pilot candidates
+
+Do not include webform pilots until:
+
+- manual queue UI is comfortable
+- browser live checklist passes on fake profile
+- CAPTCHA/manual-action statuses are clear
+- user understands that webform automation is beta
+
+First webform pilot should be a broker from `docs/testing/browser-automation-live-checklist.md`, likely `truepeoplesearch`, but only after current selectors are reverified.
+
+---
+
+## 17. Release-readiness claim levels
+
+Use claim levels to avoid overpromising.
+
+### Level 0 — local development only
+
+Allowed claim:
+
+- “Core flows build and tests pass locally.”
+
+Not allowed:
+
+- “Ready for real removals.”
+
+### Level 1 — no-contact testing ready
+
+Requirements:
+
+- Gate A passes.
+- PWA smoke mode verified.
+- Preview/test-mode side-effect sentinels pass.
+
+Allowed claim:
+
+- “Ready for safe local exploration without contacting brokers.”
+
+### Level 2 — sandbox email ready
+
+Requirements:
+
+- Gate B passes.
+- Ethereal send verifies headers and identity.
+
+Allowed claim:
+
+- “Ready to validate email plumbing safely with a sandbox mailbox.”
+
+### Level 3 — one-broker pilot ready
+
+Requirements:
+
+- Gate C passes.
+- Retry handler wired.
+- Status/evidence export understandable.
+
+Allowed claim:
+
+- “Ready for a one-broker pilot from a dedicated removal mailbox.”
+
+### Level 4 — small beta ready
+
+Requirements:
+
+- Gate D passes.
+- Notifications implemented.
+- Broker URL audit passes for chosen subset.
+- Pause/recovery docs complete.
+
+Allowed claim:
+
+- “Ready for small beta batches with conservative caps.”
+
+Do not claim “fully automated broker removal” until browser automation, confirmations, manual queues, and broker dataset quality are proven across a broad real-world sample.
+
+---
+
+## 18. Suggested immediate implementation bundle
+
+Bundle the next code work into one tight branch/commit series:
+
+1. Add test fixtures/config builder.
+2. Add retry payload types and retry handler factory.
+3. Add orchestrator retry enqueue payloads.
+4. Wire RetryWorker into autopilot CLI.
+5. Add side-effect sentinel for `autopilot start --once --test-mode`.
+6. Run:
+   ```bash
+   npm test -- tests/unit/retry-handlers.test.ts tests/unit/retry-worker.test.ts tests/unit/autopilot.test.ts --run --no-file-parallelism --maxWorkers=1 --minWorkers=1
+   npm run build
+   node dist/cli.js autopilot start --once --test-mode
+   ```
+7. Commit as:
+   ```bash
+   git commit -m "feat: wire autopilot retry handlers"
+   ```
+
+This bundle is the smallest useful step toward real autopilot: it converts retries from stored intent into safe, capped, broker-facing action.
+
+---
+
+## 19. Non-goals
 
 - Do not auto-create a consumer mailbox.
 - Do not build or imply a warm-up swarm.
