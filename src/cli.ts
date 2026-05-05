@@ -20,6 +20,7 @@ import { settingsShowCommand, settingsEditCommand } from "./commands/settings.cm
 import { debugReportCommand } from "./commands/debug-report.cmd.js";
 import { reportCommand } from "./commands/report.cmd.js";
 import { rescanCommand } from "./commands/rescan.cmd.js";
+import { autopilotCommand } from "./commands/autopilot.cmd.js";
 
 const program = new Command();
 
@@ -222,6 +223,19 @@ settingsCmd
   .option("-c, --config <path>", "Config file path")
   .action(async (opts) => {
     await settingsEditCommand(opts);
+  });
+
+program
+  .command("autopilot <action>")
+  .description("Preview, status, and foreground paced removal autopilot")
+  .option("-b, --brokers <ids>", "Comma-separated broker IDs to target")
+  .option("-m, --method <method>", "Filter by method: email, web, all")
+  .option("-c, --config <path>", "Override config file path")
+  .option("--once", "Run one safe cycle and exit")
+  .option("--interval-ms <ms>", "Milliseconds between foreground watch cycles")
+  .option("--test-mode", "Force dry-run cycles even if config dry_run is false")
+  .action(async (action: string, opts) => {
+    await autopilotCommand(action, opts);
   });
 
 program
