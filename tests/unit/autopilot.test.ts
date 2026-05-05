@@ -107,6 +107,25 @@ describe("AutopilotRunner", () => {
     expect(orchestrator.run).toHaveBeenCalledWith({ brokerIds: undefined, methods: undefined, resume: true, dryRun: true });
   });
 
+  it("starts and stops a persistent confirmation worker around the watch loop", async () => {
+    const orchestrator = {
+      preview: vi.fn().mockResolvedValue(preview()),
+      run: vi.fn().mockResolvedValue(pipelineSummary()),
+      cleanup: vi.fn().mockResolvedValue(undefined),
+      abort: vi.fn(),
+    };
+    const confirmationWorker = {
+      start: vi.fn().mockResolvedValue({ started: true, activeBrokers: 1 }),
+      stop: vi.fn().mockResolvedValue(undefined),
+    };
+    const runner = new AutopilotRunner({ orchestrator, confirmationWorker, sleep: async () => undefined });
+
+    await runner.runLoop({ maxCycles: 1 });
+
+    expect(confirmationWorker.start).toHaveBeenCalledBefore(orchestrator.preview);
+    expect(confirmationWorker.stop).toHaveBeenCalledOnce();
+  });
+
   it("stops a watch loop cleanly on abort without starting another cycle", async () => {
     const orchestrator = {
       preview: vi.fn().mockResolvedValue(preview()),

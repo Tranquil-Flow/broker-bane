@@ -12,11 +12,17 @@ export interface AutopilotRetryWorker {
   processReady(options?: RetryWorkerRunOptions): Promise<RetryWorkerResult>;
 }
 
+export interface AutopilotConfirmationWorker {
+  start(): Promise<unknown>;
+  stop(): Promise<void>;
+}
+
 export type AutopilotSkippedRunReason = "daily_cap_reached" | "no_brokers_today";
 
 export interface AutopilotRunnerInit {
   orchestrator: AutopilotOrchestrator;
   retryWorker?: AutopilotRetryWorker;
+  confirmationWorker?: AutopilotConfirmationWorker;
   retryLimit?: number;
   testMode?: boolean;
   sleep?: (ms: number) => Promise<void>;
@@ -86,16 +92,20 @@ export class AutopilotRunner {
     const sleep = this.init.sleep ?? defaultSleep;
     const sleepMs = this.init.sleepMs ?? DEFAULT_SLEEP_MS;
 
-    while (!this.stopped && (options.maxCycles === undefined || results.length < options.maxCycles)) {
-      const result = await this.runCycle(options);
-      results.push(result);
-      await options.onCycle?.(result);
+    await this.init.confirmationWorker?.start();
+    try {
+      while (!this.stopped && (options.maxCycles === undefined || results.length < options.maxCycles)) {
+        const result = await this.runCycle(options);
+        results.push(result);
+        await options.onCycle?.(result);
 
-      if (this.stopped || (options.maxCycles !== undefined && results.length >= options.maxCycles)) break;
-      await sleep(sleepMs);
+        if (this.stopped || (options.maxCycles !== undefined && results.length >= options.maxCycles)) break;
+        await sleep(sleepMs);
+      }
+    } finally {
+      await this.init.confirmationWorker?.stop();
+      await this.init.orchestrator.cleanup?.();
     }
-
-    await this.init.orchestrator.cleanup?.();
     return results;
   }
 

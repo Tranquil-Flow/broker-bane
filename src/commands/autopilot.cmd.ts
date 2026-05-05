@@ -2,8 +2,13 @@ import { loadConfig } from "../config/loader.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
 import { runMigrations } from "../db/migrations.js";
 import { RetryQueueRepo } from "../db/repositories/retry-queue.repo.js";
+import { RemovalRequestRepo } from "../db/repositories/removal-request.repo.js";
+import { BrokerResponseRepo } from "../db/repositories/broker-response.repo.js";
+import { loadBrokerDatabase } from "../data/broker-loader.js";
+import { ConfirmationWorker } from "../inbox/confirmation-worker.js";
 import { AutopilotRunner, type AutopilotCycleResult } from "../pipeline/autopilot.js";
 import { Orchestrator } from "../pipeline/orchestrator.js";
+import { getBrokerIdentityId, getBrokerIdentityImap } from "../types/identity.js";
 import { reconfigureLogger } from "../util/logger.js";
 
 export interface AutopilotCommandOptions {
@@ -46,8 +51,20 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   }
 
   const orchestrator = new Orchestrator(config);
+  const workerDb = createDatabase(config.database.path);
+  runMigrations(workerDb);
+  const confirmationWorker = options.testMode
+    ? undefined
+    : new ConfirmationWorker({
+        inbox: getBrokerIdentityImap(config),
+        identityId: getBrokerIdentityId(config),
+        brokers: loadBrokerDatabase().brokers,
+        requestRepo: new RemovalRequestRepo(workerDb),
+        responseRepo: new BrokerResponseRepo(workerDb),
+      });
   const runner = new AutopilotRunner({
     orchestrator,
+    confirmationWorker,
     testMode: options.testMode ?? false,
     sleepMs: options.intervalMs ? Number(options.intervalMs) : undefined,
   });
@@ -78,6 +95,7 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   } finally {
     process.off("SIGINT", stop);
     process.off("SIGTERM", stop);
+    closeDatabase(workerDb);
   }
 }
 
