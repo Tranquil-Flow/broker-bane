@@ -16,6 +16,17 @@ Data brokers are companies like Spokeo, BeenVerified, Whitepages, Acxiom, and hu
 | Use a browser dashboard, and I'm OK opening a terminal once | **Dashboard** (Option B below) |
 | Full control, scheduling, automation | **CLI** (Option B below) |
 
+### Current surfaces
+
+| Surface | Status | Notes |
+|---------|--------|-------|
+| **CLI** | Real | Full automation path — all brokers, scheduling, inbox monitoring |
+| **Local dashboard** | Real | Served by CLI on localhost; same data as CLI |
+| **PWA** | Real | Browser-installable (Chrome/Edge); safest for guided first testing |
+| **Native desktop app** | Not built yet | Not available |
+
+> **Mailbox creation is user-assisted.** BrokerBane asks for your real email so it can demand removal of records brokers collected about you. It also asks for a separate removal mailbox so broker confirmations and stalling replies stay out of your main inbox. Consumer mailbox signup (Gmail, Outlook, etc.) often requires CAPTCHA, phone verification, or other human verification, so BrokerBane guides you but cannot create the mailbox for you.
+
 ---
 
 ## Step 1: Install Node.js (required for all options)
@@ -87,7 +98,7 @@ The PWA is a browser app that runs entirely on your computer. After the one-time
    npm run preview
    ```
 6. Open your browser and go to: **http://localhost:4173**
-7. The setup wizard will appear — enter your profile details, plus a **broker-facing removal mailbox**. A dedicated mailbox or alias is strongly recommended; your daily personal inbox should be a fallback only.
+7. The setup wizard will appear — enter your profile identifiers (real emails/addresses brokers may have collected) plus a **broker-facing removal mailbox**. The real emails identify records we are demanding they remove; the removal mailbox keeps broker traffic out of your daily inbox.
 8. Connect Gmail/Outlook only if OAuth client IDs are configured. Otherwise choose **Use my own email client (mailto: links)** for local testing.
 9. Click the daily batch button, review the confirmation, then open/send today’s small privacy-safe batch. The PWA defaults to 10/day and clamps to 25/day so it will not blast every broker at once.
 
@@ -140,7 +151,7 @@ Then visit http://localhost:4173 in your browser.
 
 ### First run
 
-6. Run the setup wizard — it will ask for your profile details and a broker-facing removal mailbox. Use a dedicated mailbox or alias if possible; brokers should not see your daily personal mailbox unless you explicitly choose legacy/same-mailbox mode:
+6. Run the setup wizard — it will ask for profile identifiers brokers may have collected and a separate broker-facing removal mailbox. BrokerBane uses the profile email to identify records for deletion, then sends and monitors from the removal mailbox so your normal inbox stays clean:
    ```
    brokerbane init
    ```
@@ -148,6 +159,19 @@ Then visit http://localhost:4173 in your browser.
    ```
    brokerbane test-config
    ```
+
+### Safe first test
+
+Before scaling up, test with a small targeted run:
+
+1. **Use a dedicated removal mailbox** — do not use your daily personal inbox as the primary broker-facing address
+2. **Run `test-config`** to verify your email credentials and settings are working
+3. **Run a targeted dry-run** against 2–3 brokers only:
+   ```
+   brokerbane remove --dry-run --brokers spokeo,beenverified
+   ```
+4. **Send 1–2 real requests first** to those same brokers (remove `--dry-run`), then check your mailbox for any confirmations
+5. **Inspect the replies** — if confirmations arrive cleanly, you are ready to scale to the full daily batch
 
 ### Using the Dashboard (browser UI)
 
@@ -487,13 +511,15 @@ brokerbane import-backup <the exported file>
 
 Some brokers only accept removals through a web form (not email). BrokerBane can fill out those forms automatically using AI-powered browser automation. This is optional — without it, those brokers are listed as manual tasks in `brokerbane confirm`.
 
+**Requirements:** web-form automation requires configured browser/LLM credentials (OpenAI, Anthropic, or a local Ollama model). Without valid credentials, BrokerBane queues those brokers as manual tasks instead. CAPTCHA-heavy forms (common on free signup flows) may still require manual intervention even with automation enabled.
+
 To enable it, install the extra packages:
 ```
 npm install @browserbasehq/stagehand playwright
 npx playwright install chromium
 ```
 
-Then run `brokerbane settings edit` and add your AI provider details (OpenAI, Anthropic, or a local Ollama model). Using a local model means no data leaves your computer.
+Then run `brokerbane settings edit` and add your AI provider details. Using a local model (Ollama) means no data leaves your computer.
 
 ---
 

@@ -22,8 +22,9 @@ export function renderStep1Profile(errors?: Record<string, string>): string {
   const e = errors ?? {};
   return `${renderProgress(1)}
 <div class="wizard-body">
-  <h3>Personal Information</h3>
-  <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:1rem;">This information is included in your opt-out requests to data brokers. For best privacy, use a separate removal mailbox here instead of your everyday personal inbox.</p>
+  <h3>Privacy Profile</h3>
+  <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:0.5rem;">BrokerBane helps you assert your privacy rights by demanding removal of personal data held by data brokers.</p>
+  <p style="color:var(--text-dim);font-size:0.7rem;margin-bottom:1rem;">Your real email is used as an identifier in removal demands so brokers can locate records they collected about you. It is not used as your sending inbox; a dedicated removal mailbox keeps broker replies out of your everyday email.</p>
   <form hx-post="/api/setup/profile" hx-target="#wizard-container" hx-swap="innerHTML">
     <div class="wizard-row">
       <div class="wizard-field">
@@ -38,10 +39,16 @@ export function renderStep1Profile(errors?: Record<string, string>): string {
       </div>
     </div>
     <div class="wizard-field">
-      <label for="email">Removal mailbox email *</label>
+      <label for="email">Known/profile email *</label>
       <input type="email" id="email" name="email" required>
       ${e.email ? `<div class="field-error">${escapeHtml(e.email)}</div>` : ""}
-      <div class="field-hint">Brokers will see this address. A dedicated removal mailbox is recommended.</div>
+      <div class="field-hint">Used as an identifier in removal demands. Brokers may have collected this address; BrokerBane demands removal of matching records.</div>
+    </div>
+    <div class="wizard-field">
+      <label for="removal_email">Removal mailbox email *</label>
+      <input type="email" id="removal_email" name="removal_email" required>
+      ${e.removal_email ? `<div class="field-error">${escapeHtml(e.removal_email)}</div>` : ""}
+      <div class="field-hint">BrokerBane sends from this dedicated mailbox or alias, so confirmations and delay tactics stay out of your main inbox.</div>
     </div>
     <div class="wizard-field">
       <label for="country">Country *</label>

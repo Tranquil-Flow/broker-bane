@@ -5,6 +5,88 @@ import { resolveConfigPath } from "../config/loader.js";
 import { detectProvider } from "../providers/registry.js";
 import type { ProviderConfig } from "../providers/types.js";
 
+export interface InitConfigInput {
+  coreProfile: Record<string, string>;
+  removalMailbox: string;
+  extraProfile: Record<string, string>;
+  provider: ProviderConfig | null;
+  smtpHost: string;
+  smtpPort: number;
+  smtpAuthConfig: Record<string, unknown>;
+  emailAlias?: string;
+  imapConfig?: Record<string, unknown>;
+  template: string;
+  dailyLimit: number;
+}
+
+export function buildInitConfig(input: InitConfigInput): Record<string, unknown> {
+  const brokerFacingEmail = input.emailAlias ?? input.removalMailbox;
+  const sameMailbox = brokerFacingEmail.trim().toLowerCase() === input.coreProfile.email.trim().toLowerCase();
+  const aliasMode = input.emailAlias?.split("@")[0]?.includes("+") ? "plus_alias" : "masked_alias";
+  const mode = input.emailAlias ? aliasMode : sameMailbox ? "same_mailbox" : "dedicated_mailbox";
+  const privacyLevel = input.emailAlias ? "balanced" : sameMailbox ? "legacy" : "maximum";
+
+  const smtp = {
+    host: input.smtpHost,
+    port: input.smtpPort,
+    secure: false,
+    auth: input.smtpAuthConfig,
+    ...(input.provider && { provider: input.provider.key }),
+    ...(input.emailAlias && { alias: input.emailAlias }),
+    pool: true,
+    rate_limit: 5,
+    rate_delta_ms: 60_000,
+  };
+
+  const config = {
+    profile: {
+      first_name: input.coreProfile.first_name,
+      last_name: input.coreProfile.last_name,
+      email: input.coreProfile.email,
+      ...(input.extraProfile.address && { address: input.extraProfile.address }),
+      ...(input.extraProfile.city && { city: input.extraProfile.city }),
+      ...(input.extraProfile.state && { state: input.extraProfile.state }),
+      ...(input.extraProfile.zip && { zip: input.extraProfile.zip }),
+      country: input.coreProfile.country,
+      ...(input.extraProfile.phone && { phone: input.extraProfile.phone }),
+      ...(input.extraProfile.date_of_birth && { date_of_birth: input.extraProfile.date_of_birth }),
+      aliases: [],
+    },
+    email: smtp,
+    broker_identity: {
+      id: "default",
+      label: "Broker-facing identity",
+      mode,
+      email: brokerFacingEmail,
+      ...(input.provider && { provider: input.provider.key }),
+      privacy_level: privacyLevel,
+      smtp,
+    },
+    options: {
+      template: input.template,
+      dry_run: false,
+      regions: ["us"],
+      excluded_brokers: [] as string[],
+      tiers: [1, 2, 3],
+      daily_limit: input.dailyLimit,
+      verify_before_send: false,
+    },
+    // Preserve legacy top-level inbox for backward-compatible commands while
+    // also namespacing the same monitor under the broker-facing identity.
+    ...(input.imapConfig && { inbox: input.imapConfig }),
+    logging: {
+      level: "info",
+      redact_pii: true,
+    },
+  };
+
+  if (input.imapConfig) {
+    (config.broker_identity as { inbox?: Record<string, unknown> }).inbox = input.imapConfig;
+  }
+
+  return config;
+}
+
 export async function initCommand(): Promise<void> {
   const inquirer = await import("inquirer");
   const prompt = inquirer.default.prompt ?? inquirer.default;
@@ -17,8 +99,8 @@ export async function initCommand(): Promise<void> {
 
   // ── Step 1: PROFILE ──────────────────────────────────────────────────────
   console.log("── Step 1: Your profile ────────────────────────────");
-  console.log("This is the information included in your opt-out requests.");
-  console.log("Recommended: enter a dedicated removal mailbox here, not your everyday personal inbox.\n");
+  console.log("This is the information brokers may use to find your records.");
+  console.log("Your broker-facing removal mailbox is collected separately next.\n");
 
   const coreProfile = await prompt([
     {
@@ -36,7 +118,7 @@ export async function initCommand(): Promise<void> {
     {
       type: "input",
       name: "email",
-      message: "Removal mailbox email address:",
+      message: "Known/profile email brokers may use to find records:",
       validate: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Enter a valid email address",
     },
     {
@@ -48,8 +130,22 @@ export async function initCommand(): Promise<void> {
     },
   ]);
 
-  // ── Step 2: PROVIDER DETECTION ───────────────────────────────────────────
-  const provider: ProviderConfig | null = detectProvider(coreProfile.email);
+  // ── Step 2: REMOVAL MAILBOX + PROVIDER DETECTION ────────────────────────
+  console.log("\n── Step 2: Broker-facing removal mailbox ───────────");
+  console.log("Brokers will see this address and send confirmations here.");
+  console.log("Use a dedicated removal mailbox or alias when possible; same-mailbox mode is a legacy fallback.\n");
+
+  const { removalMailbox } = await prompt([
+    {
+      type: "input",
+      name: "removalMailbox",
+      message: "Broker-facing removal mailbox:",
+      default: coreProfile.email,
+      validate: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Enter a valid email address",
+    },
+  ]);
+
+  const provider: ProviderConfig | null = detectProvider(removalMailbox);
   if (provider) {
     console.log(`\n  ✓ Detected: ${provider.name}\n`);
   } else {
@@ -122,7 +218,7 @@ export async function initCommand(): Promise<void> {
               await runMicrosoftOAuthFlow();
             }
             oauthProvider = provider.oauthProvider;
-            smtpAuthConfig = { type: "oauth2", user: coreProfile.email, provider: oauthProvider };
+            smtpAuthConfig = { type: "oauth2", user: removalMailbox, provider: oauthProvider };
             usedOAuth = true;
             oauthSuccess = true;
             console.log(`\n  ✓ Connected via OAuth.\n`);
@@ -142,7 +238,7 @@ export async function initCommand(): Promise<void> {
 
       // Fall through to app password if OAuth wasn't selected or failed
       if (!usedOAuth) {
-        smtpAuthConfig = await collectAppPassword(prompt, provider, coreProfile.email);
+        smtpAuthConfig = await collectAppPassword(prompt, provider, removalMailbox);
         passwordValue = (smtpAuthConfig as { pass?: string }).pass as string | undefined;
       }
     } else if (provider.authMethods.includes("bridge_password")) {
@@ -154,10 +250,10 @@ export async function initCommand(): Promise<void> {
         { type: "password", name: "bridgePass", message: "Bridge password:", mask: "*" },
       ]);
       passwordValue = bridgePass.replace(/\s/g, "");
-      smtpAuthConfig = { type: "password", user: coreProfile.email, pass: passwordValue };
+      smtpAuthConfig = { type: "password", user: removalMailbox, pass: passwordValue };
     } else {
       // App password only (Yahoo, iCloud, etc.)
-      smtpAuthConfig = await collectAppPassword(prompt, provider, coreProfile.email);
+      smtpAuthConfig = await collectAppPassword(prompt, provider, removalMailbox);
       passwordValue = (smtpAuthConfig as { pass?: string }).pass as string | undefined;
     }
   } else {
@@ -178,7 +274,7 @@ export async function initCommand(): Promise<void> {
   let emailAlias: string | undefined;
 
   if (provider?.generateAlias) {
-    const generatedAlias = provider.generateAlias(coreProfile.email);
+    const generatedAlias = provider.generateAlias(removalMailbox);
     console.log("── Step 4: Alias options ───────────────────────────");
     console.log("Optional: add an alias on top of your removal mailbox:");
     console.log(`  ${generatedAlias}`);
@@ -191,7 +287,7 @@ export async function initCommand(): Promise<void> {
         message: "Send from:",
         choices: [
           { name: `${generatedAlias} (recommended)`, value: "alias" },
-          { name: coreProfile.email, value: "real" },
+          { name: removalMailbox, value: "real" },
           { name: "Custom alias", value: "custom" },
         ],
       },
@@ -235,13 +331,13 @@ export async function initCommand(): Promise<void> {
       console.log("  No extra setup needed — we'll use your existing sign-in.\n");
       imapHost = provider.imap.host;
       imapPort = provider.imap.port;
-      imapAuth = { type: "oauth2", user: coreProfile.email, provider: oauthProvider };
+      imapAuth = { type: "oauth2", user: removalMailbox, provider: oauthProvider };
     } else if (provider) {
       // Known provider with password auth — reuse credentials
       console.log("  We'll use the same credentials for inbox monitoring.\n");
       imapHost = provider.imap.host;
       imapPort = provider.imap.port;
-      const authUser = typeof smtpAuthConfig!.user === "string" ? (smtpAuthConfig!.user as string) : coreProfile.email;
+      const authUser = typeof smtpAuthConfig!.user === "string" ? (smtpAuthConfig!.user as string) : removalMailbox;
       imapAuth = { type: "password", user: authUser, pass: passwordValue ?? "" };
     } else {
       // Custom provider — ask for IMAP details
@@ -393,69 +489,19 @@ export async function initCommand(): Promise<void> {
   const dailyLimit = Number.parseInt(dailyLimitRaw, 10);
 
   // ── Step 8: DONE ─────────────────────────────────────────────────────────
-  const config = {
-    profile: {
-      first_name: coreProfile.first_name,
-      last_name: coreProfile.last_name,
-      email: coreProfile.email,
-      ...(extraProfile.address && { address: extraProfile.address }),
-      ...(extraProfile.city && { city: extraProfile.city }),
-      ...(extraProfile.state && { state: extraProfile.state }),
-      ...(extraProfile.zip && { zip: extraProfile.zip }),
-      country: coreProfile.country,
-      ...(extraProfile.phone && { phone: extraProfile.phone }),
-      ...(extraProfile.date_of_birth && { date_of_birth: extraProfile.date_of_birth }),
-      aliases: [],
-    },
-    email: {
-      host: smtpHost!,
-      port: smtpPort!,
-      secure: false,
-      auth: smtpAuthConfig!,
-      ...(provider && { provider: provider.key }),
-      ...(emailAlias && { alias: emailAlias }),
-      pool: true,
-      rate_limit: 5,
-      rate_delta_ms: 60_000,
-    },
-    broker_identity: {
-      id: "default",
-      label: "Broker-facing identity",
-      mode: emailAlias ? "plus_alias" : "same_mailbox",
-      email: emailAlias ?? coreProfile.email,
-      ...(provider && { provider: provider.key }),
-      privacy_level: emailAlias ? "balanced" : "legacy",
-      smtp: {
-        host: smtpHost!,
-        port: smtpPort!,
-        secure: false,
-        auth: smtpAuthConfig!,
-        ...(provider && { provider: provider.key }),
-        ...(emailAlias && { alias: emailAlias }),
-        pool: true,
-        rate_limit: 5,
-        rate_delta_ms: 60_000,
-      },
-    },
-    options: {
-      template,
-      dry_run: false,
-      regions: ["us"],
-      excluded_brokers: [] as string[],
-      tiers: [1, 2, 3],
-      daily_limit: dailyLimit,
-      verify_before_send: false,
-    },
-    ...(imapConfig && { inbox: imapConfig }),
-    logging: {
-      level: "info",
-      redact_pii: true,
-    },
-  };
-
-  if (imapConfig) {
-    (config.broker_identity as { inbox?: Record<string, unknown> }).inbox = imapConfig as Record<string, unknown>;
-  }
+  const config = buildInitConfig({
+    coreProfile,
+    removalMailbox,
+    extraProfile,
+    provider,
+    smtpHost: smtpHost!,
+    smtpPort: smtpPort!,
+    smtpAuthConfig: smtpAuthConfig!,
+    emailAlias,
+    imapConfig,
+    template,
+    dailyLimit,
+  });
 
   const configPath = resolveConfigPath();
   mkdirSync(dirname(configPath), { recursive: true });

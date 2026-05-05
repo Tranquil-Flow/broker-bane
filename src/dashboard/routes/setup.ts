@@ -6,6 +6,7 @@ import yaml from "js-yaml";
 import type { AppConfig } from "../../types/config.js";
 import { resolveConfigPath } from "../../config/loader.js";
 import { detectProvider } from "../../providers/registry.js";
+import { buildInitConfig } from "../../commands/init.cmd.js";
 import type { ProviderConfig } from "../../providers/types.js";
 import { layout } from "../views/layout.js";
 import {
@@ -23,6 +24,7 @@ interface WizardProfile {
   first_name: string;
   last_name: string;
   email: string;
+  removal_email: string;
   country: string;
   address?: string;
   city?: string;
@@ -90,24 +92,27 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     const firstName = str(body["first_name"]);
     const lastName = str(body["last_name"]);
     const email = str(body["email"]);
+    const removalEmail = str(body["removal_email"]);
     const country = str(body["country"]) || "US";
 
     // Validation
     const errors: Record<string, string> = {};
     if (!firstName) errors.first_name = "Required";
     if (!lastName) errors.last_name = "Required";
-    if (!email || !email.includes("@")) errors.email = "Valid email required";
+    if (!email || !email.includes("@")) errors.email = "Valid profile email required";
+    if (!removalEmail || !removalEmail.includes("@")) errors.removal_email = "Valid removal mailbox required";
 
     if (Object.keys(errors).length > 0) {
       return c.html(renderStep1Profile(errors));
     }
 
-    const provider = detectProvider(email);
+    const provider = detectProvider(removalEmail);
 
     wizardState.profile = {
       first_name: firstName,
       last_name: lastName,
       email,
+      removal_email: removalEmail,
       country,
       address: str(body["address"]) || undefined,
       city: str(body["city"]) || undefined,
@@ -124,14 +129,14 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
       wizardState.smtpPort = provider.smtp.port;
     }
 
-    return c.html(renderStep2Connect(provider, email, oauthAvailable(provider)));
+    return c.html(renderStep2Connect(provider, removalEmail, oauthAvailable(provider)));
   });
 
   // GET /api/setup/oauth-start — redirect to Google/Microsoft OAuth
   app.get("/api/setup/oauth-start", async (c) => {
     const provider = wizardState.provider;
     if (!provider?.oauthProvider) {
-      return c.html(renderStep2Connect(provider ?? null, wizardState.profile?.email ?? "", false, "OAuth not available for this provider."));
+      return c.html(renderStep2Connect(provider ?? null, wizardState.profile?.removal_email ?? "", false, "OAuth not available for this provider."));
     }
 
     try {
@@ -148,7 +153,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     } catch (err) {
       const msg = err instanceof Error ? err.message : "OAuth flow failed";
       return c.html(layout("Setup", "SETUP",
-        `<div class="panel"><div id="wizard-container">${renderStep2Connect(provider, wizardState.profile?.email ?? "", false, msg)}</div></div>`
+        `<div class="panel"><div id="wizard-container">${renderStep2Connect(provider, wizardState.profile?.removal_email ?? "", false, msg)}</div></div>`
       ));
     }
   });
@@ -158,7 +163,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     const code = c.req.query("code");
     const error = c.req.query("error");
     const provider = wizardState.provider;
-    const email = wizardState.profile?.email ?? "";
+    const email = wizardState.profile?.removal_email ?? "";
 
     if (error || !code) {
       const msg = error ?? "No authorization code received.";
@@ -193,7 +198,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
   // POST /api/setup/auth — handle app password submission, return step 3
   app.post("/api/setup/auth", async (c) => {
     const body = await c.req.parseBody();
-    const email = wizardState.profile?.email ?? "";
+    const email = wizardState.profile?.removal_email ?? "";
     const provider = wizardState.provider;
     // Strip spaces from app passwords for known providers (Google/Apple format with spaces)
     const rawPassword = str(body["app_password"]);
@@ -228,7 +233,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
   app.post("/api/setup/options", async (c) => {
     const body = await c.req.parseBody();
     const provider = wizardState.provider;
-    const email = wizardState.profile?.email ?? "";
+    const email = wizardState.profile?.removal_email ?? "";
 
     // Alias
     const aliasChoice = str(body["alias_choice"]);
@@ -341,63 +346,30 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     const profile = wizardState.profile;
     const provider = wizardState.provider;
 
-    const config: Record<string, unknown> = {
-      profile: {
+    const config = buildInitConfig({
+      coreProfile: {
         first_name: profile.first_name,
         last_name: profile.last_name,
         email: profile.email,
         country: profile.country,
+      },
+      removalMailbox: profile.removal_email,
+      extraProfile: {
         ...(profile.address && { address: profile.address }),
         ...(profile.city && { city: profile.city }),
         ...(profile.state && { state: profile.state }),
         ...(profile.zip && { zip: profile.zip }),
         ...(profile.phone && { phone: profile.phone }),
         ...(profile.date_of_birth && { date_of_birth: profile.date_of_birth }),
-        aliases: [],
       },
-      email: {
-        host: wizardState.smtpHost,
-        port: wizardState.smtpPort,
-        secure: false,
-        auth: wizardState.smtpAuth,
-        ...(provider && { provider: provider.key }),
-        ...(wizardState.alias && { alias: wizardState.alias }),
-        pool: true,
-        rate_limit: 5,
-        rate_delta_ms: 60000,
-      },
-      broker_identity: {
-        id: "default",
-        label: "Broker-facing identity",
-        mode: wizardState.alias ? "plus_alias" : "same_mailbox",
-        email: wizardState.alias ?? profile.email,
-        ...(provider && { provider: provider.key }),
-        privacy_level: wizardState.alias ? "balanced" : "legacy",
-        smtp: {
-          host: wizardState.smtpHost,
-          port: wizardState.smtpPort,
-          secure: false,
-          auth: wizardState.smtpAuth,
-          ...(provider && { provider: provider.key }),
-          ...(wizardState.alias && { alias: wizardState.alias }),
-          pool: true,
-          rate_limit: 5,
-          rate_delta_ms: 60000,
-        },
-      },
-      options: {
-        template: wizardState.template ?? "generic",
-        dry_run: false,
-        regions: ["us"],
-        excluded_brokers: [],
-        tiers: [1, 2, 3],
-        verify_before_send: false,
-      },
-      logging: {
-        level: "info",
-        redact_pii: true,
-      },
-    };
+      provider: provider ?? null,
+      smtpHost: wizardState.smtpHost,
+      smtpPort: wizardState.smtpPort ?? 587,
+      smtpAuthConfig: wizardState.smtpAuth,
+      emailAlias: wizardState.alias,
+      template: wizardState.template ?? "generic",
+      dailyLimit: 10,
+    });
 
     if (wizardState.enableImap && wizardState.imapHost) {
       config.inbox = {
@@ -415,7 +387,7 @@ export function registerSetupRoutes(app: Hono, _db: Database, _config?: AppConfi
     mkdirSync(dirname(configPath), { recursive: true });
     writeFileSync(configPath, yaml.dump(config, { lineWidth: -1 }), { mode: 0o600 });
 
-    const sendingAddress = wizardState.alias ?? profile.email;
+    const sendingAddress = wizardState.alias ?? profile.removal_email;
     const imapMethod = wizardState.usedOAuth ? "OAuth" : "password";
 
     const result = renderStep5Done(

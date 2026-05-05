@@ -25,6 +25,15 @@ describe('OnboardingWizard', () => {
     provider = null
   })
 
+  it('explains why known emails are identifiers and the removal inbox is separate', async () => {
+    render(<OnboardingWizard onComplete={vi.fn()} />)
+
+    expect(screen.getByText(/assert your right to privacy/i)).toBeTruthy()
+    expect(screen.getByText(/demanding removal of personal data/i)).toBeTruthy()
+    expect(screen.getByText(/used as identifiers in removal demands/i)).toBeTruthy()
+    expect(screen.getByText(/not used as your sending inbox/i)).toBeTruthy()
+  })
+
   it('saves a dedicated broker-facing mailbox and clamps unsafe daily limits', async () => {
     render(<OnboardingWizard onComplete={vi.fn()} />)
 

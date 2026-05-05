@@ -5,6 +5,8 @@ import { tmpdir } from "node:os";
 import yaml from "js-yaml";
 import { loadConfig, checkConfigPermissions } from "../../src/config/loader.js";
 import { AppConfigSchema } from "../../src/types/config.js";
+import { buildInitConfig } from "../../src/commands/init.cmd.js";
+import { detectProvider } from "../../src/providers/registry.js";
 
 function makeMinimalConfig(): Record<string, unknown> {
   return {
@@ -151,6 +153,113 @@ describe("Config loader", () => {
   });
 
   describe("init config output format", () => {
+    it("builds init config with profile email separate from dedicated broker-facing mailbox", () => {
+      const cfg = buildInitConfig({
+        coreProfile: {
+          first_name: "Alice",
+          last_name: "Smith",
+          email: "alice.personal@example.com",
+          country: "US",
+        },
+        removalMailbox: "alice-removals@gmail.com",
+        extraProfile: { city: "Portland", state: "OR" },
+        provider: detectProvider("alice-removals@gmail.com"),
+        smtpHost: "smtp.gmail.com",
+        smtpPort: 587,
+        smtpAuthConfig: { type: "password", user: "alice-removals@gmail.com", pass: "test-app-pass" },
+        template: "ccpa",
+        dailyLimit: 10,
+      });
+
+      const parsed = AppConfigSchema.parse(cfg);
+      expect(parsed.profile.email).toBe("alice.personal@example.com");
+      expect(parsed.email.auth.user).toBe("alice-removals@gmail.com");
+      expect(parsed.broker_identity!.email).toBe("alice-removals@gmail.com");
+      expect(parsed.broker_identity!.mode).toBe("dedicated_mailbox");
+      expect(parsed.broker_identity!.privacy_level).toBe("maximum");
+      expect(parsed.broker_identity!.smtp.auth.user).toBe("alice-removals@gmail.com");
+    });
+
+    it("builds init config with plus alias as balanced broker-facing identity", () => {
+      const cfg = buildInitConfig({
+        coreProfile: {
+          first_name: "Alice",
+          last_name: "Smith",
+          email: "alice.personal@example.com",
+          country: "US",
+        },
+        removalMailbox: "alice-removals@gmail.com",
+        emailAlias: "alice-removals+brokerbane@gmail.com",
+        extraProfile: {},
+        provider: detectProvider("alice-removals@gmail.com"),
+        smtpHost: "smtp.gmail.com",
+        smtpPort: 587,
+        smtpAuthConfig: { type: "password", user: "alice-removals@gmail.com", pass: "test-app-pass" },
+        template: "ccpa",
+        dailyLimit: 10,
+      });
+
+      const parsed = AppConfigSchema.parse(cfg);
+      expect(parsed.profile.email).toBe("alice.personal@example.com");
+      expect(parsed.email.auth.user).toBe("alice-removals@gmail.com");
+      expect(parsed.broker_identity!.email).toBe("alice-removals+brokerbane@gmail.com");
+      expect(parsed.broker_identity!.mode).toBe("plus_alias");
+      expect(parsed.broker_identity!.privacy_level).toBe("balanced");
+      expect(parsed.broker_identity!.smtp.alias).toBe("alice-removals+brokerbane@gmail.com");
+      expect(parsed.broker_identity!.smtp.auth.user).toBe("alice-removals@gmail.com");
+    });
+
+    it("builds init config with non-plus alias as masked broker-facing identity", () => {
+      const cfg = buildInitConfig({
+        coreProfile: {
+          first_name: "Alice",
+          last_name: "Smith",
+          email: "alice.personal@example.com",
+          country: "US",
+        },
+        removalMailbox: "alice-removals@gmail.com",
+        emailAlias: "opaque-mask@example.net",
+        extraProfile: {},
+        provider: detectProvider("alice-removals@gmail.com"),
+        smtpHost: "smtp.gmail.com",
+        smtpPort: 587,
+        smtpAuthConfig: { type: "password", user: "alice-removals@gmail.com", pass: "test-app-pass" },
+        template: "ccpa",
+        dailyLimit: 10,
+      });
+
+      const parsed = AppConfigSchema.parse(cfg);
+      expect(parsed.broker_identity!.email).toBe("opaque-mask@example.net");
+      expect(parsed.broker_identity!.mode).toBe("masked_alias");
+      expect(parsed.broker_identity!.privacy_level).toBe("balanced");
+      expect(parsed.broker_identity!.smtp.auth.user).toBe("alice-removals@gmail.com");
+    });
+
+    it("builds init config as legacy only when the broker-facing mailbox matches the profile email", () => {
+      const cfg = buildInitConfig({
+        coreProfile: {
+          first_name: "Alice",
+          last_name: "Smith",
+          email: "alice@gmail.com",
+          country: "US",
+        },
+        removalMailbox: "alice@gmail.com",
+        extraProfile: {},
+        provider: detectProvider("alice@gmail.com"),
+        smtpHost: "smtp.gmail.com",
+        smtpPort: 587,
+        smtpAuthConfig: { type: "password", user: "alice@gmail.com", pass: "test-app-pass" },
+        template: "ccpa",
+        dailyLimit: 10,
+      });
+
+      const parsed = AppConfigSchema.parse(cfg);
+      expect(parsed.profile.email).toBe("alice@gmail.com");
+      expect(parsed.broker_identity!.email).toBe("alice@gmail.com");
+      expect(parsed.broker_identity!.mode).toBe("same_mailbox");
+      expect(parsed.broker_identity!.privacy_level).toBe("legacy");
+    });
+
     it("written config is parseable and validates correctly", () => {
       const initConfig = {
         profile: {

@@ -134,10 +134,18 @@ export default function OnboardingWizard({ onComplete }: Props) {
       <div className="w-full max-w-lg p-8 space-y-6">
         <div>
           <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">Step 1 of 3</div>
-          <h2 className="text-xl font-bold">Your Profile</h2>
+          <h2 className="text-xl font-bold">Your Privacy Profile</h2>
           <p className="text-slate-400 text-sm mt-1">
-            Used to identify your records at data brokers. Encrypted on your device — never uploaded to BrokerBane servers.
+            BrokerBane helps you assert your right to privacy by demanding removal of personal data held by data brokers.
           </p>
+          <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/70 p-3 space-y-2 text-xs text-slate-400">
+            <p>
+              Your real emails, addresses, and phone numbers are used as identifiers in removal demands so brokers can locate the records they collected about you.
+            </p>
+            <p>
+              They are not used as your sending inbox. A dedicated removal inbox keeps broker confirmations, replies, and delay tactics out of your everyday email.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-4">
