@@ -10,6 +10,7 @@ const load = vi.fn(async (key: string) => {
   if (key === 'removal-policy') return storedPolicy
   if (key === 'autopilot-paused') return storedPaused
   if (key === 'pending-manual-batch') return storedPendingManualBatch
+  if (key === 'smoke-test-mode') return storedSmokeTestMode
   return null
 })
 let storedStatuses: Record<string, BrokerStatus> | null = null
@@ -17,6 +18,7 @@ let storedIdentity: { mode: 'dedicated_mailbox' | 'same_mailbox'; email: string;
 let storedPolicy: { dailyLimit: number; delayMs: number } | null = null
 let storedPaused: boolean | null = null
 let storedPendingManualBatch: string[] | null = null
+let storedSmokeTestMode: boolean | null = null
 let provider: { type: 'mailto' | 'gmail' | 'outlook'; accessToken?: string } | null = { type: 'mailto' }
 const openMailto = vi.fn()
 const sendEmail = vi.fn(() => Promise.resolve())
@@ -65,6 +67,38 @@ describe('Dashboard safety controls', () => {
     storedPolicy = { dailyLimit: 10, delayMs: 0 }
     storedPaused = null
     storedPendingManualBatch = null
+    storedSmokeTestMode = null
+  })
+
+  it('blocks all send and draft actions while smoke-test mode is active', async () => {
+    storedSmokeTestMode = true
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Jane Testington'], emails: ['jane.testington@example.com'], addresses: ['123 Test Street'] }} />)
+    })
+
+    expect(await screen.findByText(/Smoke-test mode/)).toBeTruthy()
+    expect(screen.getByText(/Fake data only — no broker emails or mailto drafts will be sent/)).toBeTruthy()
+    const action = screen.getByRole('button', { name: /Exit smoke-test mode before sending/ }) as HTMLButtonElement
+    expect(action.disabled).toBe(true)
+    fireEvent.click(action)
+
+    expect(openMailto).not.toHaveBeenCalled()
+    expect(sendEmail).not.toHaveBeenCalled()
+  })
+
+  it('can exit smoke-test mode without sending', async () => {
+    storedSmokeTestMode = true
+
+    await act(async () => {
+      render(<Dashboard profile={{ names: ['Jane Testington'], emails: ['jane.testington@example.com'], addresses: ['123 Test Street'] }} />)
+    })
+
+    fireEvent.click(await screen.findByRole('button', { name: /^Exit smoke-test mode$/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('smoke-test-mode', false))
+    expect(await screen.findByRole('button', { name: /Open 2 drafts? for today/ })).toBeTruthy()
+    expect(openMailto).not.toHaveBeenCalled()
   })
 
   it('opens mailto drafts only after confirmation and waits for the user to mark them sent', async () => {

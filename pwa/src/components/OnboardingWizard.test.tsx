@@ -34,6 +34,40 @@ describe('OnboardingWizard', () => {
     expect(screen.getByText(/not used as your sending inbox/i)).toBeTruthy()
   })
 
+  it('shows a real-testing checklist before email connection', async () => {
+    render(<OnboardingWizard onComplete={vi.fn()} />)
+
+    expect(screen.getByText(/Safe real testing checklist/i)).toBeTruthy()
+    expect(screen.getByText(/Use a dedicated removal mailbox/i)).toBeTruthy()
+    expect(screen.getByText(/Start with 10\/day or less/i)).toBeTruthy()
+    expect(screen.getByText(/Use mailto drafts first/i)).toBeTruthy()
+    expect(screen.getByText(/Broker replies may require manual confirmation/i)).toBeTruthy()
+    expect(screen.getByText(/Web forms remain manual in the PWA/i)).toBeTruthy()
+  })
+
+  it('saves a fake smoke-test profile without requiring real identifiers or email connection', async () => {
+    const onComplete = vi.fn()
+    render(<OnboardingWizard onComplete={onComplete} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Use fake smoke-test profile/ }))
+
+    await waitFor(() => expect(save).toHaveBeenCalledWith('smoke-test-mode', true))
+    expect(save).toHaveBeenCalledWith('profile', {
+      names: ['Jane Testington'],
+      emails: ['jane.testington@example.com'],
+      addresses: ['123 Test Street, Springfield, IL 62704'],
+      phone: '555-0100',
+    })
+    expect(save).toHaveBeenCalledWith('broker-identity', {
+      mode: 'dedicated_mailbox',
+      email: 'brokerbane-smoke@example.com',
+      label: 'Fake smoke-test removal mailbox',
+    })
+    expect(save).toHaveBeenCalledWith('removal-policy', { dailyLimit: 1, delayMs: 0 })
+    expect(save).toHaveBeenCalledWith('email-provider', { type: 'mailto' })
+    expect(onComplete).toHaveBeenCalledWith(expect.objectContaining({ names: ['Jane Testington'] }))
+  })
+
   it('saves a dedicated broker-facing mailbox and clamps unsafe daily limits', async () => {
     render(<OnboardingWizard onComplete={vi.fn()} />)
 

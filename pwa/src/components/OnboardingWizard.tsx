@@ -87,6 +87,37 @@ export default function OnboardingWizard({ onComplete }: Props) {
     }
   }
 
+  async function handleUseSmokeTestProfile() {
+    setProfileError('')
+    setSaving(true)
+    const fakeProfile: UserProfile = {
+      names: ['Jane Testington'],
+      emails: ['jane.testington@example.com'],
+      addresses: ['123 Test Street, Springfield, IL 62704'],
+      phone: '555-0100',
+    }
+    const fakeIdentity: BrokerIdentity = {
+      mode: 'dedicated_mailbox',
+      email: 'brokerbane-smoke@example.com',
+      label: 'Fake smoke-test removal mailbox',
+    }
+    const fakePolicy: RemovalPolicy = { dailyLimit: 1, delayMs: 0 }
+    const mailtoProvider = { type: 'mailto' as const }
+    try {
+      await save('profile', fakeProfile)
+      await save('broker-identity', fakeIdentity)
+      await save('removal-policy', fakePolicy)
+      await save('email-provider', mailtoProvider)
+      await save('smoke-test-mode', true)
+      setProvider(mailtoProvider)
+      onComplete(fakeProfile)
+    } catch (e) {
+      setProfileError(e instanceof Error ? e.message : 'Failed to save smoke-test profile')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   // Keep profile ref for onComplete
   const [savedProfile, setSavedProfile] = useState<UserProfile | null>(null)
 
@@ -146,7 +177,25 @@ export default function OnboardingWizard({ onComplete }: Props) {
               They are not used as your sending inbox. A dedicated removal inbox keeps broker confirmations, replies, and delay tactics out of your everyday email.
             </p>
           </div>
+          <div className="mt-3 rounded-lg border border-emerald-800/60 bg-emerald-950/20 p-3 text-xs text-slate-300">
+            <p className="font-semibold text-emerald-200 mb-2">Safe real testing checklist</p>
+            <ul className="space-y-1 list-disc list-inside">
+              <li>Use a dedicated removal mailbox.</li>
+              <li>Start with 10/day or less.</li>
+              <li>Use mailto drafts first if OAuth is not configured.</li>
+              <li>Broker replies may require manual confirmation.</li>
+              <li>Web forms remain manual in the PWA; use the CLI/local dashboard for browser automation.</li>
+            </ul>
+          </div>
         </div>
+
+        <button
+          onClick={handleUseSmokeTestProfile}
+          disabled={saving}
+          className="w-full border border-violet-500/50 bg-violet-950/30 hover:bg-violet-900/40 text-violet-100 font-medium py-2.5 rounded-lg transition disabled:opacity-50"
+        >
+          Use fake smoke-test profile
+        </button>
 
         <div className="space-y-4">
           <Field label="Full name(s)" hint="Comma-separate aliases e.g. John Smith, Johnny Smith" value={name} onChange={setName} required />

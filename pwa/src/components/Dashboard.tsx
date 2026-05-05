@@ -34,6 +34,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   const [visibleWebformBrokerCount, setVisibleWebformBrokerCount] = useState(INITIAL_WEBFORM_BROKER_VISIBLE_COUNT)
   const [visibleConfirmationCount, setVisibleConfirmationCount] = useState(INITIAL_CONFIRMATION_VISIBLE_COUNT)
   const [runError, setRunError] = useState('')
+  const [smokeTestMode, setSmokeTestMode] = useState(false)
   const allBrokers = getAllBrokers()
   const emailBrokers = getEmailBrokers()
   const webformBrokers = getWebformBrokers()
@@ -69,6 +70,9 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
       .catch(() => {})
     load<boolean>('autopilot-paused')
       .then(p => { if (typeof p === 'boolean') setPaused(p) })
+      .catch(() => {})
+    load<boolean>('smoke-test-mode')
+      .then(enabled => { if (typeof enabled === 'boolean') setSmokeTestMode(enabled) })
       .catch(() => {})
     load<string[]>('pending-manual-batch')
       .then(batch => {
@@ -182,7 +186,7 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
   })
   const visibleConfirmationBrokers = awaitingConfirmationBrokers.slice(0, visibleConfirmationCount)
   const hiddenConfirmationCount = Math.max(0, awaitingConfirmationBrokers.length - visibleConfirmationBrokers.length)
-  const actionDisabled = running || paused || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
+  const actionDisabled = running || paused || smokeTestMode || remaining === 0 || dailyDone || hasPendingManualBatch || oauthProviderNeedsReconnect
 
   function requestStartRemovals() {
     if (!provider || actionDisabled) return
@@ -199,6 +203,11 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
     const next = !paused
     setPaused(next)
     save('autopilot-paused', next).catch(() => {})
+  }
+
+  function exitSmokeTestMode() {
+    setSmokeTestMode(false)
+    save('smoke-test-mode', false).catch(() => {})
   }
 
   function markPendingManualBatchSent() {
@@ -238,6 +247,25 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
           <h1 className="text-xl font-bold">BrokerBane</h1>
           <span className="text-sm text-slate-400 truncate ml-4">{profile.names[0]}</span>
         </div>
+
+        {smokeTestMode && (
+          <div className="rounded-xl border border-violet-500/50 bg-violet-950/40 p-4 space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="font-semibold text-violet-100">Smoke-test mode</h2>
+                <p className="text-sm text-slate-300 mt-1">
+                  Fake data only — no broker emails or mailto drafts will be sent.
+                </p>
+              </div>
+              <button
+                onClick={exitSmokeTestMode}
+                className="shrink-0 text-xs text-violet-200 hover:text-white underline"
+              >
+                Exit smoke-test mode
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
@@ -318,6 +346,8 @@ export default function Dashboard({ profile }: { profile: UserProfile }) {
               ? provider.type === 'mailto' ? 'Opening today’s draft batch…' : 'Sending today’s removal batch…'
               : oauthProviderNeedsReconnect
               ? 'Reconnect email provider to continue'
+              : smokeTestMode
+              ? 'Exit smoke-test mode before sending'
               : remaining === 0
               ? '✓ All email requests handled'
               : hasPendingManualBatch
