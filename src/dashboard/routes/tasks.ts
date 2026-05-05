@@ -4,19 +4,22 @@ import { layout } from "../views/layout.js";
 import { taskCard } from "../views/components.js";
 import { PendingTaskRepo } from "../../db/repositories/pending-task.repo.js";
 import { RemovalRequestRepo } from "../../db/repositories/removal-request.repo.js";
+import { loadBrokerDatabase } from "../../data/broker-loader.js";
 
 export function registerTaskRoutes(app: Hono, db: Database): void {
   app.get("/tasks", (c) => {
     const taskRepo = new PendingTaskRepo(db);
     const requestRepo = new RemovalRequestRepo(db);
     const pendingTasks = taskRepo.getPending();
+    const brokersById = new Map(loadBrokerDatabase().brokers.map((broker) => [broker.id, broker]));
 
     const tasksHtml = pendingTasks.length > 0
       ? pendingTasks
           .map((t) => {
             const request = requestRepo.getById(t.request_id);
             const brokerId = request?.broker_id ?? "unknown";
-            return taskCard(t.id, t.task_type, t.description, brokerId, t.url, t.created_at);
+            const broker = brokersById.get(brokerId);
+            return taskCard(t.id, t.task_type, t.description, brokerId, broker?.name ?? brokerId, t.url, t.created_at);
           })
           .join("\n")
       : `<div class="dim">No pending tasks. All clear.</div>`;

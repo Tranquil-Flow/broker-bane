@@ -143,23 +143,32 @@ export function taskCard(
   taskType: string,
   description: string,
   brokerId: string,
+  brokerName: string,
   url: string | null,
   createdAt: string,
 ): string {
   const typeCls = taskTypeClass(taskType);
   const urlHtml = url
-    ? ` &middot; <a href="${escapeHtml(url)}" target="_blank" style="color:var(--cyan)">${escapeHtml(url)}</a>`
+    ? ` &middot; <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">${escapeHtml(url)}</a>`
     : "";
+  const copyText = escapeHtml(description.replace(/\s+/g, " ").trim());
 
   return `<div class="task-item">
   <div class="task-top">
-    <span class="task-broker">${escapeHtml(brokerId)}</span>
+    <span class="task-broker">${escapeHtml(brokerName)}</span>
     <span class="task-type ${typeCls}">${escapeHtml(taskType)}</span>
   </div>
-  <div class="task-desc">${escapeHtml(description)}${urlHtml}</div>
+  <div class="task-desc"><span style="color:var(--text-dim)">${escapeHtml(brokerId)}</span> &middot; ${escapeHtml(description)}${urlHtml}</div>
   <div class="task-time">${escapeHtml(createdAt)}</div>
-  <div class="task-actions">
-    <button class="task-btn" hx-post="/api/tasks/${id}/complete" hx-swap="outerHTML" hx-target="closest .task-item">MARK DONE</button>
+  <div class="task-actions" style="display:flex;gap:0.5rem;flex-wrap:wrap">
+    ${url ? `<a class="task-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">OPEN LINK</a>` : ""}
+    <button class="task-btn" type="button" onclick="navigator.clipboard?.writeText('${copyText.replace(/'/g, "&#39;")}')">COPY INSTRUCTIONS</button>
+    <button class="task-btn" hx-post="/api/tasks/${id}/complete" hx-swap="outerHTML" hx-target="closest .task-item">MARK COMPLETE</button>
+    <button class="task-btn" hx-post="/api/tasks/${id}/retry" hx-swap="outerHTML" hx-target="closest .task-item">RETRY</button>
+    <form hx-post="/api/tasks/${id}/dismiss" hx-swap="outerHTML" hx-target="closest .task-item" style="display:flex;gap:0.35rem;align-items:center">
+      <input name="reason" value="Dismissed from dashboard" aria-label="dismiss reason" style="font-family:var(--font);font-size:0.65rem;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:0.25rem 0.4rem;max-width:12rem" />
+      <button class="task-btn" type="submit">DISMISS</button>
+    </form>
   </div>
 </div>`;
 }

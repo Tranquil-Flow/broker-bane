@@ -144,9 +144,27 @@ describe("Dashboard", () => {
       expect(res.status).toBe(200);
     });
 
-    it("GET /tasks returns 200", async () => {
+    it("GET /tasks shows manual task action controls with broker name and URL", async () => {
+      const requestRepo = new RemovalRequestRepo(db);
+      const taskRepo = new PendingTaskRepo(db);
+      const req = requestRepo.create({ brokerId: "spokeo", method: "web_form" });
+      taskRepo.create({
+        requestId: req.id,
+        taskType: "manual_form",
+        description: "Submit opt-out form",
+        url: "https://spokeo.com/optout",
+      });
+
       const res = await app.request("/tasks");
       expect(res.status).toBe(200);
+      const text = await res.text();
+      expect(text).toContain("Spokeo");
+      expect(text).toContain("https://spokeo.com/optout");
+      expect(text).toContain("OPEN LINK");
+      expect(text).toContain("COPY INSTRUCTIONS");
+      expect(text).toContain("MARK COMPLETE");
+      expect(text).toContain("RETRY");
+      expect(text).toContain("DISMISS");
     });
 
     it("GET /about returns 200 and contains PRIVACY", async () => {
@@ -197,7 +215,7 @@ describe("Dashboard", () => {
       expect(res.status).toBe(200);
     });
 
-    it("POST /api/tasks/:id/complete marks a task done", async () => {
+    it("POST /api/tasks/:id/complete marks a task done and completes its request", async () => {
       // Insert test data: a removal request, then a pending task
       const requestRepo = new RemovalRequestRepo(db);
       const taskRepo = new PendingTaskRepo(db);
@@ -218,8 +236,52 @@ describe("Dashboard", () => {
       });
       expect(res.status).toBe(200);
 
-      // Verify task is no longer pending
+      // Verify task is no longer pending and request has a valid completed transition
       expect(taskRepo.countPending()).toBe(0);
+      expect(requestRepo.getById(req.id)?.status).toBe("completed");
+    });
+
+    it("POST /api/tasks/:id/retry requeues the request and completes the manual task", async () => {
+      const requestRepo = new RemovalRequestRepo(db);
+      const taskRepo = new PendingTaskRepo(db);
+      const req = requestRepo.create({ brokerId: "spokeo", method: "web_form" });
+      requestRepo.updateStatus(req.id, "manual_required", "CAPTCHA needs retry");
+      const task = taskRepo.create({
+        requestId: req.id,
+        taskType: "captcha_solve",
+        description: "Solve CAPTCHA for spokeo",
+      });
+
+      const res = await app.request(`/api/tasks/${task.id}/retry`, { method: "POST" });
+      expect(res.status).toBe(200);
+      expect(taskRepo.countPending()).toBe(0);
+      const updated = requestRepo.getById(req.id)!;
+      expect(updated.status).toBe("pending");
+      expect(updated.last_error).toBeNull();
+    });
+
+    it("POST /api/tasks/:id/dismiss marks the request skipped with the supplied reason", async () => {
+      const requestRepo = new RemovalRequestRepo(db);
+      const taskRepo = new PendingTaskRepo(db);
+      const req = requestRepo.create({ brokerId: "spokeo", method: "web_form" });
+      requestRepo.updateStatus(req.id, "manual_required", "Needs review");
+      const task = taskRepo.create({
+        requestId: req.id,
+        taskType: "review_match",
+        description: "Review likely match",
+      });
+
+      const form = new URLSearchParams({ reason: "Not my record" });
+      const res = await app.request(`/api/tasks/${task.id}/dismiss`, {
+        method: "POST",
+        body: form,
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+      });
+      expect(res.status).toBe(200);
+      expect(taskRepo.countPending()).toBe(0);
+      const updated = requestRepo.getById(req.id)!;
+      expect(updated.status).toBe("skipped");
+      expect(updated.last_error).toContain("Not my record");
     });
 
     it("GET /api/tasks returns 200", async () => {
