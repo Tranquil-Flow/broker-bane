@@ -12,6 +12,9 @@ import { EmailLogRepo } from "../db/repositories/email-log.repo.js";
 import { CircuitBreakerRepo } from "../db/repositories/circuit-breaker.repo.js";
 import { PipelineRunRepo } from "../db/repositories/pipeline-run.repo.js";
 import { EvidenceChainRepo } from "../db/repositories/evidence-chain.repo.js";
+import { RetryQueueRepo } from "../db/repositories/retry-queue.repo.js";
+import { RetryQueue } from "./retry-queue.js";
+import { enqueueEmailRetryIfTransient } from "./email-retry-enqueue.js";
 import { EvidenceChainService } from "./evidence-chain.js";
 import { EmailSender } from "../email/sender.js";
 import { buildTemplateVariables, renderTemplate } from "../email/template-engine.js";
@@ -140,6 +143,14 @@ export class Orchestrator {
 
     const evidenceRepo = new EvidenceChainRepo(this.db);
     const evidenceService = new EvidenceChainService(evidenceRepo);
+
+    const retryQueueRepo = new RetryQueueRepo(this.db);
+    const retryQueue = new RetryQueue(retryQueueRepo, {
+      maxAttempts: this.config.retry.max_attempts,
+      initialDelayMs: this.config.retry.initial_delay_ms,
+      backoffMultiplier: this.config.retry.backoff_multiplier,
+      jitter: this.config.retry.jitter,
+    });
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,
@@ -313,6 +324,7 @@ export class Orchestrator {
             request.id,
             requestRepo,
             emailLogRepo,
+            retryQueue,
             dryRun
           );
         }
@@ -492,6 +504,7 @@ export class Orchestrator {
     requestId: number,
     requestRepo: RemovalRequestRepo,
     emailLogRepo: EmailLogRepo,
+    retryQueue: RetryQueue,
     dryRun: boolean
   ): Promise<void> {
     if (!broker.email) {
@@ -509,36 +522,50 @@ export class Orchestrator {
 
     const retryOptions = configToRetryOptions(this.config.retry);
 
-    await withRetry(
-      async () => {
-        requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
-        requestRepo.incrementAttempt(requestId);
+    try {
+      await withRetry(
+        async () => {
+          requestRepo.updateStatus(requestId, REQUEST_STATUS.sending);
+          requestRepo.incrementAttempt(requestId);
 
-        const result = await this.emailSender!.send({
-          from: brokerFacingEmail,
-          to: broker.email!,
-          subject: rendered.subject,
-          text: rendered.body,
-        });
+          const result = await this.emailSender!.send({
+            from: brokerFacingEmail,
+            to: broker.email!,
+            subject: rendered.subject,
+            text: rendered.body,
+          });
 
-        emailLogRepo.create({
-          requestId,
-          direction: "outbound",
-          messageId: result.messageId,
-          fromAddr: brokerFacingEmail,
-          toAddr: broker.email!,
-          subject: rendered.subject,
-          status: result.rejected.length > 0 ? "rejected" : "sent",
-          identityId: getBrokerIdentityId(this.config),
-        });
+          emailLogRepo.create({
+            requestId,
+            direction: "outbound",
+            messageId: result.messageId,
+            fromAddr: brokerFacingEmail,
+            toAddr: broker.email!,
+            subject: rendered.subject,
+            status: result.rejected.length > 0 ? "rejected" : "sent",
+            identityId: getBrokerIdentityId(this.config),
+          });
 
-        if (result.rejected.length > 0 && result.accepted.length === 0) {
-          throw new EmailError(`Email rejected by server for all recipients: ${broker.email}`);
-        }
-      },
-      retryOptions,
-      `email to ${broker.name}`
-    );
+          if (result.rejected.length > 0 && result.accepted.length === 0) {
+            throw new EmailError(`Email rejected by server for all recipients: ${broker.email}`);
+          }
+        },
+        retryOptions,
+        `email to ${broker.name}`
+      );
+    } catch (err) {
+      enqueueEmailRetryIfTransient({
+        queue: retryQueue,
+        broker,
+        requestId,
+        identityId: getBrokerIdentityId(this.config),
+        rendered,
+        templateName: this.config.options.template,
+        dryRun,
+        error: err,
+      });
+      throw err;
+    }
   }
 
   private async processWebRemoval(
