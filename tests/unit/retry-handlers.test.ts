@@ -191,6 +191,116 @@ describe("createRetryHandlers — email", () => {
     expect(fakeSender.send).not.toHaveBeenCalled();
   });
 
+  it("throws and logs rejected status when every recipient is rejected", async () => {
+    const request = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
+
+    const fakeSender = {
+      send: vi.fn().mockResolvedValue({
+        messageId: "retry-rejected-1",
+        accepted: [],
+        rejected: [emailBasicBroker.email!],
+      }),
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+    const handlers = createRetryHandlers({
+      config: createTestConfig({ options: { dry_run: false } }),
+      brokers: [emailBasicBroker],
+      requestRepo,
+      emailLogRepo,
+      senderFactory: () => fakeSender,
+      dryRun: false,
+    });
+
+    await expect(
+      handlers.email!({
+        row: makeRow(),
+        payload: makePayload({ requestId: request.id }),
+      }),
+    ).rejects.toThrow(/all recipients rejected/);
+
+    expect(emailLogRepo.getByRequestId(request.id)).toHaveLength(1);
+    expect(emailLogRepo.getByRequestId(request.id)[0].status).toBe("rejected");
+    expect(requestRepo.getById(request.id)?.status).toBe(REQUEST_STATUS.failed);
+    expect(fakeSender.close).toHaveBeenCalledOnce();
+  });
+
+  it("treats partial accept as success and transitions request to sent", async () => {
+    const request = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
+
+    const fakeSender = {
+      send: vi.fn().mockResolvedValue({
+        messageId: "retry-partial-1",
+        accepted: [emailBasicBroker.email!],
+        rejected: ["unrelated-bounced@example.invalid"],
+      }),
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+    const handlers = createRetryHandlers({
+      config: createTestConfig({ options: { dry_run: false } }),
+      brokers: [emailBasicBroker],
+      requestRepo,
+      emailLogRepo,
+      senderFactory: () => fakeSender,
+      dryRun: false,
+    });
+
+    await handlers.email!({
+      row: makeRow(),
+      payload: makePayload({ requestId: request.id }),
+    });
+
+    expect(requestRepo.getById(request.id)?.status).toBe(REQUEST_STATUS.sent);
+    expect(emailLogRepo.getByRequestId(request.id)[0].status).toBe("sent");
+  });
+
+  it("passes dryRun=true to the sender factory when configured", async () => {
+    const request = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
+
+    const fakeSender = createFakeSender();
+    const senderFactory = vi.fn(() => fakeSender);
+    const handlers = createRetryHandlers({
+      config: createTestConfig({ options: { dry_run: true } }),
+      brokers: [emailBasicBroker],
+      requestRepo,
+      emailLogRepo,
+      senderFactory,
+    });
+
+    await handlers.email!({
+      row: makeRow(),
+      payload: makePayload({ requestId: request.id }),
+    });
+
+    expect(senderFactory).toHaveBeenCalledOnce();
+    expect(senderFactory.mock.calls[0][1]).toBe(true);
+  });
+
+  it("explicit init.dryRun overrides config.options.dry_run", async () => {
+    const request = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
+
+    const fakeSender = createFakeSender();
+    const senderFactory = vi.fn(() => fakeSender);
+    const handlers = createRetryHandlers({
+      config: createTestConfig({ options: { dry_run: false } }),
+      brokers: [emailBasicBroker],
+      requestRepo,
+      emailLogRepo,
+      senderFactory,
+      dryRun: true,
+    });
+
+    await handlers.email!({
+      row: makeRow(),
+      payload: makePayload({ requestId: request.id }),
+    });
+
+    expect(senderFactory.mock.calls[0][1]).toBe(true);
+  });
+
   it("rejects malformed payloads without invoking the sender", async () => {
     const fakeSender = createFakeSender();
     const handlers = createRetryHandlers({
