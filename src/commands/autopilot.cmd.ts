@@ -4,10 +4,14 @@ import { runMigrations } from "../db/migrations.js";
 import { RetryQueueRepo } from "../db/repositories/retry-queue.repo.js";
 import { RemovalRequestRepo } from "../db/repositories/removal-request.repo.js";
 import { BrokerResponseRepo } from "../db/repositories/broker-response.repo.js";
+import { EmailLogRepo } from "../db/repositories/email-log.repo.js";
 import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { ConfirmationWorker } from "../inbox/confirmation-worker.js";
 import { AutopilotRunner, type AutopilotCycleResult } from "../pipeline/autopilot.js";
 import { Orchestrator } from "../pipeline/orchestrator.js";
+import { RetryQueue } from "../pipeline/retry-queue.js";
+import { RetryWorker } from "../pipeline/retry-worker.js";
+import { createRetryHandlers } from "../pipeline/retry-handlers.js";
 import { getBrokerIdentityId, getBrokerIdentityImap } from "../types/identity.js";
 import { reconfigureLogger } from "../util/logger.js";
 
@@ -53,17 +57,42 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   const orchestrator = new Orchestrator(config);
   const workerDb = createDatabase(config.database.path);
   runMigrations(workerDb);
+  const brokerDatabase = loadBrokerDatabase();
+  const workerRequestRepo = new RemovalRequestRepo(workerDb);
+  const workerEmailLogRepo = new EmailLogRepo(workerDb);
+  const workerRetryRepo = new RetryQueueRepo(workerDb);
+  const retryQueue = new RetryQueue(workerRetryRepo, {
+    maxAttempts: config.retry.max_attempts,
+    initialDelayMs: config.retry.initial_delay_ms,
+    backoffMultiplier: config.retry.backoff_multiplier,
+    jitter: config.retry.jitter,
+  });
+  const retryHandlers = createRetryHandlers({
+    config,
+    brokers: brokerDatabase.brokers,
+    requestRepo: workerRequestRepo,
+    emailLogRepo: workerEmailLogRepo,
+    dryRun: options.testMode ?? false,
+  });
+  const retryWorker = new RetryWorker({
+    queue: retryQueue,
+    emailLogRepo: workerEmailLogRepo,
+    identityId: getBrokerIdentityId(config),
+    dailyLimit: config.options.daily_limit,
+    handlers: retryHandlers,
+  });
   const confirmationWorker = options.testMode
     ? undefined
     : new ConfirmationWorker({
         inbox: getBrokerIdentityImap(config),
         identityId: getBrokerIdentityId(config),
-        brokers: loadBrokerDatabase().brokers,
-        requestRepo: new RemovalRequestRepo(workerDb),
+        brokers: brokerDatabase.brokers,
+        requestRepo: workerRequestRepo,
         responseRepo: new BrokerResponseRepo(workerDb),
       });
   const runner = new AutopilotRunner({
     orchestrator,
+    retryWorker,
     confirmationWorker,
     testMode: options.testMode ?? false,
     sleepMs: options.intervalMs ? Number(options.intervalMs) : undefined,
