@@ -14,6 +14,7 @@ import { RetryWorker } from "../pipeline/retry-worker.js";
 import { createRetryHandlers } from "../pipeline/retry-handlers.js";
 import { getBrokerIdentityId, getBrokerIdentityImap } from "../types/identity.js";
 import { reconfigureLogger } from "../util/logger.js";
+import { formatAutopilotStatus } from "./autopilot-status-format.js";
 
 export interface AutopilotCommandOptions {
   config?: string;
@@ -137,32 +138,13 @@ async function autopilotStatus(
   runMigrations(db);
   try {
     const retryRepo = new RetryQueueRepo(db);
-    console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("  BrokerBane Autopilot Status");
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    console.log(`  Broker-facing mailbox: ${preview.brokerFacingEmail}`);
-    console.log(`  Identity mode:          ${preview.identityMode} (${preview.privacyLevel})`);
-    console.log(`  Daily cap:              ${preview.dailyLimit ?? "unlimited"}`);
-    console.log(`  Sent today:             ${preview.sentToday}`);
-    console.log(`  Remaining today:        ${preview.remainingToday}`);
-    console.log(`  Today's broker batch:   ${preview.today.length}`);
-    console.log(`  Later candidates:       ${preview.notInTodayCount}`);
-    console.log(`  Retry queue pending:    ${retryRepo.countPending()}`);
-    console.log(`  Retry queue ready:      ${retryRepo.countReady()}`);
-    if (preview.limitReached) {
-      console.log("\n  Daily cap is reached. Autopilot will wait before sending more email.");
-    } else if (preview.today.length === 0) {
-      console.log("\n  No broker email batch is ready right now.");
-    } else {
-      console.log("\n  Next brokers in the capped batch:");
-      preview.today.slice(0, 10).forEach((broker, index) => {
-        console.log(`    ${index + 1}. ${broker.name} (${broker.id}) — ${broker.method}`);
-      });
-      if (preview.today.length > 10) {
-        console.log(`    ...and ${preview.today.length - 10} more in today's cap.`);
-      }
-    }
-    console.log();
+    console.log(
+      formatAutopilotStatus({
+        preview,
+        retryPending: retryRepo.countPending(),
+        retryReady: retryRepo.countReady(),
+      }),
+    );
   } finally {
     closeDatabase(db);
   }
