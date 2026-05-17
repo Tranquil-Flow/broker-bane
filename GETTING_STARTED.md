@@ -213,4 +213,5 @@ Without Stagehand, these brokers are skipped and listed in the report as
 
 - Run `brokerbane status` weekly to track progress
 - Set up `brokerbane rescan --schedule` for automatic follow-up
+- Run `npm run email:smoke` to verify disposable SMTP/IMAP plumbing without contacting real brokers
 - Run `npm run audit:broker-urls -- --tier 1 --limit 10` to spot stale high-priority URLs

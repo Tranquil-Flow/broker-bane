@@ -266,6 +266,13 @@ Sends removal requests to all brokers. Options:
 **`brokerbane resume`**
 Shortcut for `brokerbane remove --resume` — continue an interrupted run.
 
+**Disposable email smoke test (maintainers)**
+Creates an Ethereal test mailbox, verifies BrokerBane SMTP/IMAP settings against it, runs SQLite migrations, and sends one captured message to the disposable mailbox. Ethereal captures mail for preview and does not deliver to real broker inboxes.
+```
+npm run email:smoke
+```
+Use `-- --json` for machine-readable output, `-- --write-config /tmp/brokerbane-ethereal.yaml` to save a temporary BrokerBane config, and `-- --show-secrets` only when you intentionally need the disposable password.
+
 **Broker URL audit (maintainers)**
 Checks high-priority broker URLs for stale/dead links. HTTP 401/403 is reported as `auth` rather than failure because many broker sites block bots while the URL still exists.
 ```

@@ -27,7 +27,8 @@
     "convert-brokers": "tsx scripts/convert-eraser-brokers.ts",
     "ingest-cppa": "tsx scripts/ingest-cppa.ts",
     "audit:broker-urls": "tsx scripts/audit-broker-urls.ts",
-    "postinstall": "node scripts/patch-stagehand-models.cjs"
+    "postinstall": "node scripts/patch-stagehand-models.cjs",
+    "email:smoke": "tsx scripts/email-smoke.ts"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.5",

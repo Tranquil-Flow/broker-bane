@@ -228,6 +228,32 @@ describe("EmailSender", () => {
     await sender.close();
   });
 
+  it("returns SMTP provider response for captured-message smoke tests", async () => {
+    const mockTransport = {
+      sendMail: vi.fn().mockResolvedValue({
+        messageId: "test-id",
+        accepted: ["to@example.com"],
+        rejected: [],
+        response: "250 Accepted [STATUS=new MSGID=ethereal-preview-token]",
+      }),
+      verify: vi.fn().mockResolvedValue(true),
+      close: vi.fn(),
+    };
+
+    const sender = new EmailSender(dryRunConfig, false);
+    (sender as any).transporter = mockTransport;
+
+    const result = await sender.send({
+      from: "me@example.com",
+      to: "to@example.com",
+      subject: "Test",
+      text: "Body",
+    });
+
+    expect(result.response).toBe("250 Accepted [STATUS=new MSGID=ethereal-preview-token]");
+    await sender.close();
+  });
+
   it("suppresses X-Mailer header and adds Reply-To in sendMail args", async () => {
     let capturedOptions: any = null;
     const mockTransport = {

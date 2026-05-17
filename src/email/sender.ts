@@ -19,6 +19,7 @@ export interface SendResult {
   messageId: string;
   accepted: string[];
   rejected: string[];
+  response?: string;
 }
 
 export class EmailSender {
@@ -121,6 +122,7 @@ export class EmailSender {
         messageId: info.messageId,
         accepted: Array.isArray(info.accepted) ? info.accepted.map(String) : [],
         rejected: Array.isArray(info.rejected) ? info.rejected.map(String) : [],
+        response: typeof info.response === "string" ? info.response : undefined,
       };
     } catch (err) {
       throw new EmailError(`Failed to send email to ${params.to}`, err);
