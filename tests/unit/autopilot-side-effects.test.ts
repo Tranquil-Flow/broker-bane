@@ -1,27 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { AutopilotRunner } from "../../src/pipeline/autopilot.js";
-import type { BatchPreview, PipelineSummary } from "../../src/pipeline/orchestrator.js";
+import type { PipelineSummary } from "../../src/pipeline/orchestrator.js";
 import type { RetryWorkerResult } from "../../src/pipeline/retry-worker.js";
-
-function preview(overrides: Partial<BatchPreview> = {}): BatchPreview {
-  return {
-    brokerFacingEmail: "removals@example.invalid",
-    identityId: "removals",
-    identityMode: "dedicated_mailbox",
-    privacyLevel: "maximum",
-    dailyLimit: 1,
-    sentToday: 0,
-    remainingToday: 1,
-    limitReached: false,
-    totalCandidates: 1,
-    validitySkipped: 0,
-    today: [
-      { id: "alpha", name: "Alpha Broker", method: "email", email: "privacy@alpha.invalid", tier: 1 },
-    ],
-    notInTodayCount: 0,
-    ...overrides,
-  };
-}
+import { makePreview as preview } from "../fixtures/preview.js";
 
 function pipelineSummary(overrides: Partial<PipelineSummary> = {}): PipelineSummary {
   return {

@@ -1,27 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatAutopilotStatus } from "../../src/commands/autopilot-status-format.js";
-import type { BatchPreview } from "../../src/pipeline/orchestrator.js";
-
-function preview(overrides: Partial<BatchPreview> = {}): BatchPreview {
-  return {
-    brokerFacingEmail: "removals@example.invalid",
-    identityId: "removals",
-    identityMode: "dedicated_mailbox",
-    privacyLevel: "maximum",
-    dailyLimit: 5,
-    sentToday: 2,
-    remainingToday: 3,
-    limitReached: false,
-    totalCandidates: 3,
-    validitySkipped: 0,
-    today: [
-      { id: "alpha", name: "Alpha Broker", method: "email", email: "privacy@alpha.invalid", tier: 1 },
-      { id: "beta", name: "Beta Broker", method: "email", email: "privacy@beta.invalid", tier: 1 },
-    ],
-    notInTodayCount: 1,
-    ...overrides,
-  };
-}
+import { makePreview as preview } from "../fixtures/preview.js";
 
 describe("formatAutopilotStatus", () => {
   it("includes the broker-facing mailbox, identity mode and daily cap", () => {

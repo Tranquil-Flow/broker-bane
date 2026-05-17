@@ -60,7 +60,7 @@ describe("enqueueEmailRetryIfTransient", () => {
       templateName: "gdpr",
       identityId: "removals",
       createdFrom: "orchestrator",
-      originalError: { message: "Failed to send email", code: "ECONNRESET" },
+      originalError: { message: "connection reset by peer", code: "ECONNRESET" },
     });
   });
 

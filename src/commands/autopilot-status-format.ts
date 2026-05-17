@@ -8,13 +8,6 @@ export interface FormatAutopilotStatusInput {
 
 const DIVIDER = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
-/**
- * Builds the BrokerBane Autopilot Status panel as a multi-line string.
- *
- * Pure function — does not touch the database, the file system, or stdout.
- * The status command composes this output and prints it; tests assert on
- * the returned string instead of capturing console output.
- */
 export function formatAutopilotStatus({ preview, retryPending, retryReady }: FormatAutopilotStatusInput): string {
   const lines: string[] = [];
   lines.push("");

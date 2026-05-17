@@ -15,6 +15,10 @@ export interface EmailRetryPayloadV1 {
   subject?: string;
   body?: string;
   templateName?: string;
+  // Audit metadata: the broker-identity id that was active when this retry was
+  // enqueued. The retry handler sends and logs under the *current* config's
+  // identity so daily-cap accounting and the SMTP auth user stay coherent —
+  // identityId is preserved for diagnosing why a retry attributed differently.
   identityId: string;
   createdFrom: "orchestrator" | "manual" | "import";
   originalError?: {

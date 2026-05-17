@@ -5,7 +5,7 @@ import type { Broker } from "../types/broker.js";
 import type { EmailLogRepo } from "../db/repositories/email-log.repo.js";
 import type { RemovalRequestRepo } from "../db/repositories/removal-request.repo.js";
 import { getBrokerFacingEmail, getBrokerIdentityId, getEffectiveBrokerIdentity } from "../types/identity.js";
-import { REQUEST_STATUS, type RequestStatus } from "../types/pipeline.js";
+import { REQUEST_STATUS } from "../types/pipeline.js";
 import { isEmailRetryPayloadV1 } from "./retry-payloads.js";
 import type { RetryWorkerHandlers } from "./retry-worker.js";
 
@@ -24,7 +24,15 @@ export interface RetryHandlerFactoryInit {
   dryRun?: boolean;
 }
 
-const TERMINAL_OR_DONE_STATUSES: ReadonlySet<RequestStatus> = new Set([
+export interface RetryHandlerBundle {
+  handlers: RetryWorkerHandlers;
+  close(): Promise<void>;
+}
+
+// Statuses where a retry would be a no-op: the request already reached a
+// positive terminal or in-flight-elsewhere state. Keep in sync with REQUEST_STATUS
+// — adding a new terminal-positive value there should also be added here.
+const TERMINAL_OR_DONE_STATUSES: ReadonlySet<string> = new Set([
   REQUEST_STATUS.sent,
   REQUEST_STATUS.awaiting_confirmation,
   REQUEST_STATUS.confirmed,
@@ -37,7 +45,7 @@ function defaultSenderFactory(smtp: SmtpConfig, dryRun: boolean, identityId: str
   return new EmailSender(smtp, dryRun, identityId);
 }
 
-export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryWorkerHandlers {
+export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryHandlerBundle {
   const { config, brokers, requestRepo, emailLogRepo } = init;
   const senderFactory = init.senderFactory ?? defaultSenderFactory;
   const dryRun = init.dryRun ?? config.options.dry_run;
@@ -45,7 +53,12 @@ export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryWorkerH
   const brokerById = new Map<string, Broker>();
   for (const broker of brokers) brokerById.set(broker.id, broker);
 
-  return {
+  // One sender is shared across every retry task processed by this bundle —
+  // RetryWorker drains tasks sequentially, so a pooled transport amortises the
+  // SMTP connect/auth round trip across the whole cycle. close() tears it down.
+  let cachedSender: Pick<EmailSender, "send" | "close"> | null = null;
+
+  const handlers: RetryWorkerHandlers = {
     email: async ({ payload }) => {
       if (!isEmailRetryPayloadV1(payload)) {
         throw new Error("retry-handlers/email: malformed payload (not EmailRetryPayloadV1)");
@@ -56,7 +69,7 @@ export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryWorkerH
         throw new Error(`retry-handlers/email: request ${payload.requestId} not found`);
       }
 
-      if (TERMINAL_OR_DONE_STATUSES.has(request.status as RequestStatus)) {
+      if (TERMINAL_OR_DONE_STATUSES.has(request.status)) {
         return;
       }
 
@@ -82,35 +95,45 @@ export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryWorkerH
       const identity = getEffectiveBrokerIdentity(config);
       const brokerFacingEmail = identity.email;
       const identityId = getBrokerIdentityId(config);
-      const sender = senderFactory(identity.smtp, dryRun, identityId);
+      if (!cachedSender) {
+        cachedSender = senderFactory(identity.smtp, dryRun, identityId);
+      }
+      const sender = cachedSender;
 
-      try {
-        const result = await sender.send({
-          from: brokerFacingEmail,
-          to: payload.to,
-          subject,
-          text: body,
-        });
+      const result = await sender.send({
+        from: brokerFacingEmail,
+        to: payload.to,
+        subject,
+        text: body,
+      });
 
-        const allRejected = result.rejected.length > 0 && result.accepted.length === 0;
+      const allRejected = result.rejected.length > 0 && result.accepted.length === 0;
 
-        emailLogRepo.create({
-          requestId: payload.requestId,
-          direction: "outbound",
-          messageId: result.messageId,
-          fromAddr: brokerFacingEmail,
-          toAddr: payload.to,
-          subject,
-          status: allRejected ? "rejected" : "sent",
-          identityId,
-        });
+      emailLogRepo.create({
+        requestId: payload.requestId,
+        direction: "outbound",
+        messageId: result.messageId,
+        fromAddr: brokerFacingEmail,
+        toAddr: payload.to,
+        subject,
+        status: allRejected ? "rejected" : "sent",
+        identityId,
+      });
 
-        if (allRejected) {
-          throw new Error(`retry-handlers/email: all recipients rejected for ${payload.to}`);
-        }
+      if (allRejected) {
+        throw new Error(`retry-handlers/email: all recipients rejected for ${payload.to}`);
+      }
 
-        requestRepo.updateStatus(payload.requestId, REQUEST_STATUS.sent);
-      } finally {
+      requestRepo.updateStatus(payload.requestId, REQUEST_STATUS.sent);
+    },
+  };
+
+  return {
+    handlers,
+    async close(): Promise<void> {
+      if (cachedSender) {
+        const sender = cachedSender;
+        cachedSender = null;
         await sender.close();
       }
     },

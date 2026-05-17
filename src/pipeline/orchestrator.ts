@@ -145,12 +145,7 @@ export class Orchestrator {
     const evidenceService = new EvidenceChainService(evidenceRepo);
 
     const retryQueueRepo = new RetryQueueRepo(this.db);
-    const retryQueue = new RetryQueue(retryQueueRepo, {
-      maxAttempts: this.config.retry.max_attempts,
-      initialDelayMs: this.config.retry.initial_delay_ms,
-      backoffMultiplier: this.config.retry.backoff_multiplier,
-      jitter: this.config.retry.jitter,
-    });
+    const retryQueue = new RetryQueue(retryQueueRepo, configToRetryOptions(this.config.retry));
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,

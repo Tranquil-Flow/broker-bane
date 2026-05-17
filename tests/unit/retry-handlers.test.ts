@@ -3,7 +3,11 @@ import Database from "better-sqlite3";
 import { runMigrations } from "../../src/db/migrations.js";
 import { EmailLogRepo } from "../../src/db/repositories/email-log.repo.js";
 import { RemovalRequestRepo } from "../../src/db/repositories/removal-request.repo.js";
-import { createRetryHandlers } from "../../src/pipeline/retry-handlers.js";
+import {
+  createRetryHandlers,
+  type RetryHandlerBundle,
+  type RetryHandlerFactoryInit,
+} from "../../src/pipeline/retry-handlers.js";
 import type { EmailRetryPayloadV1 } from "../../src/pipeline/retry-payloads.js";
 import type { RetryQueueRow } from "../../src/types/database.js";
 import { REQUEST_STATUS } from "../../src/types/pipeline.js";
@@ -54,6 +58,20 @@ describe("createRetryHandlers — email", () => {
   let db: InstanceType<typeof Database>;
   let emailLogRepo: EmailLogRepo;
   let requestRepo: RemovalRequestRepo;
+  const openBundles: RetryHandlerBundle[] = [];
+
+  function makeHandlers(overrides: Partial<RetryHandlerFactoryInit> = {}): RetryHandlerBundle {
+    const bundle = createRetryHandlers({
+      config: createTestConfig({ options: { dry_run: false } }),
+      brokers: [emailBasicBroker],
+      requestRepo,
+      emailLogRepo,
+      dryRun: false,
+      ...overrides,
+    });
+    openBundles.push(bundle);
+    return bundle;
+  }
 
   beforeEach(() => {
     db = new Database(":memory:");
@@ -62,7 +80,10 @@ describe("createRetryHandlers — email", () => {
     requestRepo = new RemovalRequestRepo(db);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    for (const bundle of openBundles.splice(0)) {
+      await bundle.close();
+    }
     db.close();
   });
 
@@ -71,17 +92,10 @@ describe("createRetryHandlers — email", () => {
     requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
 
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers, close } = makeHandlers({ senderFactory: () => fakeSender });
 
-    const payload = makePayload({ requestId: request.id });
-    await handlers.email!({ row: makeRow(), payload });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) });
+    await close();
 
     expect(fakeSender.send).toHaveBeenCalledOnce();
     expect(fakeSender.send.mock.calls[0][0]).toMatchObject({
@@ -101,14 +115,7 @@ describe("createRetryHandlers — email", () => {
     requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
 
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers } = makeHandlers({ senderFactory: () => fakeSender });
 
     await handlers.email!({
       row: makeRow(),
@@ -130,19 +137,10 @@ describe("createRetryHandlers — email", () => {
     requestRepo.updateStatus(request.id, REQUEST_STATUS.confirmed);
 
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers, close } = makeHandlers({ senderFactory: () => fakeSender });
 
-    await handlers.email!({
-      row: makeRow(),
-      payload: makePayload({ requestId: request.id }),
-    });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) });
+    await close();
 
     expect(fakeSender.send).not.toHaveBeenCalled();
     expect(fakeSender.close).not.toHaveBeenCalled();
@@ -150,20 +148,10 @@ describe("createRetryHandlers — email", () => {
 
   it("throws if the request id is unknown", async () => {
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers } = makeHandlers({ senderFactory: () => fakeSender });
 
     await expect(
-      handlers.email!({
-        row: makeRow(),
-        payload: makePayload({ requestId: 9999 }),
-      }),
+      handlers.email!({ row: makeRow(), payload: makePayload({ requestId: 9999 }) }),
     ).rejects.toThrow(/request 9999 not found/);
     expect(fakeSender.send).not.toHaveBeenCalled();
   });
@@ -173,14 +161,7 @@ describe("createRetryHandlers — email", () => {
     requestRepo.updateStatus(request.id, REQUEST_STATUS.failed);
 
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers } = makeHandlers({ senderFactory: () => fakeSender });
 
     await expect(
       handlers.email!({
@@ -203,21 +184,12 @@ describe("createRetryHandlers — email", () => {
       }),
       close: vi.fn().mockResolvedValue(undefined),
     };
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers, close } = makeHandlers({ senderFactory: () => fakeSender });
 
     await expect(
-      handlers.email!({
-        row: makeRow(),
-        payload: makePayload({ requestId: request.id }),
-      }),
+      handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) }),
     ).rejects.toThrow(/all recipients rejected/);
+    await close();
 
     expect(emailLogRepo.getByRequestId(request.id)).toHaveLength(1);
     expect(emailLogRepo.getByRequestId(request.id)[0].status).toBe("rejected");
@@ -237,19 +209,9 @@ describe("createRetryHandlers — email", () => {
       }),
       close: vi.fn().mockResolvedValue(undefined),
     };
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers } = makeHandlers({ senderFactory: () => fakeSender });
 
-    await handlers.email!({
-      row: makeRow(),
-      payload: makePayload({ requestId: request.id }),
-    });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) });
 
     expect(requestRepo.getById(request.id)?.status).toBe(REQUEST_STATUS.sent);
     expect(emailLogRepo.getByRequestId(request.id)[0].status).toBe("sent");
@@ -261,18 +223,13 @@ describe("createRetryHandlers — email", () => {
 
     const fakeSender = createFakeSender();
     const senderFactory = vi.fn(() => fakeSender);
-    const handlers = createRetryHandlers({
+    const { handlers } = makeHandlers({
       config: createTestConfig({ options: { dry_run: true } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
       senderFactory,
+      dryRun: undefined,
     });
 
-    await handlers.email!({
-      row: makeRow(),
-      payload: makePayload({ requestId: request.id }),
-    });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) });
 
     expect(senderFactory).toHaveBeenCalledOnce();
     expect(senderFactory.mock.calls[0][1]).toBe(true);
@@ -284,40 +241,39 @@ describe("createRetryHandlers — email", () => {
 
     const fakeSender = createFakeSender();
     const senderFactory = vi.fn(() => fakeSender);
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory,
-      dryRun: true,
-    });
+    const { handlers } = makeHandlers({ senderFactory, dryRun: true });
 
-    await handlers.email!({
-      row: makeRow(),
-      payload: makePayload({ requestId: request.id }),
-    });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: request.id }) });
 
     expect(senderFactory.mock.calls[0][1]).toBe(true);
   });
 
   it("rejects malformed payloads without invoking the sender", async () => {
     const fakeSender = createFakeSender();
-    const handlers = createRetryHandlers({
-      config: createTestConfig({ options: { dry_run: false } }),
-      brokers: [emailBasicBroker],
-      requestRepo,
-      emailLogRepo,
-      senderFactory: () => fakeSender,
-      dryRun: false,
-    });
+    const { handlers } = makeHandlers({ senderFactory: () => fakeSender });
 
     await expect(
-      handlers.email!({
-        row: makeRow(),
-        payload: { wrong: "shape" } as never,
-      }),
+      handlers.email!({ row: makeRow(), payload: { wrong: "shape" } as unknown }),
     ).rejects.toThrow(/malformed payload/);
     expect(fakeSender.send).not.toHaveBeenCalled();
+  });
+
+  it("reuses a single sender across multiple retry tasks (no per-task connection thrash)", async () => {
+    const requestA = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(requestA.id, REQUEST_STATUS.failed);
+    const requestB = requestRepo.create({ brokerId: emailBasicBroker.id, method: "email" });
+    requestRepo.updateStatus(requestB.id, REQUEST_STATUS.failed);
+
+    const fakeSender = createFakeSender();
+    const senderFactory = vi.fn(() => fakeSender);
+    const { handlers, close } = makeHandlers({ senderFactory });
+
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: requestA.id }) });
+    await handlers.email!({ row: makeRow(), payload: makePayload({ requestId: requestB.id }) });
+    await close();
+
+    expect(senderFactory).toHaveBeenCalledOnce();
+    expect(fakeSender.send).toHaveBeenCalledTimes(2);
+    expect(fakeSender.close).toHaveBeenCalledOnce();
   });
 });

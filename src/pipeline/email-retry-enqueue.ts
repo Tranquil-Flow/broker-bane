@@ -1,7 +1,7 @@
 import type { Broker } from "../types/broker.js";
 import { EmailError } from "../util/errors.js";
 import { logger } from "../util/logger.js";
-import type { RetryQueue } from "./retry-queue.js";
+import { extractErrorInfo, type RetryQueue } from "./retry-queue.js";
 import type { EmailRetryPayloadV1 } from "./retry-payloads.js";
 
 export interface EnqueueEmailRetryParams {
@@ -40,15 +40,7 @@ export function enqueueEmailRetryIfTransient(params: EnqueueEmailRetryParams): b
   }
 
   const underlying = error instanceof EmailError && error.cause !== undefined ? error.cause : error;
-
-  const errorMessage = error instanceof Error ? error.message : String(error);
-  const errorCode = (() => {
-    if (underlying && typeof underlying === "object") {
-      const c = (underlying as { code?: unknown }).code;
-      if (typeof c === "string") return c;
-    }
-    return undefined;
-  })();
+  const { message: errorMessage, code: errorCode } = extractErrorInfo(underlying);
 
   const payload: EmailRetryPayloadV1 = {
     version: 1,

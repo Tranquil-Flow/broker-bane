@@ -12,6 +12,7 @@ import { Orchestrator } from "../pipeline/orchestrator.js";
 import { RetryQueue } from "../pipeline/retry-queue.js";
 import { RetryWorker } from "../pipeline/retry-worker.js";
 import { createRetryHandlers } from "../pipeline/retry-handlers.js";
+import { configToRetryOptions } from "../pipeline/retry.js";
 import { getBrokerIdentityId, getBrokerIdentityImap } from "../types/identity.js";
 import { reconfigureLogger } from "../util/logger.js";
 import { formatAutopilotStatus } from "./autopilot-status-format.js";
@@ -62,13 +63,8 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   const workerRequestRepo = new RemovalRequestRepo(workerDb);
   const workerEmailLogRepo = new EmailLogRepo(workerDb);
   const workerRetryRepo = new RetryQueueRepo(workerDb);
-  const retryQueue = new RetryQueue(workerRetryRepo, {
-    maxAttempts: config.retry.max_attempts,
-    initialDelayMs: config.retry.initial_delay_ms,
-    backoffMultiplier: config.retry.backoff_multiplier,
-    jitter: config.retry.jitter,
-  });
-  const retryHandlers = createRetryHandlers({
+  const retryQueue = new RetryQueue(workerRetryRepo, configToRetryOptions(config.retry));
+  const retryBundle = createRetryHandlers({
     config,
     brokers: brokerDatabase.brokers,
     requestRepo: workerRequestRepo,
@@ -80,7 +76,7 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
     emailLogRepo: workerEmailLogRepo,
     identityId: getBrokerIdentityId(config),
     dailyLimit: config.options.daily_limit,
-    handlers: retryHandlers,
+    handlers: retryBundle.handlers,
   });
   const confirmationWorker = options.testMode
     ? undefined
@@ -125,6 +121,7 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   } finally {
     process.off("SIGINT", stop);
     process.off("SIGTERM", stop);
+    await retryBundle.close();
     closeDatabase(workerDb);
   }
 }
