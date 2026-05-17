@@ -1,6 +1,6 @@
 import type { AppConfig } from "../types/config.js";
 import type { Broker } from "../types/broker.js";
-import { REQUEST_STATUS } from "../types/pipeline.js";
+import { EMAIL_DIRECTION, EMAIL_LOG_STATUS, REQUEST_STATUS } from "../types/pipeline.js";
 import { loadBrokerDatabase } from "../data/broker-loader.js";
 import { BrokerStore } from "../data/broker-store.js";
 import { createDatabase, closeDatabase } from "../db/connection.js";
@@ -79,6 +79,12 @@ export interface BatchPreview {
 
 export interface OrchestratorInit {
   playbookDir?: string;
+  // Optional shared RetryQueue. When provided, the orchestrator enqueues
+  // transient email failures into this queue instead of constructing its own
+  // from `this.db`. The autopilot command wires its worker-side queue here so
+  // a single queue object is used across enqueue (orchestrator) and drain
+  // (RetryWorker).
+  retryQueue?: RetryQueue;
 }
 
 export class Orchestrator {
@@ -86,6 +92,7 @@ export class Orchestrator {
   private emailSender: EmailSender | null = null;
   private aborted = false;
   private readonly playbooks: Map<string, Playbook>;
+  private readonly injectedRetryQueue: RetryQueue | undefined;
 
   constructor(
     private readonly config: AppConfig,
@@ -93,6 +100,7 @@ export class Orchestrator {
   ) {
     const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
     this.playbooks = loadAllPlaybooks(init.playbookDir ?? defaultDir);
+    this.injectedRetryQueue = init.retryQueue;
   }
 
   async preview(options: OrchestratorOptions = {}): Promise<BatchPreview> {
@@ -144,8 +152,8 @@ export class Orchestrator {
     const evidenceRepo = new EvidenceChainRepo(this.db);
     const evidenceService = new EvidenceChainService(evidenceRepo);
 
-    const retryQueueRepo = new RetryQueueRepo(this.db);
-    const retryQueue = new RetryQueue(retryQueueRepo, configToRetryOptions(this.config.retry));
+    const retryQueue = this.injectedRetryQueue
+      ?? new RetryQueue(new RetryQueueRepo(this.db), configToRetryOptions(this.config.retry));
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,
@@ -532,12 +540,12 @@ export class Orchestrator {
 
           emailLogRepo.create({
             requestId,
-            direction: "outbound",
+            direction: EMAIL_DIRECTION.outbound,
             messageId: result.messageId,
             fromAddr: brokerFacingEmail,
             toAddr: broker.email!,
             subject: rendered.subject,
-            status: result.rejected.length > 0 ? "rejected" : "sent",
+            status: result.rejected.length > 0 ? EMAIL_LOG_STATUS.rejected : EMAIL_LOG_STATUS.sent,
             identityId: getBrokerIdentityId(this.config),
           });
 

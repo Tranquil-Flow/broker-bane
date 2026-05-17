@@ -48,6 +48,15 @@ export const EMAIL_DIRECTION = {
 
 export type EmailDirection = (typeof EMAIL_DIRECTION)[keyof typeof EMAIL_DIRECTION];
 
+export const EMAIL_LOG_STATUS = {
+  sent: "sent",
+  rejected: "rejected",
+  bounced: "bounced",
+  failed: "failed",
+} as const;
+
+export type EmailLogStatus = (typeof EMAIL_LOG_STATUS)[keyof typeof EMAIL_LOG_STATUS];
+
 export const RESPONSE_TYPE = {
   confirmation: "confirmation",
   acknowledgment: "acknowledgment",

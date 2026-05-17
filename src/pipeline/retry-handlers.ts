@@ -5,7 +5,7 @@ import type { Broker } from "../types/broker.js";
 import type { EmailLogRepo } from "../db/repositories/email-log.repo.js";
 import type { RemovalRequestRepo } from "../db/repositories/removal-request.repo.js";
 import { getBrokerFacingEmail, getBrokerIdentityId, getEffectiveBrokerIdentity } from "../types/identity.js";
-import { REQUEST_STATUS } from "../types/pipeline.js";
+import { EMAIL_DIRECTION, EMAIL_LOG_STATUS, REQUEST_STATUS } from "../types/pipeline.js";
 import { isEmailRetryPayloadV1 } from "./retry-payloads.js";
 import type { RetryWorkerHandlers } from "./retry-worker.js";
 
@@ -111,12 +111,12 @@ export function createRetryHandlers(init: RetryHandlerFactoryInit): RetryHandler
 
       emailLogRepo.create({
         requestId: payload.requestId,
-        direction: "outbound",
+        direction: EMAIL_DIRECTION.outbound,
         messageId: result.messageId,
         fromAddr: brokerFacingEmail,
         toAddr: payload.to,
         subject,
-        status: allRejected ? "rejected" : "sent",
+        status: allRejected ? EMAIL_LOG_STATUS.rejected : EMAIL_LOG_STATUS.sent,
         identityId,
       });
 

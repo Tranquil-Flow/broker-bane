@@ -90,4 +90,59 @@ describe("RetryWorker", () => {
     expect(retryRepo.get(transientId)?.attempt_count).toBe(2);
     expect(retryRepo.get(permanentId)).toBeUndefined();
   });
+
+  it("invokes onTaskExhausted exactly when max_attempts is reached and the row is removed", async () => {
+    retryRepo.enqueue({
+      brokerId: "exhausted",
+      taskType: "email",
+      payload: { requestId: 42 },
+      errorMessage: "timeout",
+      attemptCount: 2,
+      nextRetryAt: new Date(Date.now() - 1000),
+    });
+    const transientError = new Error("Connection reset");
+    (transientError as Error & { code?: string }).code = "ECONNRESET";
+    const onTaskExhausted = vi.fn();
+    const worker = new RetryWorker({
+      queue,
+      emailLogRepo,
+      identityId: "removals",
+      dailyLimit: 10,
+      handlers: { email: vi.fn().mockRejectedValue(transientError) },
+      onTaskExhausted,
+    });
+
+    const result = await worker.processReady({ limit: 5 });
+
+    expect(result.removed).toBe(1);
+    expect(onTaskExhausted).toHaveBeenCalledOnce();
+    expect(onTaskExhausted.mock.calls[0][0].payload).toMatchObject({ requestId: 42 });
+    expect(onTaskExhausted.mock.calls[0][0].error).toBe(transientError);
+  });
+
+  it("does not invoke onTaskExhausted when the failure is requeued (more attempts left)", async () => {
+    retryRepo.enqueue({
+      brokerId: "still-trying",
+      taskType: "email",
+      payload: { requestId: 7 },
+      errorMessage: "timeout",
+      attemptCount: 1,
+      nextRetryAt: new Date(Date.now() - 1000),
+    });
+    const transientError = new Error("Connection reset");
+    (transientError as Error & { code?: string }).code = "ECONNRESET";
+    const onTaskExhausted = vi.fn();
+    const worker = new RetryWorker({
+      queue,
+      emailLogRepo,
+      identityId: "removals",
+      dailyLimit: 10,
+      handlers: { email: vi.fn().mockRejectedValue(transientError) },
+      onTaskExhausted,
+    });
+
+    await worker.processReady({ limit: 5 });
+
+    expect(onTaskExhausted).not.toHaveBeenCalled();
+  });
 });

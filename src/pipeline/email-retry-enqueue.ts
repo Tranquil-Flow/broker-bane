@@ -1,6 +1,7 @@
 import type { Broker } from "../types/broker.js";
 import { EmailError } from "../util/errors.js";
 import { logger } from "../util/logger.js";
+import { RETRY_TASK_TYPE } from "../db/repositories/retry-queue.repo.js";
 import { extractErrorInfo, type RetryQueue } from "./retry-queue.js";
 import type { EmailRetryPayloadV1 } from "./retry-payloads.js";
 
@@ -56,5 +57,5 @@ export function enqueueEmailRetryIfTransient(params: EnqueueEmailRetryParams): b
     originalError: errorCode !== undefined ? { message: errorMessage, code: errorCode } : { message: errorMessage },
   };
 
-  return queue.enqueueIfTransient(broker.id, "email", payload, underlying);
+  return queue.enqueueIfTransient(broker.id, RETRY_TASK_TYPE.email, payload, underlying);
 }

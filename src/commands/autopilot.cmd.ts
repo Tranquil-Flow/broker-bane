@@ -12,7 +12,10 @@ import { Orchestrator } from "../pipeline/orchestrator.js";
 import { RetryQueue } from "../pipeline/retry-queue.js";
 import { RetryWorker } from "../pipeline/retry-worker.js";
 import { createRetryHandlers } from "../pipeline/retry-handlers.js";
+import { isEmailRetryPayloadV1 } from "../pipeline/retry-payloads.js";
 import { configToRetryOptions } from "../pipeline/retry.js";
+import { REQUEST_STATUS } from "../types/pipeline.js";
+import { logger } from "../util/logger.js";
 import { getBrokerIdentityId, getBrokerIdentityImap } from "../types/identity.js";
 import { reconfigureLogger } from "../util/logger.js";
 import { formatAutopilotStatus } from "./autopilot-status-format.js";
@@ -56,7 +59,6 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
     throw new Error(`Unknown autopilot action: ${action}. Use status, start, or stop.`);
   }
 
-  const orchestrator = new Orchestrator(config);
   const workerDb = createDatabase(config.database.path);
   runMigrations(workerDb);
   const brokerDatabase = loadBrokerDatabase();
@@ -64,6 +66,7 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   const workerEmailLogRepo = new EmailLogRepo(workerDb);
   const workerRetryRepo = new RetryQueueRepo(workerDb);
   const retryQueue = new RetryQueue(workerRetryRepo, configToRetryOptions(config.retry));
+  const orchestrator = new Orchestrator(config, { retryQueue });
   const retryBundle = createRetryHandlers({
     config,
     brokers: brokerDatabase.brokers,
@@ -77,6 +80,17 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
     identityId: getBrokerIdentityId(config),
     dailyLimit: config.options.daily_limit,
     handlers: retryBundle.handlers,
+    onTaskExhausted: ({ row, payload, error }) => {
+      const message = error instanceof Error ? error.message : String(error);
+      const reason = `retry queue exhausted after ${row.attempt_count} attempts: ${message}`;
+      if (isEmailRetryPayloadV1(payload)) {
+        workerRequestRepo.updateStatus(payload.requestId, REQUEST_STATUS.failed, reason);
+      }
+      logger.warn(
+        { brokerId: row.broker_id, taskType: row.task_type, attempts: row.attempt_count },
+        "retry task exhausted — marked request as permanently failed",
+      );
+    },
   });
   const confirmationWorker = options.testMode
     ? undefined

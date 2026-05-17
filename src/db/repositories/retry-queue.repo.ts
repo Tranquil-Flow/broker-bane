@@ -1,7 +1,13 @@
 import type { Database } from "better-sqlite3";
 import type { RetryQueueRow } from "../../types/database.js";
 
-export type RetryTaskType = "email" | "web_form" | "confirm_link";
+export const RETRY_TASK_TYPE = {
+  email: "email",
+  web_form: "web_form",
+  confirm_link: "confirm_link",
+} as const;
+
+export type RetryTaskType = (typeof RETRY_TASK_TYPE)[keyof typeof RETRY_TASK_TYPE];
 
 export interface RetryQueueEntry {
   brokerId: string;

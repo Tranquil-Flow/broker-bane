@@ -14,12 +14,22 @@ export type RetryWorkerHandler<TPayload = unknown> = (
 
 export type RetryWorkerHandlers = Partial<Record<RetryTaskType, RetryWorkerHandler>>;
 
+export type RetryTaskExhaustedHook = (context: {
+  row: RetryQueueRow;
+  payload: unknown;
+  error: unknown;
+}) => Promise<void> | void;
+
 export interface RetryWorkerOptions {
   queue: RetryQueue;
   emailLogRepo: EmailLogRepo;
   identityId: string;
   dailyLimit: number;
   handlers: RetryWorkerHandlers;
+  // Invoked when a task fails AND the retry queue removes it because
+  // max_attempts is reached. Lets callers transition the underlying request
+  // to a terminal state (e.g. removal_request → failed with an error message).
+  onTaskExhausted?: RetryTaskExhaustedHook;
 }
 
 export interface RetryWorkerRunOptions {
@@ -78,8 +88,9 @@ export class RetryWorker {
         continue;
       }
 
+      let payload: unknown;
       try {
-        const payload = this.options.queue.parsePayload(row);
+        payload = this.options.queue.parsePayload(row);
         await handler({ row, payload });
         const recorded = this.options.queue.recordResult(row.id, true);
         result.succeeded += 1;
@@ -90,6 +101,9 @@ export class RetryWorker {
         result.failed += 1;
         if (recorded.requeued) result.requeued += 1;
         if (recorded.removed) result.removed += 1;
+        if (recorded.removed && this.options.onTaskExhausted) {
+          await this.options.onTaskExhausted({ row, payload, error });
+        }
       }
     }
 
