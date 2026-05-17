@@ -66,7 +66,7 @@ export async function autopilotCommand(action: string, options: AutopilotCommand
   const workerEmailLogRepo = new EmailLogRepo(workerDb);
   const workerRetryRepo = new RetryQueueRepo(workerDb);
   const retryQueue = new RetryQueue(workerRetryRepo, configToRetryOptions(config.retry));
-  const orchestrator = new Orchestrator(config, { retryQueue });
+  const orchestrator = new Orchestrator(config, { retryQueue, db: workerDb });
   const retryBundle = createRetryHandlers({
     config,
     brokers: brokerDatabase.brokers,

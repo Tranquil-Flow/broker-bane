@@ -85,14 +85,21 @@ export interface OrchestratorInit {
   // a single queue object is used across enqueue (orchestrator) and drain
   // (RetryWorker).
   retryQueue?: RetryQueue;
+  // Optional shared SQLite handle. When provided, the orchestrator uses this
+  // connection for every repo and does NOT close it on cleanup() (the caller
+  // owns it). When omitted, the orchestrator opens its own connection lazily
+  // and closes it on cleanup() — the historical default.
+  db?: InstanceType<typeof Database>;
 }
 
 export class Orchestrator {
   private db: InstanceType<typeof Database> | null = null;
+  private dbOwnership: "owned" | "injected" | "none" = "none";
   private emailSender: EmailSender | null = null;
   private aborted = false;
   private readonly playbooks: Map<string, Playbook>;
   private readonly injectedRetryQueue: RetryQueue | undefined;
+  private readonly injectedDb: InstanceType<typeof Database> | undefined;
 
   constructor(
     private readonly config: AppConfig,
@@ -101,14 +108,27 @@ export class Orchestrator {
     const defaultDir = join(dirname(fileURLToPath(import.meta.url)), "../../data/playbooks");
     this.playbooks = loadAllPlaybooks(init.playbookDir ?? defaultDir);
     this.injectedRetryQueue = init.retryQueue;
+    this.injectedDb = init.db;
+  }
+
+  private ensureDatabase(): InstanceType<typeof Database> {
+    if (this.db) return this.db;
+    if (this.injectedDb) {
+      this.db = this.injectedDb;
+      this.dbOwnership = "injected";
+    } else {
+      this.db = createDatabase(this.config.database.path);
+      this.dbOwnership = "owned";
+    }
+    runMigrations(this.db);
+    return this.db;
   }
 
   async preview(options: OrchestratorOptions = {}): Promise<BatchPreview> {
-    this.db = createDatabase(this.config.database.path);
-    runMigrations(this.db);
+    const db = this.ensureDatabase();
 
-    const requestRepo = new RemovalRequestRepo(this.db);
-    const emailLogRepo = new EmailLogRepo(this.db);
+    const requestRepo = new RemovalRequestRepo(db);
+    const emailLogRepo = new EmailLogRepo(db);
     const brokerIdentity = getEffectiveBrokerIdentity(this.config);
     const { brokers, validitySkippedCount } = this.selectBrokersForRun(options, requestRepo);
     const sentToday = emailLogRepo.countSentToday(brokerIdentity.id);
@@ -136,24 +156,22 @@ export class Orchestrator {
     const dryRun = options.dryRun ?? this.config.options.dry_run;
     let limitReached = false;
 
-    // Initialize database
-    this.db = createDatabase(this.config.database.path);
-    runMigrations(this.db);
-    setCaptchaDatabase(this.db);
+    const db = this.ensureDatabase();
+    setCaptchaDatabase(db);
 
-    const requestRepo = new RemovalRequestRepo(this.db);
-    const emailLogRepo = new EmailLogRepo(this.db);
+    const requestRepo = new RemovalRequestRepo(db);
+    const emailLogRepo = new EmailLogRepo(db);
     const dailyLimit = this.config.options.daily_limit;
-    const circuitBreakerRepo = new CircuitBreakerRepo(this.db);
-    const pipelineRunRepo = new PipelineRunRepo(this.db);
-    const pendingTaskRepo = new PendingTaskRepo(this.db);
-    const brokerResponseRepo = new BrokerResponseRepo(this.db);
+    const circuitBreakerRepo = new CircuitBreakerRepo(db);
+    const pipelineRunRepo = new PipelineRunRepo(db);
+    const pendingTaskRepo = new PendingTaskRepo(db);
+    const brokerResponseRepo = new BrokerResponseRepo(db);
 
-    const evidenceRepo = new EvidenceChainRepo(this.db);
+    const evidenceRepo = new EvidenceChainRepo(db);
     const evidenceService = new EvidenceChainService(evidenceRepo);
 
     const retryQueue = this.injectedRetryQueue
-      ?? new RetryQueue(new RetryQueueRepo(this.db), configToRetryOptions(this.config.retry));
+      ?? new RetryQueue(new RetryQueueRepo(db), configToRetryOptions(this.config.retry));
 
     const circuitBreaker = new CircuitBreaker(
       circuitBreakerRepo,
@@ -818,10 +836,12 @@ export class Orchestrator {
 
   async cleanup(): Promise<void> {
     await this.emailSender?.close();
-    if (this.db) {
+    this.emailSender = null;
+    if (this.db && this.dbOwnership === "owned") {
       closeDatabase(this.db);
-      this.db = null;
     }
+    this.db = null;
+    this.dbOwnership = "none";
   }
 }
 
