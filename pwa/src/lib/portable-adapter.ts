@@ -17,6 +17,7 @@ export function pwaToCLIProfile(pwa: UserProfile): PortableProfile {
     first_name,
     last_name,
     email: primaryEmail,
+    address: pwa.addresses[0],
     aliases,
     phone: pwa.phone,
     date_of_birth: pwa.dob,
@@ -31,7 +32,7 @@ export function cliToPWAProfile(cli: PortableProfile): UserProfile {
   return {
     names,
     emails: [cli.email].filter(Boolean),
-    addresses: [],
+    addresses: [cli.address].filter((address): address is string => Boolean(address)),
     phone: cli.phone,
     dob: cli.date_of_birth,
   }
